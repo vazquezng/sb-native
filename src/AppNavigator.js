@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types,react/sort-comp */
 import React, { Component } from 'react';
-import { Platform } from 'react-native';
+import { Platform, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { DrawerNavigator } from 'react-navigation';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -11,6 +11,10 @@ import DrawerItem from './components/DrawerItem';
 
 import LoginScreen from './screens/Login';
 import ProfileScreen from './screens/Profile';
+import MatchScreen from './screens/Match';
+import PlayScreen from './screens/Play';
+import MatchHistoryScreen from './screens/MatchHistory';
+import MyCalificationsScreen from './screens/MyCalifications';
 
 // gets the current screen from navigation state
 function getCurrentRouteName(navigationState) {
@@ -26,18 +30,70 @@ function getCurrentRouteName(navigationState) {
 }
 
 const AuthNavigationDrawer = lang => DrawerNavigator({
-  Login: {
-    screen: LoginScreen,
-  },
   Profile: {
     screen: ProfileScreen,
     navigationOptions: {
       drawerLabel: ({ focused }) => (
         <DrawerItem
           focused={focused}
-          label="Profile"
-          icon={<MaterialIcons name="home" size={30} style={{ color: '#9b9b9b' }} />}
-          activeIcon={<MaterialIcons name="home" size={30} style={{ color: '#3F78C3' }} />}
+          label="Mi Perfil"
+          icon={<Image source={require('./assets/profile-icon.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/profile-icon.png')} style={{ width: 24, height: 24}} />}
+        />
+      ),
+    },
+  },
+  Login: {
+    screen: LoginScreen,
+  },
+  Match: {
+    screen: MatchScreen,
+    navigationOptions: {
+      drawerLabel: ({ focused }) => (
+        <DrawerItem
+          focused={focused}
+          label="Crear Partido"
+          icon={<Image source={require('./assets/ico-crear-partido.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/ico-crear-partido.png')} style={{ width: 24, height: 24}} />}
+        />
+      ),
+    },
+  },
+  Play: {
+    screen: PlayScreen,
+    navigationOptions: {
+      drawerLabel: ({ focused }) => (
+        <DrawerItem
+          focused={focused}
+          label="Quiero Jugar"
+          icon={<Image source={require('./assets/ico-quiero-jugar.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/ico-quiero-jugar.png')} style={{ width: 24, height: 24}} />}
+        />
+      ),
+    },
+  },
+  MatchHistory: {
+    screen: MatchHistoryScreen,
+    navigationOptions: {
+      drawerLabel: ({ focused }) => (
+        <DrawerItem
+          focused={focused}
+          label="Mis Partidos"
+          icon={<Image source={require('./assets/match-history-icon.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/match-history-icon.png')} style={{ width: 24, height: 24}} />}
+        />
+      ),
+    },
+  },
+  MyCalifications: {
+    screen: MyCalificationsScreen,
+    navigationOptions: {
+      drawerLabel: ({ focused }) => (
+        <DrawerItem
+          focused={focused}
+          label="Mis Calificaciones"
+          icon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
         />
       ),
     },

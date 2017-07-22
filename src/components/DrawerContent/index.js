@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { DrawerItems } from 'react-navigation';
 import compose from 'recompose/compose';
 
+import TouchableItem from '../TouchableItem';
 import Routes from '../../constants/routes';
+import Colors from '@theme/Colors';
 
 const logo = require('../../assets/logo.png');
 
@@ -49,6 +51,26 @@ export default class DrawerContent extends Component {
     return { routes };
   }
 
+  handleLogout = () => {
+    this.props.navigation.navigate('Login');
+  }
+
+  renderImage() {
+    const { user } = this.state;
+    const imageURI = user && user.profile ? user.profile.image : 'http://web.slambow.com/img/profile/profile-blank.png';
+    return (
+      <Image
+        source={{ uri: imageURI }} style={{ width: 40,
+          height: 40,
+          borderTopLeftRadius: 40,
+          borderTopRightRadius: 40,
+          borderBottomLeftRadius: 40,
+          borderBottomRightRadius: 40,
+          marginRight: 20 }}
+      />
+    );
+  }
+
   render() {
     const { user, navigation } = this.props;
     const allowedRoutes = navigation;
@@ -62,12 +84,52 @@ export default class DrawerContent extends Component {
     };
 
     return (
-      <View style={{ flex: 1 }}>
-        <View style={{ flex: 3, backgroundColor: 'transparent' }}>
-          <Text>Nicolas</Text>
+      <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.8)' }}>
+        <View style={styles.containerUser}>
+          {this.renderImage()}
+          <Text style={{ color: 'rgb(7, 161, 217)', fontSize: 20 }}>Nicolas</Text>
         </View>
         <DrawerItems {...itemsProps} style={{ flex: 7 }} />
+        <TouchableItem
+            onPress={this.handleLogout}
+            pressColor={'white'}
+            delayPressIn={0}
+            style={styles.logoutContainer}
+          >
+            <View pointerEvents="box-only" style={styles.logoutContainerText}>
+              <Text style={styles.logoutText}>
+                Cerrar Sesión
+              </Text>
+            </View>
+          </TouchableItem>
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  containerUser: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: '#b2b2b2',
+    paddingLeft: 15,
+  },
+  logoutContainer: {
+    height: Platform.OS === 'ios' ? 44 : 56,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.primary,
+  },
+  logoutContainerText: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoutText: {
+    color: 'white',
+    fontSize: 18,
+  },
+});

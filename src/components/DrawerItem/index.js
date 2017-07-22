@@ -12,12 +12,12 @@ const DrawerItem = ({ icon, label, focused, activeIcon }) => (
     <View style={styles.drawerItemLabelContainer}>
       {
         focused ?
-          <Text style={{ fontSize: 16, color: '#3F78C3' }}>
-            {label}
+          <Text style={{ fontSize: 16, color: '#00a5d7' }}>
+          |  {label}
           </Text>
           :
-          <Text style={{ fontSize: 16, color: '#9b9b9b' }}>
-            {label}
+          <Text style={{ fontSize: 16, color: '#FFFFFF' }}>
+          |  {label}
           </Text>
       }
     </View>
