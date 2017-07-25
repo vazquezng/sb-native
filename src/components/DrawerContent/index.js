@@ -7,15 +7,22 @@ import compose from 'recompose/compose';
 import TouchableItem from '../TouchableItem';
 import Routes from '../../constants/routes';
 import Colors from '@theme/Colors';
+import { logout } from '@store/user/actions';
 
 const logo = require('../../assets/logo.png');
 
 const isAuth = route => Routes.isAuthRoutes.includes(route.routeName);
 
+const mapStateToProps = state => ({
+  user: state.user,
+});
+
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch(logout()),
+});
+
 const enhance = compose(
-  connect(state => ({
-    user: state.user,
-  })),
+  connect(mapStateToProps, mapDispatchToProps),
 );
 
 @enhance
@@ -52,6 +59,7 @@ export default class DrawerContent extends Component {
   }
 
   handleLogout = () => {
+    this.props.logout();
     this.props.navigation.navigate('Login');
   }
 

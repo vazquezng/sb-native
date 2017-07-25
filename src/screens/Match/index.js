@@ -4,17 +4,19 @@ import {
   ScrollView,
   View,
   Image,
-  TouchableOpacity,
   StyleSheet,
   Text,
   TextInput,
   Picker,
-  Switch,
-  Slider,
+  Alert,
   Dimensions,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Entypo from 'react-native-vector-icons/Entypo';
+import DatePicker from 'react-native-datepicker';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import  { GooglePlacesAutocomplete } from '@components/GooglePlaceAutoComplete';
+import moment from 'moment';
 
 import Header from '@components/Header';
 import HeaderButton from '@components/HeaderButton';
@@ -22,11 +24,17 @@ import TouchableItem from '@components/TouchableItem';
 
 import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
+import API from '@utils/api';
 
 const { width } = Dimensions.get('window');
 
 const three = ( (width - 40) / 3) - 5;
 const two = ( (width - 40) / 2) - 5;
+
+const mapStateToProps = state => ({
+  user: state.user,
+});
+@connect(mapStateToProps)
 class MatchScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Crear Partido',
@@ -49,15 +57,72 @@ class MatchScreen extends Component {
     super(props);
     this.state = {
       spinnerVisible: false,
+      match: {
+        date: new Date(),
+        hour: new Date(moment('15:30', 'HH:mm')),
+        id_cancha: '0',
+        address: '',
+        address_lat: '',
+        address_lng: '',
+        club_name: '',
+        game_level_from: '2.5',
+        game_level_to: '2.5',
+        years_from: '',
+        years_to: '',
+        type: 'singles',
+        sexo: 'mixto',
+        about: '',
+      },
+      canchas: [],
       sexo: 'male',
-      game_level: '2.5',
-      distance: 2,
-      club_member: '0',
+      now: moment().format('DD-MM-YYYY'),
+      time: moment().format('LT'),
+      region: {
+        latitude: -34.6038966,
+        longitude: -58.3817433,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      },
+      markers: [{
+        latlng: {
+          latitude: -34.6038966,
+          longitude: -58.3817433,
+        },
+        title: '',
+        description: '',
+      }],
     };
   }
 
+  componentWillMount() {
+    const { user, navigation } = this.props;
+    if (!user.profile.complete) {
+      Alert.alert(
+        'Error',
+        'Debe primero completar tú perfil',
+        [
+          { text: 'OK', onPress: () => navigation.navigate('Profile') },
+        ],
+        { cancelable: false },
+      );
+    }
+
+
+    fetch(`${API}/canchas`, {
+      method: 'GET',
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+      console.log(responseJson);
+      this.setState({
+        canchas: responseJson.canchas.filter(c => c.state === 'confirmed'),
+      });
+    });
+  }
+
   renderOtherClub() {
-    if(this.state.club_member === '0') {
+    const { match } = this.state;
+    if (match.id_cancha === '0') {
       return (
         <View>
           <View style={[styles.flexRow, { marginTop: 20 }]}>
@@ -66,17 +131,45 @@ class MatchScreen extends Component {
                 style={[Styles.input, { width: width - 50 }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
+                value={match.club_name}
+                onChangeText={club_name => this.setState({ match: Object.assign(match, { club_name }) })}
               />
               <Text style={Styles.inputText}>NOMBRE DEL CLUB</Text>
             </View>
           </View>
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn]}>
-              <TextInput
-                style={[Styles.input, { width: width - 50 }]}
-                placeholder="Indicar Dirección"
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
+              <GooglePlacesAutocomplete
+                ref={(ref) => this._googlePlace = ref}
+                placeholder='Indicar Dirección'
+                minLength={1}
+                autoFocus={false}
+                fetchDetails={true}
+                onPress={(data, details = null) => {
+                  this.onSetCurrentPosition(data, details);
+                }}
+                getDefaultValue={() => match.address }
+                query={{
+                  key: 'AIzaSyDZOdwsf3vZEFQws7WldOWKeibaWiMjJCg',
+                  language: 'en',
+                  types: ['(cities)'],
+                }}
+                styles={{
+                  description: { fontSize: 14, color: Colors.second, width: width - 50 },
+                  predefinedPlacesDescription: { fontSize: 14, color: Colors.second, width: width - 50 },
+                }}
+                nearbyPlacesAPI='GooglePlacesSearch'
+                GoogleReverseGeocodingQuery={{
+                }}
+                GooglePlacesSearchQuery={{
+                }}
+                enablePoweredByContainer = {true}
+                filterReverseGeocodingByTypes={['locality',
+                                                'administrative_area_level_1',
+                                                'sublocality',
+                                                'postal_code',
+                                                'country' ]}
+                predefinedPlaces={[]}
               />
               <Text style={Styles.inputText}>INGRESE DIRECCION</Text>
             </View>
@@ -88,7 +181,12 @@ class MatchScreen extends Component {
     return null;
   }
 
+  renderItemCancha(cancha, index) {
+    return <Picker.Item label={cancha.name} value={cancha.id} />
+  }
+
   renderLevel() {
+    const { match } = this.state;
     return (
       <View>
         <View style={{marginTop: 20}}>
@@ -98,8 +196,9 @@ class MatchScreen extends Component {
           <View style={[styles.flexColumn]}>
             <Picker
               style={{ width: two, height: 33 }}
-              selectedValue={this.state.game_level}
-              onValueChange={(itemValue, itemIndex) => this.setState({ sexo: itemValue })}>
+              selectedValue={match.game_level_from}
+              onValueChange={game_level_from => this.setState({ match: Object.assign(match, { game_level_from }) })}
+            >
               <Picker.Item label="2.5" value="2.5" />
               <Picker.Item label="3.0" value="3" />
               <Picker.Item label="3.5" value="3.5" />
@@ -116,8 +215,9 @@ class MatchScreen extends Component {
           <View style={[styles.flexColumn]}>
             <Picker
               style={{ width: two, height: 33 }}
-              selectedValue={this.state.game_level}
-              onValueChange={(itemValue, itemIndex) => this.setState({ sexo: itemValue })}>
+              selectedValue={match.game_level_to}
+              onValueChange={game_level_to => this.setState({ match: Object.assign(match, { game_level_to }) })}
+            >
               <Picker.Item label="2.5" value="2.5" />
               <Picker.Item label="3.0" value="3" />
               <Picker.Item label="3.5" value="3.5" />
@@ -136,8 +236,9 @@ class MatchScreen extends Component {
           <View style={[styles.flexColumn]}>
             <Picker
               style={{ width: two, height: 33 }}
-              selectedValue={this.state.sexo}
-              onValueChange={(itemValue, itemIndex) => this.setState({ sexo: itemValue })}>
+              selectedValue={match.sexo}
+              onValueChange={sexo => this.setState({ match: Object.assign(match, { sexo }) })}
+            >
               <Picker.Item label="Mixto" value="mixto" />
               <Picker.Item label="Masculino" value="male" />
               <Picker.Item label="Femenino" value="female" />
@@ -147,8 +248,9 @@ class MatchScreen extends Component {
           <View style={[styles.flexColumn]}>
             <Picker
               style={{ width: two, height: 33 }}
-              selectedValue={this.state.sexo}
-              onValueChange={(itemValue, itemIndex) => this.setState({ sexo: itemValue })}>
+              selectedValue={match.type}
+              onValueChange={type => this.setState({ match: Object.assign(match, { type }) })}
+            >
               <Picker.Item label="Singles" value="singles" />
               <Picker.Item label="Dobles" value="dobles" />
             </Picker>
@@ -160,6 +262,7 @@ class MatchScreen extends Component {
   }
 
   renderYear() {
+    const { match } = this.state;
     return (
       <View>
         <View style={{marginTop: 20}}>
@@ -169,18 +272,24 @@ class MatchScreen extends Component {
           <View style={[styles.flexColumn]}>
             <TextInput
               style={[Styles.input, { width: two }]}
+              keyboardType="numeric"
               placeholder="EDAD"
               underlineColorAndroid={'transparent'}
               placeholderTextColor="lightgrey"
+              value={match.years_from}
+              onChangeText={(years_from) => this.setState({ match: Object.assign(match, { years_from }) })}
             />
             <Text style={Styles.inputText}>DESDE</Text>
           </View>
           <View style={[styles.flexColumn]}>
             <TextInput
               style={[Styles.input, { width: two }]}
+              keyboardType="numeric"
               placeholder="EDAD"
               underlineColorAndroid={'transparent'}
               placeholderTextColor="lightgrey"
+              value={match.years_to}
+              onChangeText={(years_to) => this.setState({ match: Object.assign(match, { years_to }) })}
             />
             <Text style={Styles.inputText}>HASTA</Text>
           </View>
@@ -189,14 +298,100 @@ class MatchScreen extends Component {
     );
   }
 
-  save() {
 
+  changeCancha(idCancha) {
+    const { match } = this.state;
+    match.id_cancha = idCancha;
+    if (idCancha !== '0') {
+      const cancha = this.state.canchas.find(c => c.id === parseInt(idCancha));
+      match.address = cancha.address;
+      match.address_lat = cancha.address_lat;
+      match.address_lng = cancha.address_lng;
+      match.club_name = cancha.name;
+      const region = {
+        latitude: parseFloat(cancha.address_lat),
+        longitude: parseFloat(cancha.address_lng),
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      };
+      const markers = [{
+        latlng: {
+          latitude: parseFloat(cancha.address_lat),
+          longitude: parseFloat(cancha.address_lng),
+        },
+        title: cancha.name,
+        description: cancha.about,
+      }];
+
+      this.setState({ match, region, markers });
+    } else {
+      match.address = '';
+      match.address_lat = '';
+      match.address_lng = '';
+      match.club_name = '';
+      this.setState({ match });
+    }
   }
+
+  onSetCurrentPosition(data, details) {
+    const { navigation } = this.props;
+    const { match } = this.state;
+
+    if (details && details.address_components) {
+      match.address = details && details.formatted_address ? details.formatted_address : match.address;
+      match.address_lat = details && details.geometry ? details.geometry.location.lat() : match.address_lat;
+      match.address_lng = details && details.geometry ? details.geometry.location.lng() : match.address_lng;
+
+      this.setState({ match });
+    }
+  }
+
+  validCancha(match) {
+    return (match.address !== '' && match.address_lat !== '' && match.address_lng !== '' && match.club_name !== '');
+  }
+  validYear(match) {
+    return (parseInt(match.years_from) > 18 && parseInt(match.years_to) > 18);
+  }
+
+  save() {
+    const { match } = this.state;
+    if (this.validCancha(match) && this.validYear(match) ) {
+      this.setState({ spinnerVisible: true }, () => {
+        fetch(`${API}/match`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.props.user.profile.token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(Object.assign(match, { hour: match.hour.toLocaleTimeString() })),
+        })
+        .then(response => response.json())
+        .then((responseJson) => {
+          console.log(responseJson);
+          this.setState({
+            spinnerVisible: false,
+          });
+          // this.props.navigation.navigate('SuggestedPlayers', { match: responseJson.match_id })
+        });
+      });
+    } else {
+      Alert.alert(
+        'Error',
+        'Complete todos los campos.',
+        [
+          { text: 'OK', onPress: () => console.log('OK') },
+        ],
+        { cancelable: false },
+      );
+    }
+  }
+
 
   render() {
     const { navigation } = this.props;
+    const { match } = this.state;
     return (
-      <View style={{ flex: 1}}>
+      <View style={{ flex: 1 }}>
         <Header
           iconName="menu"
           onPress={() => this.props.navigation.navigate('DrawerOpen')}
@@ -211,20 +406,52 @@ class MatchScreen extends Component {
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn]}>
-              <TextInput
-                style={[Styles.input, { width: three }]}
+              <DatePicker
+                style={[{ width: two, borderBottomWidth: 0.8, borderColor: '#00a5d7' }]}
+                date={match.date}
+                mode="date"
                 placeholder="FECHA"
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
+                format="DD-MM-YYYY"
+                minDate={this.state.now}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: 'absolute',
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0,
+                  },
+                  dateInput: {
+                    marginLeft: 36,
+                    borderWidth: 0,
+                  },
+                }}
+                onDateChange={date => this.setState({ match: Object.assign(match, { date }) })}
               />
               <Text style={Styles.inputText}>FECHA</Text>
             </View>
             <View style={[styles.flexColumn]}>
-              <TextInput
+              <DatePicker
+                style={{ width: two, borderBottomWidth: 0.8, borderColor: '#00a5d7' }}
+                date={this.state.match.hour}
+                mode="time"
                 placeholder="HORA"
-                style={[Styles.input, { width: three }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    position: 'absolute',
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0,
+                  },
+                  dateInput: {
+                    marginLeft: 36,
+                    borderWidth: 0,
+                  },
+                }}
+                onDateChange={time => this.setState({ match: Object.assign(match, { time }) })}
               />
               <Text style={Styles.inputText}>HORA</Text>
             </View>
@@ -234,9 +461,11 @@ class MatchScreen extends Component {
             <View style={[styles.flexColumn]}>
               <Picker
                 style={{ width: width - 50, height: 33 }}
-                selectedValue={this.state.club_member}
-                onValueChange={(itemValue, itemIndex) => this.setState({ sexo: itemValue })}>
+                selectedValue={this.state.match.id_cancha}
+                onValueChange={id_cancha => this.changeCancha(id_cancha)}
+              >
                 <Picker.Item label="OTRA" value="0" />
+                {this.state.canchas && this.state.canchas.map((cancha, index) => this.renderItemCancha(cancha, index))}
               </Picker>
               <Text style={Styles.inputText}>SOS SOCIO DE ALGUN CLUB</Text>
             </View>
@@ -245,8 +474,21 @@ class MatchScreen extends Component {
           <View>
             {this.renderOtherClub()}
           </View>
-          <View>
-            {/* mapa */}
+          <View style={{ flex: 1, height: 200}}>
+            <MapView
+              style={styles.map}
+              provider={PROVIDER_GOOGLE}
+              region={this.state.region}
+              onRegionChange={this.onRegionChange}
+            >
+              {this.state.markers && this.state.markers.map(marker => (
+                <MapView.Marker
+                  coordinate={marker.latlng}
+                  title={marker.title}
+                  description={marker.description}
+                />
+              ))}
+            </MapView>
           </View>
 
           {this.renderLevel()}
@@ -259,6 +501,8 @@ class MatchScreen extends Component {
                 style={[Styles.input, { width: width - 50, borderWidth: 0.8, height: 100 }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
+                value={match.about}
+                onChangeText={about => this.setState({ match: Object.assign(match, { about }) })}
               />
             </View>
           </View>
@@ -270,7 +514,7 @@ class MatchScreen extends Component {
               testID="profile-available"
               delayPressIn={0}
               style={Styles.btnSave}
-              onPress={this.save()}
+              onPress={() => this.save()}
               pressColor={Colors.primary}
             >
               <View>
@@ -304,6 +548,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
   },
 });
 

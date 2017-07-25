@@ -34,6 +34,13 @@ const Styles = StyleSheet.create({
     borderBottomWidth: 0.8,
     borderColor: Colors.primary,
   },
+  inputDisabled: {
+    fontSize: 14,
+    borderBottomWidth: 0.8,
+    backgroundColor: '#f8f8f8',
+    color: '#000000',
+    borderColor: Colors.primary,
+  },
   btnSave: {
     flex: 1,
     borderColor: Colors.primary,
@@ -42,6 +49,16 @@ const Styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 10,
     paddingBottom: 5,
+  },
+  flexRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  flexColumn: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
 });
 

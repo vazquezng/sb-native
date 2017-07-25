@@ -16,7 +16,7 @@ const { RNTwitterSignIn } = NativeModules;
 import { login } from '@store/user/actions';
 
 const Constants = {
-    //Dev Parse keys
+    // Dev Parse keys
     TWITTER_COMSUMER_KEY: 'BZCxeNUUKOkj2WarJTv9TEGzI',
     TWITTER_CONSUMER_SECRET: 'k7VeUkRu89a41mbmuuZrQwwudh53EyrDX9iyNO2kX5blgMzy5I',
 };
@@ -42,6 +42,10 @@ class LoginScreen extends Component {
     }
   }
 
+  _facebookLogin() {
+
+  }
+
   _twitterSignIn() {
       RNTwitterSignIn.init(Constants.TWITTER_COMSUMER_KEY, Constants.TWITTER_CONSUMER_SECRET);
       RNTwitterSignIn.logIn()
@@ -55,7 +59,7 @@ class LoginScreen extends Component {
             fetch('http://api.slambow.com/api/v1/auth/twitter/mobile', {
               method: 'POST',
               headers: {
-                'Accept': 'application/json',
+                Accept: 'application/json',
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
@@ -116,18 +120,14 @@ class LoginScreen extends Component {
             ref={(fbLogin) => { this.fbLogin = fbLogin; }}
             permissions={['email', 'user_friends']}
             loginBehavior={FBLoginManager.LoginBehaviors.Native}
-            onLogin={(data) => {
-              console.log("Logged in!");
-              console.log(data);
-              this.setState({ user : data.credentials });
-            }}
+            onLogin={data => this._facebookLogin(data)}
           />
           <TouchableOpacity
             style={{ backgroundColor: '#5baceb', height: 40 }}
             onPress={this._twitterSignIn.bind(this)}
           >
-            <View>
-              <Text style={{ color:'white', fontSize: 20 }}>Login whith Twitter</Text>
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',}}>
+              <Text style={{ color: 'white', fontSize: 14 }}>Login whith Twitter</Text>
             </View>
           </TouchableOpacity>
 

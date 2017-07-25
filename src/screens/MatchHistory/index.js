@@ -22,12 +22,15 @@ import TouchableItem from '@components/TouchableItem';
 
 import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
+import Metrics from '@theme/Metrics';
+import API from '@utils/api';
 
-const { width } = Dimensions.get('window');
 
-const three = ( (width - 40) / 3) - 5;
-const two = ( (width - 40) / 2) - 5;
+const mapStateToProps = state => ({
+  user: state.user,
+});
 
+@connect(mapStateToProps)
 class MatchHistoryScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Mis Partidos',
@@ -50,15 +53,79 @@ class MatchHistoryScreen extends Component {
     super(props);
     this.state = {
       spinnerVisible: false,
-      sexo: 'male',
-      game_level: '2.5',
-      distance: 2,
-      club_member: '0',
+      matches: [],
     };
+  }
+
+  componentWillMount() {
+    fetch(`${API}/match/history`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${this.props.user.profile.token}`,
+      }
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+      console.log(responseJson);
+      this.setState({
+        matches: responseJson.matches.reverse()
+      });
+    });
+  }
+
+  renderNoMatches(matches) {
+    if (matches.length === 0) {
+      return (
+        <View style={styles.centerContent}>
+          <Text style={Styles.subtitle}>Aún no tienes partidos.</Text>
+        </View>
+      );
+    }
+    return null;
+  }
+
+  renderMatches(matches) {
+    if (matches.length > 0) {
+      return (
+        <View style={styles.flexColumn}>
+          {matches.map((m, k) => {
+            return this.renderMatch(m, k)
+          })}
+        </View>
+      );
+    }
+    return null;
+  }
+
+  renderMatch(match, key) {
+    return (
+      <View key={key} style={[styles.flexRow, styles.matchContainer, match.futureMatch ? styles.futureMatch : {} ]}>
+        <View>
+          <Text style={{ fontFamily: 'Roboto-Light'}}>{match.club_name}</Text>
+        </View>
+        <View>
+          <Text style={{ color: Colors.primary}}>|</Text>
+        </View>
+        <View>
+          <Text style={{ fontFamily: 'Cookie-Regular', fontSize: 14, color: '#000000'}}>
+            {match.date} - {match.hour}
+          </Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('MatchDetail', { match: match.id })}
+        >
+          <Image
+            source={require('../../assets/play/eye-icon.png')}
+            style={{ width: 30, height: 25}}
+          />
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   render() {
     const { navigation } = this.props;
+    const { matches } = this.state;
     return (
       <View style={{ flex: 1}}>
         <Header
@@ -68,10 +135,11 @@ class MatchHistoryScreen extends Component {
         />
         <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
           <Spinner visible={this.state.spinnerVisible} />
-          <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+          <View style={styles.centerContent}>
             <Text style={Styles.title}>Mis Partidos</Text>
           </View>
-          
+          {this.renderNoMatches(matches)}
+          {this.renderMatches(matches)}
         </ScrollView>
       </View>
     );
@@ -85,6 +153,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   flexRow: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -98,6 +167,24 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  centerContent: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  matchContainer: {
+    width: Metrics.buttonWidth,
+    borderColor: Colors.primary,
+    borderWidth: 0.8,
+    paddingHorizontal: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginBottom: 20,
+  },
+  futureMatch: {
+    backgroundColor: Colors.primary,
   },
 });
 

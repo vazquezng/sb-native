@@ -102,7 +102,6 @@ class HeaderButton extends React.PureComponent<DefaultProps, Props, State> {
         onPress={onPress}
         pressColor={pressColorAndroid}
         style={styles.container}
-        borderless
       >
         <View style={styles.container}>
           <MaterialIcons

@@ -14,7 +14,9 @@ import ProfileScreen from './screens/Profile';
 import MatchScreen from './screens/Match';
 import PlayScreen from './screens/Play';
 import MatchHistoryScreen from './screens/MatchHistory';
+import MatchDetailScreen from './screens/MatchDetail';
 import MyCalificationsScreen from './screens/MyCalifications';
+import FeedbackScreen from './screens/Feedback';
 
 // gets the current screen from navigation state
 function getCurrentRouteName(navigationState) {
@@ -85,6 +87,19 @@ const AuthNavigationDrawer = lang => DrawerNavigator({
       ),
     },
   },
+  MatchDetail: {
+    screen: MatchDetailScreen,
+    navigationOptions: {
+      drawerLabel: ({ focused }) => (
+        <DrawerItem
+          focused={focused}
+          label="Mis Partidos"
+          icon={<Image source={require('./assets/match-history-icon.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/match-history-icon.png')} style={{ width: 24, height: 24}} />}
+        />
+      ),
+    },
+  },
   MyCalifications: {
     screen: MyCalificationsScreen,
     navigationOptions: {
@@ -92,6 +107,19 @@ const AuthNavigationDrawer = lang => DrawerNavigator({
         <DrawerItem
           focused={focused}
           label="Mis Calificaciones"
+          icon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
+        />
+      ),
+    },
+  },
+  Feedback: {
+    screen: FeedbackScreen,
+    navigationOptions: {
+      drawerLabel: ({ focused }) => (
+        <DrawerItem
+          focused={focused}
+          label="Feedback"
           icon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
           activeIcon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
         />

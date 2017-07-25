@@ -28,7 +28,7 @@ import ModalAvailable from '@components/ModalAvailable';
 import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
 
-import { saveProfile } from '@store/user/actions';
+import { saveProfile, logout } from '@store/user/actions';
 import API from '@utils/api';
 
 const { width } = Dimensions.get('window');
@@ -44,6 +44,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   saveProfile: profile => dispatch(saveProfile(profile)),
+  logout: () => dispatch(logout()),
 });
 
 const options = {
@@ -87,14 +88,43 @@ class ProfileScreen extends Component {
   }
 
   componentWillMount() {
+    const { user, logout, navigation } = this.props;
+    fetch(`${API}/me`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${user.profile.token}`,
+      }
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+      if (responseJson && responseJson.length) {
+        if (responseJson[0] === 'Token has expired') {
+          logout();
+          navigation.navigate('Login');
+        }
+      }
+    });
+
     fetch(`${API}/canchas`, {
       method:'GET'
     })
     .then(response => response.json())
     .then((responseJson) => {
-      console.log(responseJson);
       this.setState({
         canchas: responseJson.canchas.filter(c => c.state === 'confirmed'),
+      });
+    });
+
+    fetch(`${API}/user/retrieveUserAvailability`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${user.profile.token}`,
+      }
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+      this.setState({
+        profile: Object.assign(user.profile, { availability: responseJson.availability }),
       });
     });
   }
@@ -102,44 +132,44 @@ class ProfileScreen extends Component {
   getCamera() {
       // Launch Camera:
     ImagePicker.launchCamera(options, (response) => {
-      console.log(response);
+      if (!response.didCancel) {
+        this.saveImage(response);
+      }
     });
   }
   getGalery() {
       // Launch Camera:
     ImagePicker.launchImageLibrary(options, (response) => {
-      console.log(response);
       if (!response.didCancel) {
-        this.setState({ spinnerVisible: true });
-        const obj = {
-          uploadUrl: API_UPLOAD_PHOTOID,
-          method: 'POST', // default 'POST',support 'POST' and 'PUT'
-          headers: {
-            Authorization: `Bearer ${this.props.user.profile.token}`,
-          },
-          files: [
-            {
-              name: 'files',
-              filename: 'avatar.jpg',
-              filepath: response.uri,
-              filetype: response.type,
-            },
-          ],
-          fields: {
-          },
-        };
-        FileUpload.upload(obj, (returnCode, returnMessage, resultData) => {
-          this.setState({ spinnerVisible: false });
-          console.log(returnCode);
-          console.log(resultData);
-        });
+        this.saveImage(response);
       }
     });
   }
 
-
-  save() {
-    console.log(this.state.profile);
+  saveImage(response) {
+    this.setState({ spinnerVisible: true });
+    const obj = {
+      uploadUrl: API_UPLOAD_PHOTOID,
+      method: 'POST', // default 'POST',support 'POST' and 'PUT'
+      headers: {
+        Authorization: `Bearer ${this.props.user.profile.token}`,
+      },
+      files: [
+        {
+          name: 'files',
+          filename: 'avatar.jpg',
+          filepath: response.uri,
+          filetype: response.type,
+        },
+      ],
+      fields: {
+      },
+    };
+    FileUpload.upload(obj, (returnCode, returnMessage, resultData) => {
+      this.setState({ spinnerVisible: false });
+      console.log(returnCode);
+      console.log(resultData);
+    });
   }
 
   renderImage() {
@@ -175,8 +205,8 @@ class ProfileScreen extends Component {
       profile.city = details.types && details.types[0] === 'street_address' ? details.vicinity : profile.city;
       profile.country = details.types && details.types[0] === 'street_address' ? this.getCountryFromAddress(details): profile.country;
       profile.address = details && details.formatted_address ? details.formatted_address : profile.address;
-      profile.address_lat = details && details.geometry ? details.geometry.location.lat() : profile.lat;
-      profile.address_lng = details && details.geometry ? details.geometry.location.lng() : profile.lng;
+      profile.address_lat = details && details.geometry ? details.geometry.location.lat() : profile.address_lat;
+      profile.address_lng = details && details.geometry ? details.geometry.location.lng() : profile.address_lng;
 
       this.setState({ profile });
     }
@@ -194,9 +224,69 @@ class ProfileScreen extends Component {
     this.setState({ modalAvailable: false });
   }
 
+  saveAvailable = (availability) => {
+    this.setState({
+      spinnerVisible: true,
+      profile: Object.assign(this.state.profile, { availability }),
+    }, () => {
+      this.closeModalAvailable();
+    });
+
+    fetch(`${API}/user/saveAvailability`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.state.profile.token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({availability}),
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+      console.log(responseJson);
+      this.setState({
+        spinnerVisible: false,
+      });
+      alert('Tu disponibilidad se guardo correctamente!');
+    });
+  }
+
+  saveProfile() {
+    let profile = {};
+    const keys = Object.keys(this.state.profile);
+    keys.forEach((k) => {
+      if (k !== 'availability' && k !== 'newuser' && k !== 'token') {
+        profile[k] = this.state.profile[k];
+      }
+    });
+
+    this.setState({
+      spinnerVisible: true,
+    });
+
+    fetch(`${API}/user`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.state.profile.token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(profile),
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+      console.log(responseJson);
+      this.setState({
+        spinnerVisible: false,
+      });
+      alert('Tu perfil se guardo correctamente!');
+      this.props.saveProfile(this.state.profile);
+    });
+  }
+
   render() {
     const { navigation } = this.props;
     const { profile } = this.state;
+    const single = Boolean(profile.single);
+    const double = Boolean(profile.double);
     return (
       <View style={{ flex: 1}}>
         <Header
@@ -361,11 +451,15 @@ class ProfileScreen extends Component {
 
           <View style={[styles.flexRow, { justifyContent: 'space-around', marginTop: 20 }]}>
             <View style={[styles.flexColumn]}>
-              <Switch />
+              <Switch
+                onTintColor={Colors.primary}
+                value={single}
+                onValueChange={single => this.setState({ profile: Object.assign(profile, { single }) })}
+              />
               <Text style={Styles.inputText}>SINGLES</Text>
             </View>
             <View style={[styles.flexColumn]}>
-              <Switch />
+              <Switch onTintColor={Colors.primary} value={double} onValueChange={(double) => this.setState({ profile: Object.assign(profile, { double }) })} />
               <Text style={Styles.inputText}>DOBLES</Text>
             </View>
           </View>
@@ -403,6 +497,9 @@ class ProfileScreen extends Component {
                 style={{ width: width - 50, height: 33 }}
                 minimumValue={2}
                 maximumValue={50}
+                maximumTrackTintColor={Colors.primary}
+                minimumTrackTintColor={Colors.primary}
+                thumbTintColor={Colors.primary}
                 step={2}
                 value={profile.distance}
                 onValueChange={(distance) => this.setState({ profile: Object.assign(profile, { distance }) })} />
@@ -446,7 +543,7 @@ class ProfileScreen extends Component {
               testID="profile-available"
               delayPressIn={0}
               style={Styles.btnSave}
-              onPress={this.save.bind(this)}
+              onPress={() => this.saveProfile.bind(this)}
               pressColor={Colors.primary}
             >
               <View pointerEvents="box-only">
@@ -455,7 +552,11 @@ class ProfileScreen extends Component {
             </TouchableItem>
           </View>
         </ScrollView>
-        <ModalAvailable onClose={this.closeModalAvailable.bind(this)} isVisible={this.state.modalAvailable}></ModalAvailable>
+        <ModalAvailable
+          availability={profile.availability}
+          onClose={this.closeModalAvailable.bind(this)}
+          isVisible={this.state.modalAvailable}
+          onSuccess={this.saveAvailable.bind(this)}></ModalAvailable>
       </View>
     );
   }
