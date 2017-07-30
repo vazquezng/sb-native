@@ -33,11 +33,12 @@ const Styles = StyleSheet.create({
     fontSize: 14,
     borderBottomWidth: 0.8,
     borderColor: Colors.primary,
+    paddingBottom: 5,
   },
   inputDisabled: {
     fontSize: 14,
     borderBottomWidth: 0.8,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#FFFFFF',
     color: '#000000',
     borderColor: Colors.primary,
   },
@@ -59,6 +60,10 @@ const Styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
+  },
+  flexAlignLeft: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
 });
 

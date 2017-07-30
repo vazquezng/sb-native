@@ -145,31 +145,39 @@ class MatchDetailScreen extends Component {
     });
   }
 
+  capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
   infoMatch(match) {
     if (match) {
+      const type = this.capitalizeFirstLetter(match.type);
+      const sexo = this.capitalizeFirstLetter(match.sexo);
       return (
         <View>
           <View>
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.date}
-                editable={false}
-              />
-              <Text style={[Styles.inputText]}>Fecha</Text>
-            </View>
+            <View style={Styles.flexRow}>
+              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
+                <TextInput
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
+                  underlineColorAndroid={'transparent'}
+                  placeholderTextColor="lightgrey"
+                  value={match.date}
+                  editable={false}
+                />
+                <Text style={[Styles.inputText]}>Fecha</Text>
+              </View>
 
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.hour}
-                editable={false}
-              />
-              <Text style={[Styles.inputText]}>Hora</Text>
+              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
+                <TextInput
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
+                  underlineColorAndroid={'transparent'}
+                  placeholderTextColor="lightgrey"
+                  value={match.hour}
+                  editable={false}
+                />
+                <Text style={[Styles.inputText]}>Hora</Text>
+              </View>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
@@ -194,15 +202,28 @@ class MatchDetailScreen extends Component {
               <Text style={[Styles.inputText]}>Nombre del Club</Text>
             </View>
 
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.game_level_from}
-                editable={false}
-              />
-              <Text style={[Styles.inputText]}>Nivel del juego desde</Text>
+            <View style={Styles.flexRow}>
+              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
+                <TextInput
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
+                  underlineColorAndroid={'transparent'}
+                  placeholderTextColor="lightgrey"
+                  value={match.game_level_from}
+                  editable={false}
+                />
+                <Text style={[Styles.inputText]}>Nivel del juego desde</Text>
+              </View>
+
+              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
+                <TextInput
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
+                  underlineColorAndroid={'transparent'}
+                  placeholderTextColor="lightgrey"
+                  value={match.game_level_to}
+                  editable={false}
+                />
+                <Text style={[Styles.inputText]}>Nivel del juego hasta</Text>
+              </View>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
@@ -210,42 +231,33 @@ class MatchDetailScreen extends Component {
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
-                value={match.game_level_to}
-                editable={false}
-              />
-              <Text style={[Styles.inputText]}>Nivel del juego hasta</Text>
-            </View>
-
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.type}
+                value={type}
                 editable={false}
               />
               <Text style={[Styles.inputText]}>Tipo de partido</Text>
             </View>
 
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.years_from}
-                editable={false}
-              />
-              <Text style={[Styles.inputText]}>Edad desde</Text>
-            </View>
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.years_to}
-                editable={false}
-              />
-              <Text style={[Styles.inputText]}>Edad hasta</Text>
+            <View style={Styles.flexRow}>
+              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
+                <TextInput
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
+                  underlineColorAndroid={'transparent'}
+                  placeholderTextColor="lightgrey"
+                  value={match.years_from}
+                  editable={false}
+                />
+                <Text style={[Styles.inputText]}>Edad desde</Text>
+              </View>
+              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
+                <TextInput
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
+                  underlineColorAndroid={'transparent'}
+                  placeholderTextColor="lightgrey"
+                  value={match.years_to}
+                  editable={false}
+                />
+                <Text style={[Styles.inputText]}>Edad hasta</Text>
+              </View>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
@@ -253,7 +265,7 @@ class MatchDetailScreen extends Component {
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
-                value={match.sexo}
+                value={sexo}
                 editable={false}
               />
               <Text style={[Styles.inputText]}>Sexo</Text>
@@ -272,7 +284,7 @@ class MatchDetailScreen extends Component {
         return (
           <View key={key} style={[Styles.flexRow, { justifyContent: 'flex-start', alignItems: 'center' }]}>
             <View>
-              <View style={[Styles.flexColumn, { justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 } ]}>
+              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
                 <TextInput
                   style={[Styles.inputDisabled, { width: Metrics.buttonWidth / 2 }]}
                   underlineColorAndroid={'transparent'}
@@ -437,6 +449,26 @@ class MatchDetailScreen extends Component {
     return null;
   }
 
+  renderSuggestedPlayers(match) {
+    if (match && match.futureMatch && match.id_user === this.props.user.profile.id) {
+      return (
+        <TouchableItem
+          accessibilityComponentType="button"
+          accessibilityTraits="button"
+          delayPressIn={0}
+          style={[Styles.btnSave, { marginBottom: 20 }]}
+          onPress={() => this.props.navigation.navigate('SuggestedPlayers', { match: match.id, backName: 'MatchDetail', backParams: { match: match.id } })}
+          pressColor={Colors.primary}
+        >
+          <View>
+            <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]} >VER JUGADORES SUGERIDOS</Text>
+          </View>
+        </TouchableItem>
+      );
+    }
+    return null;
+  }
+
   render() {
     const { navigation } = this.props;
     const { match } = this.state;
@@ -460,6 +492,9 @@ class MatchDetailScreen extends Component {
               {this.infoPlayers(match)}
             </View>
 
+            <View style={Styles.flexRow}>
+              {this.renderSuggestedPlayers(match)}
+            </View>
           </View>
         </ScrollView>
       </View>

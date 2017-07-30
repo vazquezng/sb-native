@@ -42,8 +42,34 @@ class LoginScreen extends Component {
     }
   }
 
-  _facebookLogin() {
-
+  _facebookLogin(data) {
+    console.log(data);
+    const { profile, credentials } = data;
+    profile.accessToken = credentials.token;
+    fetch('http://api.slambow.com/api/v1/auth', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(profile),
+    })
+    .then((response) => response.json())
+    .then((responseJson) => {
+      console.log(responseJson);
+      this.props.login(this.standar(responseJson));
+      this.setState({
+        spinnerVisible: false,
+      }, () => {
+        this.goProfile();
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      this.setState({
+        spinnerVisible: false,
+      });
+    });
   }
 
   _twitterSignIn() {
@@ -100,13 +126,14 @@ class LoginScreen extends Component {
   }
   goProfile() {
     const resetAction = NavigationActions.reset({
-      index: 0,
-      actions: [
-        NavigationActions.navigate({ routeName: 'Profile' }),
-      ],
+      routeName: 'Profile',
+      params: {},
+
+      // navigate can have a nested navigate action that will be run inside the child router
+      action: NavigationActions.navigate({ routeName: 'Profile'})
     });
-    // this.props.navigation.dispatch(resetAction);
-    this.props.navigation.navigate('Profile');
+    this.props.navigation.dispatch(resetAction);
+    // this.props.navigation.navigate('Profile');
   }
 
   render() {
@@ -127,7 +154,7 @@ class LoginScreen extends Component {
             onPress={this._twitterSignIn.bind(this)}
           >
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',}}>
-              <Text style={{ color: 'white', fontSize: 14 }}>Login whith Twitter</Text>
+              <Text style={{ color: 'white', fontSize: 14 }}>Login with Twitter</Text>
             </View>
           </TouchableOpacity>
 

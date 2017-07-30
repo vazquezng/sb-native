@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Platform } from 'react
 import { connect } from 'react-redux';
 import { DrawerItems } from 'react-navigation';
 import compose from 'recompose/compose';
+import { FBLoginManager } from 'react-native-facebook-login';
 
 import TouchableItem from '../TouchableItem';
 import Routes from '../../constants/routes';
@@ -55,17 +56,19 @@ export default class DrawerContent extends Component {
     const stackedRoutes = navigation.state.routes;
 
     const routes = stackedRoutes.filter(isAuth);
+    console.log(routes);
     return { routes };
   }
 
   handleLogout = () => {
+    FBLoginManager.logout((err, data) => console.log(err, data));
     this.props.logout();
     this.props.navigation.navigate('Login');
   }
 
   renderImage() {
-    const { user } = this.state;
-    const imageURI = user && user.profile ? user.profile.image : 'http://web.slambow.com/img/profile/profile-blank.png';
+    const { user } = this.props;
+    const imageURI = user && user.profile  && user.profile.image ? user.profile.image : 'http://web.slambow.com/img/profile/profile-blank.png';
     return (
       <Image
         source={{ uri: imageURI }} style={{ width: 40,
@@ -82,7 +85,7 @@ export default class DrawerContent extends Component {
   render() {
     const { user, navigation } = this.props;
     const allowedRoutes = navigation;
-
+    const name = user && user.profile ? user.profile.name : '';
     allowedRoutes.state = this.getFilteredRoutes();
 
     const itemsProps = {
@@ -95,7 +98,7 @@ export default class DrawerContent extends Component {
       <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.8)' }}>
         <View style={styles.containerUser}>
           {this.renderImage()}
-          <Text style={{ color: 'rgb(7, 161, 217)', fontSize: 20 }}>Nicolas</Text>
+          <Text style={{ color: 'rgb(7, 161, 217)', fontSize: 20 }}>{name}</Text>
         </View>
         <DrawerItems {...itemsProps} style={{ flex: 7 }} />
         <TouchableItem

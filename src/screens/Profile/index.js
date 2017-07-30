@@ -13,6 +13,8 @@ import {
   Slider,
   Dimensions,
   NativeModules,
+  Alert,
+  BackHandler,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -27,6 +29,7 @@ import ModalAvailable from '@components/ModalAvailable';
 
 import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
+import Metrics from '@theme/Metrics';
 
 import { saveProfile, logout } from '@store/user/actions';
 import API from '@utils/api';
@@ -93,7 +96,7 @@ class ProfileScreen extends Component {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${user.profile.token}`,
-      }
+      },
     })
     .then(response => response.json())
     .then((responseJson) => {
@@ -129,6 +132,9 @@ class ProfileScreen extends Component {
     });
   }
 
+  componentWillUnmount() {
+  }
+
   getCamera() {
       // Launch Camera:
     ImagePicker.launchCamera(options, (response) => {
@@ -147,34 +153,53 @@ class ProfileScreen extends Component {
   }
 
   saveImage(response) {
-    this.setState({ spinnerVisible: true });
-    const obj = {
-      uploadUrl: API_UPLOAD_PHOTOID,
-      method: 'POST', // default 'POST',support 'POST' and 'PUT'
-      headers: {
-        Authorization: `Bearer ${this.props.user.profile.token}`,
-      },
-      files: [
-        {
-          name: 'files',
-          filename: 'avatar.jpg',
-          filepath: response.uri,
-          filetype: response.type,
+    console.log(response);
+    const { profile } = this.state;
+    this.setState({ spinnerVisible: true }, () => {
+      const obj = {
+        uploadUrl: API_UPLOAD_PHOTOID,
+        method: 'POST', // default 'POST',support 'POST' and 'PUT'
+        headers: {
+          Authorization: `Bearer ${profile.token}`,
         },
-      ],
-      fields: {
-      },
-    };
-    FileUpload.upload(obj, (returnCode, returnMessage, resultData) => {
-      this.setState({ spinnerVisible: false });
-      console.log(returnCode);
-      console.log(resultData);
+        files: [
+          {
+            name: 'files',
+            filename: response.fileName,
+            filepath: response.uri,
+            filetype: response.type,
+          },
+        ],
+        fields: {
+        },
+      };
+      FileUpload.upload(obj, (returnCode, returnMessage, resultData) => {
+        this.setState({ spinnerVisible: false });
+        console.log(returnMessage);
+        console.log(returnCode);
+        console.log(resultData);
+      });
+
+      const formData = new FormData();
+      formData.append('image', { uri: response.uri, type: 'image/jpg', name: 'avatar.jpg' });
+
+      const options = {};
+      options.body = formData;
+      options.method = 'POST';
+      options.headers = {
+        Authorization: `Bearer ${profile.token}`,
+      }
+      fetch(API_UPLOAD_PHOTOID, options)
+      .then((response) => {
+        console.log(response);
+      });
     });
+
   }
 
   renderImage() {
-    const { user } = this.state;
-    const imageURI = user && user.profile ? user.profile.image : 'http://web.slambow.com/img/profile/profile-blank.png';
+    const { profile } = this.state;
+    const imageURI = profile && profile.image ? profile.image : 'http://web.slambow.com/img/profile/profile-blank.png';
     return (
       <Image
         source={{ uri: imageURI }} style={{ width: 160,
@@ -246,39 +271,53 @@ class ProfileScreen extends Component {
       this.setState({
         spinnerVisible: false,
       });
-      alert('Tu disponibilidad se guardo correctamente!');
+      Alert.alert(
+        'Atención',
+        'Tu disponibilidad se guardo correctamente!',
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],
+        { cancelable: false },
+      );
     });
   }
 
   saveProfile() {
-    let profile = {};
-    const keys = Object.keys(this.state.profile);
-    keys.forEach((k) => {
-      if (k !== 'availability' && k !== 'newuser' && k !== 'token') {
-        profile[k] = this.state.profile[k];
-      }
-    });
-
     this.setState({
       spinnerVisible: true,
-    });
-
-    fetch(`${API}/user`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${this.state.profile.token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(profile),
-    })
-    .then(response => response.json())
-    .then((responseJson) => {
-      console.log(responseJson);
-      this.setState({
-        spinnerVisible: false,
+    }, () => {
+      const profile = {};
+      const keys = Object.keys(this.state.profile);
+      keys.forEach((k) => {
+        if (k !== 'availability' && k !== 'newuser' && k !== 'token') {
+          profile[k] = this.state.profile[k];
+        }
       });
-      alert('Tu perfil se guardo correctamente!');
-      this.props.saveProfile(this.state.profile);
+
+      fetch(`${API}/user`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.state.profile.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(profile),
+      })
+      .then(response => response.json())
+      .then((responseJson) => {
+        console.log(responseJson);
+        this.setState({
+          spinnerVisible: false,
+        });
+        Alert.alert(
+          'Atención',
+          'Tu perfil se guardo correctamente!',
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') },
+          ],
+          { cancelable: false },
+        );
+        this.props.saveProfile(this.state.profile);
+      });
     });
   }
 
@@ -288,10 +327,10 @@ class ProfileScreen extends Component {
     const single = Boolean(profile.single);
     const double = Boolean(profile.double);
     return (
-      <View style={{ flex: 1}}>
+      <View style={{ flex: 1 }}>
         <Header
           iconName="menu"
-          onPress={() => this.props.navigation.navigate('DrawerOpen')}
+          onPress={() => navigation.navigate('DrawerOpen')}
           title="Mi Perfil"
         />
         <ScrollView style={Styles.containerPrimary}>
@@ -328,10 +367,10 @@ class ProfileScreen extends Component {
               </View>
           </View>
 
-          <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn]}>
+          <View style={[Styles.flexRow, { marginTop: 20 }]}>
+            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
               <TextInput
-                style={[Styles.input, { width: three }]}
+                style={[Styles.input, { width: two }]}
                 placeholder="NOMBRE"
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
@@ -340,10 +379,10 @@ class ProfileScreen extends Component {
               />
               <Text style={Styles.inputText}>NOMBRE</Text>
             </View>
-            <View style={[styles.flexColumn]}>
+            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
               <TextInput
                 placeholder="APELLIDO"
-                style={[Styles.input, { width: three }]}
+                style={[Styles.input, { width: two }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
                 value={profile.last_name}
@@ -351,10 +390,13 @@ class ProfileScreen extends Component {
               />
               <Text style={Styles.inputText}>APELLIDO</Text>
             </View>
-            <View style={[styles.flexColumn]}>
+          </View>
+
+          <View style={[Styles.flexRow, { marginTop: 20 }]}>
+            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
               <TextInput
                 placeholder="EMAIL"
-                style={[Styles.input, { width: three }]}
+                style={[Styles.input, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
                 value={profile.email}
@@ -365,8 +407,8 @@ class ProfileScreen extends Component {
           </View>
 
 
-          <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn]}>
+          <View style={[Styles.flexRow, { marginTop: 20 }]}>
+            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
               <TextInput
                 style={[Styles.input, { width: two }]}
                 placeholder="EDAD"
@@ -377,20 +419,20 @@ class ProfileScreen extends Component {
               />
               <Text style={Styles.inputText}>EDAD</Text>
             </View>
-            <View style={[styles.flexColumn]}>
+            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <Picker
-                style={{ width: two, height: 33 }}
+                style={{ width: two, height: 28, borderBottomWidth: 0.8 }}
                 selectedValue={profile.sexo}
                 onValueChange={(sexo, itemIndex) => this.setState({ profile: Object.assign(profile, { sexo }) })}>
                 <Picker.Item label="Masculino" value="male" />
                 <Picker.Item label="Femenino" value="female" />
               </Picker>
-              <Text style={Styles.inputText}>SEXO</Text>
+              <Text style={[Styles.inputText, { width: two, borderColor: Colors.primary, borderTopWidth: 1 }]}>SEXO</Text>
             </View>
           </View>
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn]}>
+            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <GooglePlacesAutocomplete
                 ref={(ref) => this._googlePlace = ref}
                 placeholder='DIRECCION'
@@ -428,9 +470,9 @@ class ProfileScreen extends Component {
           </View>
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn]}>
+            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <Picker
-                style={{ width: width - 50, height: 33 }}
+                style={{ width: width - 50, height: 28 }}
                 selectedValue={profile.game_level.toString()}
                 onValueChange={(game_level, itemIndex) => this.setState({ profile: Object.assign(profile, { game_level }) })}
               >
@@ -445,12 +487,12 @@ class ProfileScreen extends Component {
                 <Picker.Item label="6.5" value="6.5" />
                 <Picker.Item label="7.0" value="7" />
               </Picker>
-              <Text style={Styles.inputText}>NIVEL DE JUEGO</Text>
+              <Text style={[Styles.inputText, { width: width - 50, borderColor: Colors.primary, borderTopWidth: 1 }]}>NIVEL DE JUEGO</Text>
             </View>
           </View>
 
-          <View style={[styles.flexRow, { justifyContent: 'space-around', marginTop: 20 }]}>
-            <View style={[styles.flexColumn]}>
+          <View style={[Styles.flexRow, { justifyContent: 'space-around', marginTop: 20 }]}>
+            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
               <Switch
                 onTintColor={Colors.primary}
                 value={single}
@@ -458,13 +500,13 @@ class ProfileScreen extends Component {
               />
               <Text style={Styles.inputText}>SINGLES</Text>
             </View>
-            <View style={[styles.flexColumn]}>
+            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
               <Switch onTintColor={Colors.primary} value={double} onValueChange={(double) => this.setState({ profile: Object.assign(profile, { double }) })} />
               <Text style={Styles.inputText}>DOBLES</Text>
             </View>
           </View>
 
-          <View style={[styles.flexRow, { justifyContent: 'center', marginTop: 20 }]}>
+          <View style={[Styles.flexRow, { justifyContent: 'flex-start', marginTop: 20 }]}>
             <TouchableItem
               accessibilityComponentType="button"
               accessibilityTraits="button"
@@ -508,9 +550,9 @@ class ProfileScreen extends Component {
           </View>
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn]}>
+            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <Picker
-                style={{ width: width - 50, height: 33 }}
+                style={{ width: width - 50, height: 28 }}
                 selectedValue={this.state.club_member}
                 onValueChange={(itemValue) => this.setState({ club_member: itemValue })}>
                 <Picker.Item label="OTRA" value="0" />
@@ -518,15 +560,17 @@ class ProfileScreen extends Component {
                   return this.renderItemCancha(cancha, index);
                 })}
               </Picker>
-              <Text style={Styles.inputText}>SOS SOCIO DE ALGUN CLUB</Text>
+              <Text style={[Styles.inputText, { width: width - 50, borderColor: Colors.primary, borderTopWidth: 1 }]}>SOS SOCIO DE ALGUN CLUB</Text>
             </View>
           </View>
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn]}>
+            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <Text style={Styles.inputText}>SOBRE MI</Text>
               <TextInput
-                style={[Styles.input, { width: width - 50, borderWidth: 0.8, height: 100 }]}
+                multiline
+                numberOfLines={4}
+                style={[Styles.input, { height: 100, width: width - 50, borderWidth: 0.8 }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
                 value={profile.about}
@@ -543,7 +587,7 @@ class ProfileScreen extends Component {
               testID="profile-available"
               delayPressIn={0}
               style={Styles.btnSave}
-              onPress={() => this.saveProfile.bind(this)}
+              onPress={() => this.saveProfile()}
               pressColor={Colors.primary}
             >
               <View pointerEvents="box-only">

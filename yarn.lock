@@ -3816,6 +3816,10 @@ react-native-image-picker@latest:
   version "0.26.3"
   resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-0.26.3.tgz#0ad2eede49501a7046d8046a73813696539c3dcd"
 
+react-native-interactable:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-interactable/-/react-native-interactable-0.1.0.tgz#6a81d0f0b0d2677457819f522ba5ee4afa80f59b"
+
 react-native-loading-spinner-overlay@^0.5.0:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/react-native-loading-spinner-overlay/-/react-native-loading-spinner-overlay-0.5.1.tgz#5484fc8511dd85038bd595746e8a6207aa72c6c1"

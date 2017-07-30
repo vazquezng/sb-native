@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AsyncStorage, View, Image  } from 'react-native';
+import { AsyncStorage, View, Image } from 'react-native';
 import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import SplashScreen from 'react-native-splash-screen';

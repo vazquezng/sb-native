@@ -12,6 +12,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderButton from '../HeaderButton';
 
 import Colors from '@theme/Colors';
+import Metrics from '@theme/Metrics';
 
 class Header extends React.PureComponent<DefaultProps, Props, State> {
   static defaultProps = {
@@ -34,7 +35,7 @@ class Header extends React.PureComponent<DefaultProps, Props, State> {
     return (
       <View style={{ height: 50, backgroundColor: '#ffffff', borderColor: '#b2b2b2', borderBottomWidth: 0.8 }}>
         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-          <View>
+          <View style={{flex: 0.3}}>
             <HeaderButton
               icon={iconName}
               onPress={onPress}
@@ -43,7 +44,7 @@ class Header extends React.PureComponent<DefaultProps, Props, State> {
               truncatedTitle={title}
             />
           </View>
-          <View>
+          <View style={{flex: 0.7}}>
             <Image source={require('../../assets/logo-header.png')}/>
           </View>
         </View>

@@ -24,6 +24,7 @@ import TouchableItem from '@components/TouchableItem';
 
 import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
+import Metrics from '@theme/Metrics';
 import API from '@utils/api';
 
 const { width } = Dimensions.get('window');
@@ -126,7 +127,7 @@ class MatchScreen extends Component {
       return (
         <View>
           <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn]}>
+            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <TextInput
                 style={[Styles.input, { width: width - 50 }]}
                 underlineColorAndroid={'transparent'}
@@ -138,7 +139,7 @@ class MatchScreen extends Component {
             </View>
           </View>
           <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn]}>
+            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <GooglePlacesAutocomplete
                 ref={(ref) => this._googlePlace = ref}
                 placeholder='Indicar Dirección'
@@ -190,12 +191,12 @@ class MatchScreen extends Component {
     return (
       <View>
         <View style={{marginTop: 20}}>
-          <Text style={{ color: Colors.primary, fontSize: 20}}>NIVEL DE JUEVO</Text>
+          <Text style={{ color: Colors.primary, fontSize: 20}}>NIVEL DE JUEGO</Text>
         </View>
         <View style={[styles.flexRow, { marginTop: 20 }]}>
-          <View style={[styles.flexColumn]}>
+          <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <Picker
-              style={{ width: two, height: 33 }}
+              style={{ width: two, height: 28 }}
               selectedValue={match.game_level_from}
               onValueChange={game_level_from => this.setState({ match: Object.assign(match, { game_level_from }) })}
             >
@@ -210,11 +211,11 @@ class MatchScreen extends Component {
               <Picker.Item label="6.5" value="6.5" />
               <Picker.Item label="7.0" value="7" />
             </Picker>
-            <Text style={Styles.inputText}>DESDE</Text>
+            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2, borderColor: Colors.primary, borderTopWidth: 1 }]}>DESDE</Text>
           </View>
-          <View style={[styles.flexColumn]}>
+          <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <Picker
-              style={{ width: two, height: 33 }}
+              style={{ width: two, height: 28 }}
               selectedValue={match.game_level_to}
               onValueChange={game_level_to => this.setState({ match: Object.assign(match, { game_level_to }) })}
             >
@@ -229,13 +230,13 @@ class MatchScreen extends Component {
               <Picker.Item label="6.5" value="6.5" />
               <Picker.Item label="7.0" value="7" />
             </Picker>
-            <Text style={Styles.inputText}>HASTA</Text>
+            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2, borderColor: Colors.primary, borderTopWidth: 1 }]}>HASTA</Text>
           </View>
         </View>
         <View style={[styles.flexRow, { marginTop: 20 }]}>
-          <View style={[styles.flexColumn]}>
+          <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <Picker
-              style={{ width: two, height: 33 }}
+              style={{ width: two, height: 28 }}
               selectedValue={match.sexo}
               onValueChange={sexo => this.setState({ match: Object.assign(match, { sexo }) })}
             >
@@ -243,18 +244,18 @@ class MatchScreen extends Component {
               <Picker.Item label="Masculino" value="male" />
               <Picker.Item label="Femenino" value="female" />
             </Picker>
-            <Text style={Styles.inputText}>SEXO</Text>
+            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2, borderColor: Colors.primary, borderTopWidth: 1 }]}>SEXO</Text>
           </View>
-          <View style={[styles.flexColumn]}>
+          <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <Picker
-              style={{ width: two, height: 33 }}
+              style={{ width: two, height: 28 }}
               selectedValue={match.type}
               onValueChange={type => this.setState({ match: Object.assign(match, { type }) })}
             >
               <Picker.Item label="Singles" value="singles" />
               <Picker.Item label="Dobles" value="dobles" />
             </Picker>
-            <Text style={Styles.inputText}>TIPO DE PARTIDO</Text>
+            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2, borderColor: Colors.primary, borderTopWidth: 1 }]}>TIPO DE PARTIDO</Text>
           </View>
         </View>
       </View>
@@ -269,7 +270,7 @@ class MatchScreen extends Component {
           <Text style={{ color: Colors.primary, fontSize: 20}}>EDAD</Text>
         </View>
         <View style={[styles.flexRow, { marginTop: 20 }]}>
-          <View style={[styles.flexColumn]}>
+          <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <TextInput
               style={[Styles.input, { width: two }]}
               keyboardType="numeric"
@@ -281,7 +282,7 @@ class MatchScreen extends Component {
             />
             <Text style={Styles.inputText}>DESDE</Text>
           </View>
-          <View style={[styles.flexColumn]}>
+          <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <TextInput
               style={[Styles.input, { width: two }]}
               keyboardType="numeric"
@@ -346,6 +347,59 @@ class MatchScreen extends Component {
     }
   }
 
+  validTime(hour) {
+    hour = new Date(moment(hour,'HH:mm'));
+    if (hour.getHours() < 8 || hour.getHours() > 23) {
+      Alert.alert(
+        'Error',
+        'El partido se debe jugar entre las 8 y las 23hs.',
+        [
+          { text: 'OK', onPress: () => console.log('OK') },
+        ],
+        { cancelable: false },
+      );
+      // this.toaster.pop({type:'info', body:'El partido se debe jugar entre las 8 y las 23hs.'});
+      return false;
+    }
+
+    if (hour.getMinutes() !== 0 && hour.getMinutes() !== 30) {
+      Alert.alert(
+        'Error',
+        'En la hora del partido, solo se admiten intervalos de 30 minutos.',
+        [
+          { text: 'OK', onPress: () => console.log('OK') },
+        ],
+        { cancelable: false },
+      );
+      // this.toaster.pop({type:'info', body:'En la hora del partido, solo se admiten intervalos de 30 minutos.'});
+      //mahour = new Date(moment('15:30', 'HH:mm'));
+      return false;
+    }
+    return true;
+  }
+
+  validateDate(match) {
+    const now = new Date();
+    const date = new Date(moment(match.date));
+    if (date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth()
+        && date.getDate() === now.getDate() && match.hour < now) {
+      Alert.alert(
+        'Error',
+        'La fecha y/o hora ya pasarón.',
+        [
+          { text: 'OK', onPress: () => console.log('OK') },
+        ],
+        { cancelable: false },
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  validDateHour(match) {
+    return (this.validateDate(match) && this.validTime(match.hour));
+  }
   validCancha(match) {
     return (match.address !== '' && match.address_lat !== '' && match.address_lng !== '' && match.club_name !== '');
   }
@@ -355,34 +409,44 @@ class MatchScreen extends Component {
 
   save() {
     const { match } = this.state;
-    if (this.validCancha(match) && this.validYear(match) ) {
-      this.setState({ spinnerVisible: true }, () => {
-        fetch(`${API}/match`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${this.props.user.profile.token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(Object.assign(match, { hour: match.hour.toLocaleTimeString() })),
-        })
-        .then(response => response.json())
-        .then((responseJson) => {
-          console.log(responseJson);
-          this.setState({
-            spinnerVisible: false,
+    if (this.validDateHour(match)) {
+      if (this.validCancha(match) && this.validYear(match)) {
+        this.setState({ spinnerVisible: true }, () => {
+          fetch(`${API}/match`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${this.props.user.profile.token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(Object.assign(match, { hour: match.hour.toLocaleTimeString() })),
+          })
+          .then(response => response.json())
+          .then((responseJson) => {
+            console.log(responseJson);
+            this.setState({
+              spinnerVisible: false,
+            });
+            Alert.alert(
+              'Atención',
+              'Se guardo correctamente el partido.',
+              [
+                { text: 'OK', onPress: () => this.props.navigation.navigate('SuggestedPlayers', { match: responseJson.match_id }) },
+              ],
+              { cancelable: false },
+            );
+            // this.props.navigation.navigate('SuggestedPlayers', { match: responseJson.match_id })
           });
-          // this.props.navigation.navigate('SuggestedPlayers', { match: responseJson.match_id })
         });
-      });
-    } else {
-      Alert.alert(
-        'Error',
-        'Complete todos los campos.',
-        [
-          { text: 'OK', onPress: () => console.log('OK') },
-        ],
-        { cancelable: false },
-      );
+      } else {
+        Alert.alert(
+          'Error',
+          'Complete todos los campos.',
+          [
+            { text: 'OK', onPress: () => console.log('OK') },
+          ],
+          { cancelable: false },
+        );
+      }
     }
   }
 
@@ -405,7 +469,7 @@ class MatchScreen extends Component {
           </View>
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn]}>
+            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <DatePicker
                 style={[{ width: two, borderBottomWidth: 0.8, borderColor: '#00a5d7' }]}
                 date={match.date}
@@ -431,7 +495,7 @@ class MatchScreen extends Component {
               />
               <Text style={Styles.inputText}>FECHA</Text>
             </View>
-            <View style={[styles.flexColumn]}>
+            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <DatePicker
                 style={{ width: two, borderBottomWidth: 0.8, borderColor: '#00a5d7' }}
                 date={this.state.match.hour}
@@ -451,23 +515,23 @@ class MatchScreen extends Component {
                     borderWidth: 0,
                   },
                 }}
-                onDateChange={time => this.setState({ match: Object.assign(match, { time }) })}
+                onDateChange={hour => this.setState({ match: Object.assign(match, { hour }) })}
               />
               <Text style={Styles.inputText}>HORA</Text>
             </View>
           </View>
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn]}>
+            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <Picker
-                style={{ width: width - 50, height: 33 }}
+                style={{ width: width - 50, height: 28 }}
                 selectedValue={this.state.match.id_cancha}
                 onValueChange={id_cancha => this.changeCancha(id_cancha)}
               >
                 <Picker.Item label="OTRA" value="0" />
                 {this.state.canchas && this.state.canchas.map((cancha, index) => this.renderItemCancha(cancha, index))}
               </Picker>
-              <Text style={Styles.inputText}>SOS SOCIO DE ALGUN CLUB</Text>
+              <Text style={[Styles.inputText, { width: width - 50, borderColor: Colors.primary, borderTopWidth: 1 }]}>CANCHAS REGISTRADAS</Text>
             </View>
           </View>
 
@@ -495,8 +559,8 @@ class MatchScreen extends Component {
           {this.renderYear()}
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn]}>
-              <Text style={Styles.inputText}>SOBRE MI</Text>
+            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
+              <Text style={Styles.inputText}>COMENTARIO</Text>
               <TextInput
                 style={[Styles.input, { width: width - 50, borderWidth: 0.8, height: 100 }]}
                 underlineColorAndroid={'transparent'}

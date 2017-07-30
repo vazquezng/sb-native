@@ -13,10 +13,13 @@ import LoginScreen from './screens/Login';
 import ProfileScreen from './screens/Profile';
 import MatchScreen from './screens/Match';
 import PlayScreen from './screens/Play';
+import PlayMatchScreen from './screens/Play/PlayMatch';
 import MatchHistoryScreen from './screens/MatchHistory';
 import MatchDetailScreen from './screens/MatchDetail';
 import MyCalificationsScreen from './screens/MyCalifications';
 import FeedbackScreen from './screens/Feedback';
+import SuggestedPlayersScreen from './screens/SuggestedPlayers';
+import ViewPlayerScreen from './screens/Profile/infoPlayer';
 
 // gets the current screen from navigation state
 function getCurrentRouteName(navigationState) {
@@ -68,6 +71,19 @@ const AuthNavigationDrawer = lang => DrawerNavigator({
         <DrawerItem
           focused={focused}
           label="Quiero Jugar"
+          icon={<Image source={require('./assets/ico-quiero-jugar.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/ico-quiero-jugar.png')} style={{ width: 24, height: 24}} />}
+        />
+      ),
+    },
+  },
+  PlayMatch: {
+    screen: PlayMatchScreen,
+    navigationOptions: {
+      drawerLabel: ({ focused }) => (
+        <DrawerItem
+          focused={focused}
+          label="Detalle del Partido"
           icon={<Image source={require('./assets/ico-quiero-jugar.png')} style={{ width: 24, height: 24}} />}
           activeIcon={<Image source={require('./assets/ico-quiero-jugar.png')} style={{ width: 24, height: 24}} />}
         />
@@ -126,6 +142,32 @@ const AuthNavigationDrawer = lang => DrawerNavigator({
       ),
     },
   },
+  SuggestedPlayers: {
+    screen: SuggestedPlayersScreen,
+    navigationOptions: {
+      drawerLabel: ({ focused }) => (
+        <DrawerItem
+          focused={focused}
+          label="Queres invitar a alguien?"
+          icon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
+        />
+      ),
+    },
+  },
+  ViewPlayer: {
+    screen: ViewPlayerScreen,
+    navigationOptions: {
+      drawerLabel: ({ focused }) => (
+        <DrawerItem
+          focused={focused}
+          label="Información del Jugador"
+          icon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
+        />
+      ),
+    },
+  },
 }, {
   initialRouteName: 'Login',
   contentComponent: DrawerContent,
@@ -149,10 +191,8 @@ class AppNavigator extends Component {
 
   render() {
     const config = {
-      scheme: 'grupodc.turismocity',
+      scheme: 'com.slambow',
     };
-    // const { resources, currentCountry } = this.props;
-    // const lang = currentCountry ? currentCountry.lang.replace(/-/, '_').toLowerCase() : 'es_ar';
     const AppNavigatorDrawerContainer = AuthNavigationDrawer('es_ar');
     const prefix = Platform.OS === 'android'
       ? `${config.scheme}://${config.scheme}/` : `${config.scheme}://`;
@@ -160,14 +200,6 @@ class AppNavigator extends Component {
     return (
       <AppNavigatorDrawerContainer
         uriPrefix={prefix}
-        onNavigationStateChange={(prevState, currentState) => {
-          const currentScreen = getCurrentRouteName(currentState);
-          const prevScreen = getCurrentRouteName(prevState);
-
-          if (prevScreen !== currentScreen) {
-            // tracker.trackScreenView(currentScreen);
-          }
-        }}
       />
     );
   }

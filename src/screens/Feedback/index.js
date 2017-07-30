@@ -85,7 +85,7 @@ class FeedbackScreen extends Component {
   renderUser() {
     const { user } = this.state;
     if (user) {
-      const imageURI = user ? user.image : 'http://web.slambow.com/img/profile/profile-blank.png';
+      const imageURI = user && user ? user.image : 'http://web.slambow.com/img/profile/profile-blank.png';
       return (
         <View style={[Styles.flexColumn, { justifyContent: 'center', alignItems: 'center', marginBottom: 10 }]}>
           <Image
