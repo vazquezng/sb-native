@@ -1,16 +1,19 @@
 PODS:
-  - GoogleMaps (2.1.1):
-    - GoogleMaps/Maps (= 2.1.1)
-  - GoogleMaps/Base (2.1.1)
-  - GoogleMaps/Maps (2.1.1):
-    - GoogleMaps/Base
-  - React (0.45.1):
-    - React/Core (= 0.45.1)
-  - react-native-google-maps (0.15.3):
-    - GoogleMaps (= 2.1.1)
-    - React
-  - react-native-maps (0.15.3):
-    - React
+  - Bolts (1.8.4):
+    - Bolts/AppLinks (= 1.8.4)
+    - Bolts/Tasks (= 1.8.4)
+  - Bolts/AppLinks (1.8.4):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.8.4)
+  - Fabric (1.6.12)
+  - Facebook-iOS-SDK (3.24.4):
+    - Bolts (~> 1.2)
+  - Parse (1.15.1):
+    - Bolts/Tasks (~> 1.8)
+  - ParseFacebookUtils (1.10.0):
+    - Bolts/Tasks (~> 1.5)
+    - Facebook-iOS-SDK (~> 3.24)
+    - Parse (~> 1.9)
   - React/BatchedBridge (0.45.1):
     - React/Core
     - React/cxxreact_legacy
@@ -40,12 +43,16 @@ PODS:
     - React/Core
   - React/RCTWebSocket (0.45.1):
     - React/Core
+  - TwitterCore (2.8.0):
+    - Fabric
+  - TwitterKit (2.8.1):
+    - TwitterCore (>= 2.8)
   - Yoga (0.45.1.React)
 
 DEPENDENCIES:
-  - GoogleMaps
-  - react-native-google-maps (from `../node_modules/react-native-maps`)
-  - react-native-maps (from `../node_modules/react-native-maps`)
+  - Fabric (~> 1.6.11)
+  - Facebook-iOS-SDK
+  - ParseFacebookUtils
   - React/BatchedBridge (from `../node_modules/react-native`)
   - React/Core (from `../node_modules/react-native`)
   - React/RCTActionSheet (from `../node_modules/react-native`)
@@ -58,25 +65,27 @@ DEPENDENCIES:
   - React/RCTText (from `../node_modules/react-native`)
   - React/RCTVibration (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
+  - TwitterCore (~> 2.8.0)
+  - TwitterKit (~> 2.8.1)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga/Yoga.podspec`)
 
 EXTERNAL SOURCES:
   React:
     :path: "../node_modules/react-native"
-  react-native-google-maps:
-    :path: "../node_modules/react-native-maps"
-  react-native-maps:
-    :path: "../node_modules/react-native-maps"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga/Yoga.podspec"
 
 SPEC CHECKSUMS:
-  GoogleMaps: a5b5bbe47734e2443bde781a6aa64e69fdb6d785
+  Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
+  Fabric: f050464eac45a2ce5a8e6e6a07e977c0df32fe28
+  Facebook-iOS-SDK: 5a7c414a084708220b72d5fd016f2cf3eb6deda4
+  Parse: b7a77b20b8a6dede8058da1e2b339593578ce158
+  ParseFacebookUtils: 7030f53c989fda36ad50029d90edec1327424317
   React: 0c9191a8b0c843d7004f950ac6b5f6cba9d125c7
-  react-native-google-maps: f8780ca7802588d0ccd3a83c522a81f433bc1b4a
-  react-native-maps: 6a886202fb8af8568615501c0f9f933ca282a7a3
+  TwitterCore: e959987be23c767004d29eb7fab8d85d8585a2e5
+  TwitterKit: 3b6044a7320340326a4098f3e37aa1dbaeb94942
   Yoga: 89c8738d42a0b46a113acb4e574336d61cba2985
 
-PODFILE CHECKSUM: 8e03c6b6163085e77ebcb08c1c9e903a875b7ab9
+PODFILE CHECKSUM: 00790f00be0017e60b79685da255eb1b7d1291d0
 
 COCOAPODS: 1.2.1

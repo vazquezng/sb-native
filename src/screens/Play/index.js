@@ -113,7 +113,7 @@ class PlayScreen extends Component {
     return (
       <View style={Styles.flexColumn}>
         <Text style={{ color: '#000000', fontSize: 18, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2 }}>{match.user.first_name} {match.user.last_name}</Text>
-        <Text style={{ color: Colors.primary, fontFamily: 'Cookie-Regular', fontSize: 16 }}>{match.date} - {match.hour}</Text>
+        <Text style={{ color: Colors.primary, fontFamily: 'CookieRegular', fontSize: 16 }}>{match.date} - {match.hour}</Text>
         <Text style={{ color: '#000000', fontSize: 12, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2, marginTop: 10 }}>{match.club_name}</Text>
         <Text numberOfLines={1}>{match.address}</Text>
         <TouchableOpacity

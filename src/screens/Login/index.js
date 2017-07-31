@@ -8,13 +8,16 @@ import {
   StyleSheet,
   Text,
   NativeModules,
+  Platform,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
 const { RNTwitterSignIn } = NativeModules;
 
 import { login } from '@store/user/actions';
+import Metrics from '@theme/Metrics';
 
+const loginBehavior = (Platform.OS === 'ios') ? FBLoginManager.LoginBehaviors.Web : FBLoginManager.LoginBehaviors.Native;
 const Constants = {
     // Dev Parse keys
     TWITTER_COMSUMER_KEY: 'BZCxeNUUKOkj2WarJTv9TEGzI',
@@ -44,8 +47,11 @@ class LoginScreen extends Component {
 
   _facebookLogin(data) {
     console.log(data);
-    const { profile, credentials } = data;
+    let { profile, credentials } = data;
+    if (!profile) profile = {};
+
     profile.accessToken = credentials.token;
+    profile.id = credentials.userId;
     fetch('http://api.slambow.com/api/v1/auth', {
       method: 'POST',
       headers: {
@@ -143,18 +149,27 @@ class LoginScreen extends Component {
         <Spinner visible={this.state.spinnerVisible} />
         <Image style={styles.loginContent} source={require('../../assets/background.png')}>
           <FBLogin
-            style={{ height: null, paddingBottom: 30, marginBottom: 20 }}
+            style={{ paddingBottom: 30, marginBottom: 20 }}
             ref={(fbLogin) => { this.fbLogin = fbLogin; }}
             permissions={['email', 'user_friends']}
-            loginBehavior={FBLoginManager.LoginBehaviors.Native}
+            loginBehavior={loginBehavior}
             onLogin={data => this._facebookLogin(data)}
           />
           <TouchableOpacity
-            style={{ backgroundColor: '#5baceb', height: 40 }}
+            style={{
+              width: (Metrics.screenWidth/2),
+              backgroundColor: '#5baceb',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingTop: 5,
+              paddingBottom: 5,
+              paddingHorizontal: 15,
+              borderRadius: 2,
+            }}
             onPress={this._twitterSignIn.bind(this)}
           >
-            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',}}>
-              <Text style={{ color: 'white', fontSize: 14 }}>Login with Twitter</Text>
+            <View>
+              <Text style={{ color: 'white', fontSize: 14, fontWeight: 'bold' }}>Log in with Twitter</Text>
             </View>
           </TouchableOpacity>
 
@@ -175,6 +190,7 @@ const styles = StyleSheet.create({
     height: null,
     flexDirection: 'column',
     justifyContent: 'flex-end',
+    alignItems: 'center',
   },
 });
 

@@ -56,7 +56,6 @@ export default class DrawerContent extends Component {
     const stackedRoutes = navigation.state.routes;
 
     const routes = stackedRoutes.filter(isAuth);
-    console.log(routes);
     return { routes };
   }
 

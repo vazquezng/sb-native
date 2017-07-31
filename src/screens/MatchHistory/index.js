@@ -101,13 +101,13 @@ class MatchHistoryScreen extends Component {
     return (
       <View key={key} style={[styles.flexRow, styles.matchContainer, match.futureMatch ? styles.futureMatch : {} ]}>
         <View>
-          <Text style={{ fontFamily: 'Roboto-Light'}}>{match.club_name}</Text>
+          <Text style={{ fontFamily: 'RobotoLight'}}>{match.club_name}</Text>
         </View>
         <View>
           <Text style={{ color: Colors.primary}}>|</Text>
         </View>
         <View>
-          <Text style={{ fontFamily: 'Cookie-Regular', fontSize: 14, color: '#000000'}}>
+          <Text style={{ fontFamily: 'CookieRegular', fontSize: 14, color: '#000000'}}>
             {match.date} - {match.hour}
           </Text>
         </View>

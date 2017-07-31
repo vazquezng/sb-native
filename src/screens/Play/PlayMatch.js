@@ -134,7 +134,7 @@ class PlayMatchScreen extends Component {
           <View style={[Styles.flexColumn, { marginBottom: 10 }]}>
             {this.renderImage(user)}
             <Text style={{ width: Metrics.buttonWidth, textAlign: 'center', color: '#000000', fontSize: 18, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2 }}>{user.user.first_name} {user.user.last_name}</Text>
-            <Text style={{ color: Colors.primary, fontFamily: 'Cookie-Regular', fontSize: 16 }}>{match.date} - {match.hour}</Text>
+            <Text style={{ color: Colors.primary, fontFamily: 'CookieRegular', fontSize: 16 }}>{match.date} - {match.hour}</Text>
             <Text style={{ width: Metrics.buttonWidth, textAlign: 'center', color: '#000000', fontSize: 12, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2, marginTop: 10 }}>{match.club_name}</Text>
             <Text numberOfLines={1}>{match.address}</Text>
           </View>

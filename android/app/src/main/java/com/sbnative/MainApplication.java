@@ -4,16 +4,15 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.airbnb.android.react.maps.MapsPackage;
-import com.imagepicker.ImagePickerPackage;
+import com.magus.fblogin.FacebookLoginPackage;
 import com.yoloci.uploadfile.UploadFilePackage;
-import com.goldenowl.twittersignin.TwitterSigninPackage;
+import com.imagepicker.ImagePickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.cboy.rn.splashscreen.SplashScreenReactPackage;
-import com.magus.fblogin.FacebookLoginPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,9 +30,9 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new MapsPackage(),
-            new ImagePickerPackage(),
+            new FacebookLoginPackage(),
             new UploadFilePackage(),
-            new TwitterSigninPackage(),
+            new ImagePickerPackage(),
             new VectorIconsPackage(),
           new SplashScreenReactPackage(),
           new FacebookLoginPackage()

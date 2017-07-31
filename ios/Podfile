@@ -22,11 +22,11 @@ target 'sbnative' do
   'RCTWebSocket',
   'BatchedBridge'
   ]
-  
-  pod 'GoogleMaps'  # <~~ remove this line if you do not want to support GoogleMaps on iOS
-  pod 'react-native-maps', :path => '../node_modules/react-native-maps'
-  pod 'react-native-google-maps', :path => '../node_modules/react-native-maps'
-  
+  pod 'Facebook-iOS-SDK'
+  pod 'ParseFacebookUtils'
+  pod 'Fabric', '~> 1.6.11'
+  pod 'TwitterCore', '~> 2.8.0'
+  pod 'TwitterKit', '~> 2.8.1'
 end
 
 post_install do |installer|
@@ -38,4 +38,3 @@ post_install do |installer|
         end
     end
 end
-

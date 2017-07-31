@@ -14,6 +14,8 @@ import HeaderButton from '../HeaderButton';
 import Colors from '@theme/Colors';
 import Metrics from '@theme/Metrics';
 
+const paddingTop = (Platform.OS === 'ios') ? 10 : 0 ;
+
 class Header extends React.PureComponent<DefaultProps, Props, State> {
   static defaultProps = {
     pressColorAndroid: 'rgba(0, 0, 0, .32)',
@@ -33,7 +35,7 @@ class Header extends React.PureComponent<DefaultProps, Props, State> {
     } = this.props;
 
     return (
-      <View style={{ height: 50, backgroundColor: '#ffffff', borderColor: '#b2b2b2', borderBottomWidth: 0.8 }}>
+      <View style={{ height: 50, paddingTop, backgroundColor: '#ffffff', borderColor: '#b2b2b2', borderBottomWidth: 0.8 }}>
         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
           <View style={{flex: 0.3}}>
             <HeaderButton
