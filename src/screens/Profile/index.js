@@ -14,7 +14,7 @@ import {
   Dimensions,
   NativeModules,
   Alert,
-  BackHandler,
+  Platform,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -26,13 +26,14 @@ import TouchableItem from '@components/TouchableItem';
 import  { GooglePlacesAutocomplete } from '@components/GooglePlaceAutoComplete';
 import ModalAvailable from '@components/ModalAvailable';
 
-
 import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
 import Metrics from '@theme/Metrics';
 
 import { saveProfile, logout } from '@store/user/actions';
 import API from '@utils/api';
+
+import Notifications from '@utils/Notifications';
 
 const { width } = Dimensions.get('window');
 
@@ -80,7 +81,7 @@ class ProfileScreen extends Component {
 
   constructor(props) {
     super(props);
-
+    Notifications.setNavigation(props.navigation);
     const { user } = props;
     this.state = {
       spinnerVisible: false,
@@ -132,7 +133,15 @@ class ProfileScreen extends Component {
     });
   }
 
-  componentWillUnmount() {
+  componentDidMount() {
+    const devices = Notifications.getDevice();
+    const { profile } = this.state;
+    console.log(devices);
+    if (!profile.onesignal_app_pushToken || profile.onesignal_app_pushToken !== devices.pushToken) {
+      profile.onesignal_app_pushToken = devices.pushToken;
+      profile.onesignal_app_userId = devices.userId;
+      this.saveProfile(false);
+    }
   }
 
   getCamera() {
@@ -164,12 +173,18 @@ class ProfileScreen extends Component {
         },
         files: [
           {
-            name: 'files',
+            name: 'file',
             filename: response.fileName,
             filepath: response.uri,
             filetype: response.type,
           },
         ],
+        file: {
+          name: 'file',
+          filename: response.fileName,
+          filepath: response.uri,
+          filetype: response.type,
+        },
         fields: {
         },
       };
@@ -178,23 +193,14 @@ class ProfileScreen extends Component {
         console.log(returnMessage);
         console.log(returnCode);
         console.log(resultData);
-      });
 
-      const formData = new FormData();
-      formData.append('image', { uri: response.uri, type: 'image/jpg', name: 'avatar.jpg' });
-
-      const options = {};
-      options.body = formData;
-      options.method = 'POST';
-      options.headers = {
-        Authorization: `Bearer ${profile.token}`,
-      }
-      fetch(API_UPLOAD_PHOTOID, options)
-      .then((response) => {
-        console.log(response);
+        if (returnCode === 200) {
+          const { profile } = this.state;
+          profile.image = resultData.data;
+          this.setState({ profile });
+        }
       });
     });
-
   }
 
   renderImage() {
@@ -282,7 +288,7 @@ class ProfileScreen extends Component {
     });
   }
 
-  saveProfile() {
+  saveProfile(alert = true) {
     this.setState({
       spinnerVisible: true,
     }, () => {
@@ -308,14 +314,16 @@ class ProfileScreen extends Component {
         this.setState({
           spinnerVisible: false,
         });
-        Alert.alert(
-          'Atención',
-          'Tu perfil se guardo correctamente!',
-          [
-            { text: 'OK', onPress: () => console.log('OK Pressed') },
-          ],
-          { cancelable: false },
-        );
+        if (alert) {
+          Alert.alert(
+            'Atención',
+            'Tu perfil se guardo correctamente!',
+            [
+              { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ],
+            { cancelable: false },
+          );
+        }
         this.props.saveProfile(this.state.profile);
       });
     });

@@ -14,7 +14,8 @@ import {
 import Spinner from 'react-native-loading-spinner-overlay';
 import Entypo from 'react-native-vector-icons/Entypo';
 import DatePicker from 'react-native-datepicker';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView from 'react-native-maps';
+console.log(MapView);
 import  { GooglePlacesAutocomplete } from '@components/GooglePlaceAutoComplete';
 import moment from 'moment';
 
@@ -183,7 +184,7 @@ class MatchScreen extends Component {
   }
 
   renderItemCancha(cancha, index) {
-    return <Picker.Item label={cancha.name} value={cancha.id} />
+    return <Picker.Item key={index} label={cancha.name} value={cancha.id} />
   }
 
   renderLevel() {
@@ -409,6 +410,7 @@ class MatchScreen extends Component {
 
   save() {
     const { match } = this.state;
+    hour = new Date(moment(match.hour,'HH:mm'));
     if (this.validDateHour(match)) {
       if (this.validCancha(match) && this.validYear(match)) {
         this.setState({ spinnerVisible: true }, () => {
@@ -418,7 +420,7 @@ class MatchScreen extends Component {
               Authorization: `Bearer ${this.props.user.profile.token}`,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(Object.assign(match, { hour: match.hour.toLocaleTimeString() })),
+            body: JSON.stringify(Object.assign(match, { hour: hour.toLocaleTimeString() })),
           })
           .then(response => response.json())
           .then((responseJson) => {
@@ -541,12 +543,12 @@ class MatchScreen extends Component {
           <View style={{ flex: 1, height: 200}}>
             <MapView
               style={styles.map}
-              provider={PROVIDER_GOOGLE}
               region={this.state.region}
               onRegionChange={this.onRegionChange}
             >
-              {this.state.markers && this.state.markers.map(marker => (
+              {this.state.markers && this.state.markers.map((marker, index) => (
                 <MapView.Marker
+                  key={index}
                   coordinate={marker.latlng}
                   title={marker.title}
                   description={marker.description}

@@ -8,9 +8,14 @@ import {
   StyleSheet,
   Text,
   NativeModules,
+  Dimensions,
+  Alert,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
+import Carousel from 'react-native-looped-carousel';
+
+const { width, height } = Dimensions.get('window');
 const { RNTwitterSignIn } = NativeModules;
 
 import { login } from '@store/user/actions';
@@ -29,17 +34,30 @@ const mapDispatchToProps = dispatch => ({
   login: profile => dispatch(login(profile)),
 });
 
+
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginScreen extends Component {
+  static navigationOptions = {
+    drawerLockMode: 'locked-closed',
+  }
+
   constructor(props) {
     super(props);
+
     this.state = {
       spinnerVisible: false,
+      size: { width, height },
+      pager: 0,
     };
 
     if (props.user.isAuth) {
       props.navigation.navigate('Profile');
     }
+  }
+
+  _onLayoutDidChange = (e) => {
+    const layout = e.nativeEvent.layout;
+    this.setState({ size: { width: layout.width, height: layout.height } });
   }
 
   _facebookLogin(data) {
@@ -121,44 +139,105 @@ class LoginScreen extends Component {
           );
         });
   }
+
   standar(profile) {
     return Object.assign({}, { ...profile.user, newuser: profile.newuser, token: profile.token.token});
   }
+
   goProfile() {
     const resetAction = NavigationActions.reset({
       routeName: 'Profile',
       params: {},
 
       // navigate can have a nested navigate action that will be run inside the child router
-      action: NavigationActions.navigate({ routeName: 'Profile'})
+      action: NavigationActions.navigate({ routeName: 'Profile' })
     });
     this.props.navigation.dispatch(resetAction);
-    // this.props.navigation.navigate('Profile');
+  }
+
+  _renderBullet(index) {
+    if (this.state.pager === index) {
+      return (
+        <View style={{ width: 7, height: 7, backgroundColor: '#ffffff', borderRadius: 7, marginHorizontal: 2 }}>
+          <Text style={{ color: 'transparent', fontSize: 30 }}>{'\u2022'}{'\u2022'}{'\u2022'}</Text>
+        </View>
+      );
+    }
+
+    return (
+      <View style={{ width: 7, height: 7, backgroundColor: 'transparent', borderRadius: 7, borderWidth: 1, borderColor: '#ffffff', marginHorizontal: 2 }}>
+        <Text style={{ color: 'transparent', fontSize: 30 }}>{'\u2022'}{'\u2022'}{'\u2022'}</Text>
+      </View>
+    );
   }
 
   render() {
     const { navigation } = this.props;
     return (
-      <View style={styles.loginContainer}>
-        <Spinner visible={this.state.spinnerVisible} />
-        <Image style={styles.loginContent} source={require('../../assets/background.png')}>
+      <View style={{ flex: 1 }} onLayout={this._onLayoutDidChange}>
+        <Carousel
+          style={this.state.size}
+          autoplay={false}
+          pageInfo={false}
+          swipe
+          currentPage={0}
+          onAnimateNextPage={(p) => this.setState({ pager: p })}
+        >
+          <View style={[{ backgroundColor: 'black'}, this.state.size]}>
+            <Image style={[{ backgroundColor: 'black'}, this.state.size]} source={ require('../../assets/login01.png') }>
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 40 }}>
+                <Text style={{ color: '#ffffff', textAlign: 'center', fontFamily: 'OpenSans-Regular', fontSize: 21}}>
+                  Competí con los mejores y  llevá tu tenis al mejor nivel.
+                </Text>
+              </View>
+            </Image>
+          </View>
+          <View style={[{ backgroundColor: 'black' }, this.state.size]}>
+            <Image style={[{ backgroundColor: 'black'}, this.state.size]} source={ require('../../assets/login02.png') }>
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 40 }}>
+                <Text style={{ color: '#ffffff', textAlign: 'center', fontFamily: 'OpenSans-Regular', fontSize: 21}}>
+                  Creá partidos y encontrá la  mejores canchas para jugar
+                </Text>
+              </View>
+            </Image>
+          </View>
+          <View style={[{ backgroundColor: 'black' }, this.state.size]}>
+            <Image style={[{ backgroundColor: 'black'}, this.state.size]} source={ require('../../assets/login03.png') }>
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 40 }}>
+                <Text style={{ color: '#ffffff', textAlign: 'center', fontFamily: 'OpenSans-Regular', fontSize: 21}}>
+                  Noticias, sorteos, tips y  novedades para tu juego.
+                </Text>
+              </View>
+            </Image>
+          </View>
+        </Carousel>
+        <View style={[styles.loginContent, { bottom: 50 }]}>
+          <View style={{ flexDirection: 'row', width: 200, justifyContent: 'center', marginBottom: 10 }}>
+            {this._renderBullet(0)}
+            {this._renderBullet(1)}
+            {this._renderBullet(2)}
+          </View>
+
+          <Text style={{ color: '#ffffff', paddingLeft: 5, paddingBottom: 20 }}>Iniciá sesión y empeza a jugar</Text>
           <FBLogin
-            style={{ height: null, paddingBottom: 30, marginBottom: 20 }}
+            style={{ height: null, marginBottom: 20 }}
             ref={(fbLogin) => { this.fbLogin = fbLogin; }}
             permissions={['email', 'user_friends']}
             loginBehavior={FBLoginManager.LoginBehaviors.Native}
             onLogin={data => this._facebookLogin(data)}
           />
           <TouchableOpacity
-            style={{ backgroundColor: '#5baceb', height: 40 }}
-            onPress={this._twitterSignIn.bind(this)}
+            style={{ backgroundColor: '#5baceb', height: 40, width: 200 }}
+            onPress={this._twitterSignIn}
           >
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',}}>
               <Text style={{ color: 'white', fontSize: 14 }}>Login with Twitter</Text>
             </View>
           </TouchableOpacity>
-
-        </Image>
+        </View>
+        <View style={{ position: 'absolute',  top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'flex-end', alignItems: 'center'}}>
+          <Text style={{ color: '#ffffff', paddingBottom: 10}}>Al hacer login aceptás los términos y condiciones  </Text>
+        </View>
       </View>
     );
   }
@@ -170,11 +249,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
   },
   loginContent: {
+    position: 'absolute',
+    bottom: 0,
+    left: (width / 2) - 100
+  },
+  page: {
     flex: 1,
-    width: null,
-    height: null,
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
   },
 });
 
