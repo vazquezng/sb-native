@@ -8,24 +8,22 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  Picker,
   Switch,
   Slider,
   Dimensions,
   NativeModules,
   Alert,
-  BackHandler,
+  Platform,
 } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import Entypo from 'react-native-vector-icons/Entypo';
-import  ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-picker';
 
 import Header from '@components/Header';
 import HeaderButton from '@components/HeaderButton';
 import TouchableItem from '@components/TouchableItem';
 import  { GooglePlacesAutocomplete } from '@components/GooglePlaceAutoComplete';
 import ModalAvailable from '@components/ModalAvailable';
-
+import PickerSB from '@components/Picker';
 
 import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
@@ -33,12 +31,29 @@ import Metrics from '@theme/Metrics';
 
 import { saveProfile, logout } from '@store/user/actions';
 import API from '@utils/api';
+import commonFunc from '@utils/commonFunc';
+
+import Notifications from '@utils/Notifications';
 
 const { width } = Dimensions.get('window');
 
 const three = ((width - 40) / 3) - 5;
 const two = ((width - 40) / 2) - 5;
 const FileUpload = NativeModules.UploadFile;
+
+const pickerSexo = [{ label: 'Masculino', value: 'male' }, { label: 'Femenino', value: 'female' }];
+const pickerGameLevel = [
+  { label: '2.5', value: '2.5' },
+  { label: '3.0', value: '3' },
+  { label: '3.5', value: '3.5' },
+  { label: '4.0', value: '4' },
+  { label: '4.5', value: '4.5' },
+  { label: '5.0', value: '5' },
+  { label: '5.5', value: '5.5' },
+  { label: '6.0', value: '6' },
+  { label: '6.5', value: '6.5' },
+  { label: '7.0', value: '7' },
+];
 
 const API_UPLOAD_PHOTOID = `${API}/user/profile/image`;
 const mapStateToProps = state => ({
@@ -80,7 +95,7 @@ class ProfileScreen extends Component {
 
   constructor(props) {
     super(props);
-
+    Notifications.setNavigation(props.navigation);
     const { user } = props;
     this.state = {
       spinnerVisible: false,
@@ -132,7 +147,15 @@ class ProfileScreen extends Component {
     });
   }
 
-  componentWillUnmount() {
+  componentDidMount() {
+    const devices = Notifications.getDevice();
+    const { profile } = this.state;
+    console.log(devices);
+    if (devices && (!profile.onesignal_app_pushToken || profile.onesignal_app_pushToken !== devices.pushToken) ) {
+      profile.onesignal_app_pushToken = devices.pushToken;
+      profile.onesignal_app_userId = devices.userId;
+      this.saveProfile(false);
+    }
   }
 
   getCamera() {
@@ -164,12 +187,18 @@ class ProfileScreen extends Component {
         },
         files: [
           {
-            name: 'files',
+            name: 'file',
             filename: response.fileName,
             filepath: response.uri,
             filetype: response.type,
           },
         ],
+        file: {
+          name: 'file',
+          filename: response.fileName,
+          filepath: response.uri,
+          filetype: response.type,
+        },
         fields: {
         },
       };
@@ -178,32 +207,25 @@ class ProfileScreen extends Component {
         console.log(returnMessage);
         console.log(returnCode);
         console.log(resultData);
-      });
 
-      const formData = new FormData();
-      formData.append('image', { uri: response.uri, type: 'image/jpg', name: 'avatar.jpg' });
-
-      const options = {};
-      options.body = formData;
-      options.method = 'POST';
-      options.headers = {
-        Authorization: `Bearer ${profile.token}`,
-      }
-      fetch(API_UPLOAD_PHOTOID, options)
-      .then((response) => {
-        console.log(response);
+        if (returnCode === 200) {
+          const { profile } = this.state;
+          profile.image = resultData.data;
+          this.setState({ profile });
+        }
       });
     });
-
   }
 
   renderImage() {
     const { profile } = this.state;
     const imageURI = profile && profile.image ? profile.image : 'http://web.slambow.com/img/profile/profile-blank.png';
+    console.log(imageURI);
     return (
       <Image
-        source={{ uri: imageURI }} style={{ width: 160,
+        source={{ url: imageURI }} style={{ width: 160,
           height: 160,
+          borderRadius: 80,
           borderTopLeftRadius: 100,
           borderTopRightRadius: 100,
           borderBottomLeftRadius: 100,
@@ -235,10 +257,6 @@ class ProfileScreen extends Component {
 
       this.setState({ profile });
     }
-  }
-
-  renderItemCancha(cancha, index) {
-    return <Picker.Item key={index} label={cancha.name} value={cancha.id} />
   }
 
   openModalAvailable() {
@@ -282,7 +300,7 @@ class ProfileScreen extends Component {
     });
   }
 
-  saveProfile() {
+  saveProfile(alert = true) {
     this.setState({
       spinnerVisible: true,
     }, () => {
@@ -307,25 +325,55 @@ class ProfileScreen extends Component {
         console.log(responseJson);
         this.setState({
           spinnerVisible: false,
+        }, () => {
+          if (alert) {
+            Alert.alert(
+              'Atención',
+              'Tu perfil se guardo correctamente!',
+              [
+                { text: 'OK', onPress: () => this.setState({ spinnerVisible: false }) },
+              ],
+              { cancelable: false },
+            );
+          }
+          this.props.saveProfile(this.state.profile);
         });
-        Alert.alert(
-          'Atención',
-          'Tu perfil se guardo correctamente!',
-          [
-            { text: 'OK', onPress: () => console.log('OK Pressed') },
-          ],
-          { cancelable: false },
-        );
-        this.props.saveProfile(this.state.profile);
       });
     });
   }
 
+  handleChangeSexo(sexo) {
+    const { profile } = this.state;
+    this.setState({ profile: Object.assign(profile, { sexo: sexo.value }) });
+  }
+
+  handleChangeGameLevel(game_level) {
+    const { profile } = this.state;
+    this.setState({ profile: Object.assign(profile, { game_level: game_level.value }) });
+  }
+
+  handleChangeClubMember(club_member) {
+    const { profile } = this.state;
+    this.setState({ profile: Object.assign(profile, { club_member: club_member.value }) });
+  }
+
   render() {
     const { navigation } = this.props;
-    const { profile } = this.state;
+    const { profile, canchas } = this.state;
     const single = Boolean(profile.single);
     const double = Boolean(profile.double);
+
+    const pickerCanchas = [{label: 'OTRA', value: '0'}];
+    canchas.forEach((c) => {
+      pickerCanchas.push({ label: c.name, value: c.id });
+    });
+
+    const valueSexo = pickerSexo.find(ps => ps.value === profile.sexo).label;
+    let valueGameLevel = pickerGameLevel.find(pgl => pgl.value === profile.game_level);
+    valueGameLevel = valueGameLevel ? valueGameLevel.label : '2.5';
+    let valueClubMember = pickerCanchas.find(pc => pc.value === profile.club_member);
+    valueClubMember = valueClubMember ? valueClubMember.label : 'OTRA';
+
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -334,13 +382,13 @@ class ProfileScreen extends Component {
           title="Mi Perfil"
         />
         <ScrollView style={Styles.containerPrimary}>
-          <Spinner visible={this.state.spinnerVisible} />
+          {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View>
             <Text style={Styles.title}>Tu Perfil</Text>
             <Text style={Styles.subTitle}>Completá los datos de tu perfil para contactarte con otros jugadores.</Text>
           </View>
           <View style={styles.flexRow}>
-              <View>
+              <View style={styles.containerPhoto}>
                 {this.renderImage()}
               </View>
               <View style={styles.containerPhoto}>
@@ -374,6 +422,7 @@ class ProfileScreen extends Component {
                 placeholder="NOMBRE"
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
+                multiline
                 value={profile.first_name}
                 onChangeText={(first_name) => this.setState({ profile: Object.assign(profile, { first_name }) })}
               />
@@ -385,6 +434,7 @@ class ProfileScreen extends Component {
                 style={[Styles.input, { width: two }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
+                multiline
                 value={profile.last_name}
                 onChangeText={(last_name) => this.setState({ profile: Object.assign(profile, { last_name }) })}
               />
@@ -399,6 +449,7 @@ class ProfileScreen extends Component {
                 style={[Styles.input, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
+                multiline
                 value={profile.email}
                 onChangeText={(email) => this.setState({ profile: Object.assign(profile, { email }) })}
               />
@@ -414,19 +465,21 @@ class ProfileScreen extends Component {
                 placeholder="EDAD"
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
+                multiline
                 value={profile.years.toString()}
                 onChangeText={(years) => this.setState({ profile: Object.assign(profile, { years }) })}
               />
               <Text style={Styles.inputText}>EDAD</Text>
             </View>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <Picker
-                style={{ width: two, height: 28, borderBottomWidth: 0.8 }}
-                selectedValue={profile.sexo}
-                onValueChange={(sexo, itemIndex) => this.setState({ profile: Object.assign(profile, { sexo }) })}>
-                <Picker.Item label="Masculino" value="male" />
-                <Picker.Item label="Femenino" value="female" />
-              </Picker>
+              <PickerSB
+                containerStyle={[ Styles.input, { width: two, height: 32 }]}
+                buttonStyle={{ height: 40, justifyContent: 'center' }}
+                textStyle={Styles.input}
+                selectedValue={valueSexo}
+                list={pickerSexo}
+                onSelectValue={this.handleChangeSexo.bind(this)}
+              />
               <Text style={[Styles.inputText, { width: two, borderColor: Colors.primary, borderTopWidth: 1 }]}>SEXO</Text>
             </View>
           </View>
@@ -471,22 +524,14 @@ class ProfileScreen extends Component {
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <Picker
-                style={{ width: width - 50, height: 28 }}
-                selectedValue={profile.game_level.toString()}
-                onValueChange={(game_level, itemIndex) => this.setState({ profile: Object.assign(profile, { game_level }) })}
-              >
-                <Picker.Item label="2.5" value="2.5" />
-                <Picker.Item label="3.0" value="3" />
-                <Picker.Item label="3.5" value="3.5" />
-                <Picker.Item label="4.0" value="4" />
-                <Picker.Item label="4.5" value="4.5" />
-                <Picker.Item label="5.0" value="5" />
-                <Picker.Item label="5.5" value="5.5" />
-                <Picker.Item label="6.0" value="6" />
-                <Picker.Item label="6.5" value="6.5" />
-                <Picker.Item label="7.0" value="7" />
-              </Picker>
+              <PickerSB
+                containerStyle={[Styles.input, { width: (width - 50), height: 28 }]}
+                buttonStyle={{ height: 40, justifyContent: 'center' }}
+                textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
+                selectedValue={valueGameLevel.toString()}
+                list={pickerGameLevel}
+                onSelectValue={this.handleChangeGameLevel.bind(this)}
+              />
               <Text style={[Styles.inputText, { width: width - 50, borderColor: Colors.primary, borderTopWidth: 1 }]}>NIVEL DE JUEGO</Text>
             </View>
           </View>
@@ -551,15 +596,14 @@ class ProfileScreen extends Component {
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <Picker
-                style={{ width: width - 50, height: 28 }}
-                selectedValue={this.state.club_member}
-                onValueChange={(itemValue) => this.setState({ club_member: itemValue })}>
-                <Picker.Item label="OTRA" value="0" />
-                {this.state.canchas && this.state.canchas.map((cancha, index)=>{
-                  return this.renderItemCancha(cancha, index);
-                })}
-              </Picker>
+              <PickerSB
+                containerStyle={[Styles.input, { width: (width - 50), height: 28 }]}
+                buttonStyle={{ height: 40, justifyContent: 'center' }}
+                textStyle={{ color: 'black', fontSize: 16 }}
+                selectedValue={valueClubMember}
+                list={pickerCanchas}
+                onSelectValue={this.handleChangeClubMember.bind(this)}
+              />
               <Text style={[Styles.inputText, { width: width - 50, borderColor: Colors.primary, borderTopWidth: 1 }]}>SOS SOCIO DE ALGUN CLUB</Text>
             </View>
           </View>
@@ -570,7 +614,7 @@ class ProfileScreen extends Component {
               <TextInput
                 multiline
                 numberOfLines={4}
-                style={[Styles.input, { height: 100, width: width - 50, borderWidth: 0.8 }]}
+                style={[Styles.input, { height: 100, width: width - 50, borderWidth: 1 }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
                 value={profile.about}

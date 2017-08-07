@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { AsyncStorage, View, Image } from 'react-native';
+import { AsyncStorage, View, Image, Platform } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import SplashScreen from 'react-native-splash-screen';
 
 import store from './store';
 import AppNavigator from './AppNavigator';
+
+import Notifications from '@utils/Notifications';
 
 const launchImage = require('./assets/logo.png');
 

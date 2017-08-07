@@ -11,7 +11,6 @@ import {
   Slider,
   Dimensions
 } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 import Header from '@components/Header';
 import HeaderButton from '@components/HeaderButton';
@@ -20,7 +19,9 @@ import TouchableItem from '@components/TouchableItem';
 import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
 import Metrics from '@theme/Metrics';
+
 import API from '@utils/api';
+import commonFunc from '@utils/commonFunc';
 
 const { width } = Dimensions.get('window');
 
@@ -81,6 +82,7 @@ class ViewPlayerScreen extends Component {
       <Image
         source={{ uri: imageURI }} style={{ width: 160,
           height: 160,
+          borderRadius: 80,
           borderTopLeftRadius: 100,
           borderTopRightRadius: 100,
           borderBottomLeftRadius: 100,
@@ -99,6 +101,7 @@ class ViewPlayerScreen extends Component {
           <View style={[Styles.flexRow, { marginTop: 20 }]}>
             <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
               <TextInput
+                multiline
                 style={[Styles.inputDisabled, { width: two }]}
                 placeholder="NOMBRE"
                 underlineColorAndroid={'transparent'}
@@ -110,6 +113,7 @@ class ViewPlayerScreen extends Component {
             </View>
             <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
               <TextInput
+                multiline
                 placeholder="APELLIDO"
                 style={[Styles.inputDisabled, { width: two }]}
                 underlineColorAndroid={'transparent'}
@@ -123,6 +127,7 @@ class ViewPlayerScreen extends Component {
           <View style={[Styles.flexRow, { marginTop: 20 }]}>
             <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
               <TextInput
+                multiline
                 placeholder="EMAIL"
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
@@ -137,6 +142,7 @@ class ViewPlayerScreen extends Component {
           <View style={[Styles.flexRow, { marginTop: 20 }]}>
             <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
               <TextInput
+                multiline
                 style={[Styles.inputDisabled, { width: two }]}
                 placeholder="EDAD"
                 underlineColorAndroid={'transparent'}
@@ -148,6 +154,7 @@ class ViewPlayerScreen extends Component {
             </View>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <TextInput
+                multiline
                 style={[Styles.inputDisabled, { width: two }]}
                 placeholder="EDAD"
                 underlineColorAndroid={'transparent'}
@@ -162,6 +169,7 @@ class ViewPlayerScreen extends Component {
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <TextInput
+                multiline
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 placeholder="EDAD"
                 underlineColorAndroid={'transparent'}
@@ -176,6 +184,7 @@ class ViewPlayerScreen extends Component {
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <TextInput
+                multiline
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
@@ -207,6 +216,7 @@ class ViewPlayerScreen extends Component {
           <View style={[Styles.flexRow]}>
             <View style={[Styles.flexColumn, { flex: 1, width: width - 50 }]}>
               <TextInput
+                multiline
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 placeholder="KM"
                 underlineColorAndroid={'transparent'}
@@ -224,7 +234,7 @@ class ViewPlayerScreen extends Component {
               <TextInput
                 multiline
                 numberOfLines={4}
-                style={[Styles.input, { height: 100, width: width - 50, borderWidth: 0.8 }]}
+                style={[Styles.input, { height: 100, width: width - 50, borderWidth: 1 }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
                 value={profile.about}
@@ -250,7 +260,7 @@ class ViewPlayerScreen extends Component {
           title="Información del Jugador"
         />
         <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
-          <Spinner visible={this.state.spinnerVisible} />
+          {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View style={styles.centerContent}>
             <Text style={Styles.title}>Perfil del usuario</Text>
           </View>

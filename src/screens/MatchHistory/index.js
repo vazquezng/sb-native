@@ -7,13 +7,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Text,
-  TextInput,
-  Picker,
-  Switch,
-  Slider,
-  Dimensions,
+  Platform,
 } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import Header from '@components/Header';
@@ -24,7 +19,11 @@ import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
 import Metrics from '@theme/Metrics';
 import API from '@utils/api';
+import commonFunc from '@utils/commonFunc';
 
+const isAndroid = Platform.OS === 'android';
+const fontRegular = Platform.OS === 'ios' ? 'Cookie' : 'CookieRegular';
+const fontRobotoLight = Platform.OS === 'ios' ? 'OpenSans' : 'RobotoLight';
 
 const mapStateToProps = state => ({
   user: state.user,
@@ -101,13 +100,13 @@ class MatchHistoryScreen extends Component {
     return (
       <View key={key} style={[styles.flexRow, styles.matchContainer, match.futureMatch ? styles.futureMatch : {} ]}>
         <View>
-          <Text style={{ fontFamily: 'RobotoLight'}}>{match.club_name}</Text>
+          <Text ellipsizeMode="tail" numberOfLines={1} style={{ fontFamily: fontRobotoLight }}>{match.club_name.substr(0, 17)}</Text>
         </View>
         <View>
           <Text style={{ color: Colors.primary}}>|</Text>
         </View>
         <View>
-          <Text style={{ fontFamily: 'CookieRegular', fontSize: 14, color: '#000000'}}>
+          <Text style={{ fontFamily: fontRegular, fontSize: 14, color: '#000000'}}>
             {match.date} - {match.hour}
           </Text>
         </View>
@@ -134,7 +133,7 @@ class MatchHistoryScreen extends Component {
           title="Mis Partidos"
         />
         <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
-          <Spinner visible={this.state.spinnerVisible} />
+          {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View style={styles.centerContent}>
             <Text style={Styles.title}>Mis Partidos</Text>
           </View>
@@ -177,7 +176,7 @@ const styles = StyleSheet.create({
   matchContainer: {
     width: Metrics.buttonWidth,
     borderColor: Colors.primary,
-    borderWidth: 0.8,
+    borderWidth: isAndroid ? 0.8 : StyleSheet.hairlineWidth,
     paddingHorizontal: 10,
     paddingTop: 5,
     paddingBottom: 5,

@@ -10,7 +10,6 @@ import {
   Picker,
   Alert,
 } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import Header from '@components/Header';
@@ -21,6 +20,7 @@ import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
 import Metrics from '@theme/Metrics';
 import API from '@utils/api';
+import commonFunc from '@utils/commonFunc';
 
 
 const mapStateToProps = state => ({
@@ -91,6 +91,7 @@ class FeedbackScreen extends Component {
           <Image
             source={{ uri: imageURI }} style={{ width: 160,
               height: 160,
+              borderRadius: 80,
               borderTopLeftRadius: 100,
               borderTopRightRadius: 100,
               borderBottomLeftRadius: 100,
@@ -115,6 +116,7 @@ class FeedbackScreen extends Component {
           <View>
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
               <TextInput
+                multiline
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
@@ -126,6 +128,7 @@ class FeedbackScreen extends Component {
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
               <TextInput
+                multiline
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
@@ -137,6 +140,7 @@ class FeedbackScreen extends Component {
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
               <TextInput
+                multiline
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
@@ -148,6 +152,7 @@ class FeedbackScreen extends Component {
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
               <TextInput
+                multiline
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
@@ -159,6 +164,7 @@ class FeedbackScreen extends Component {
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
               <TextInput
+                multiline
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
@@ -170,6 +176,7 @@ class FeedbackScreen extends Component {
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
               <TextInput
+                multiline
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
@@ -181,6 +188,7 @@ class FeedbackScreen extends Component {
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
               <TextInput
+                multiline
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
@@ -207,6 +215,7 @@ class FeedbackScreen extends Component {
           </View>
           <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
             <TextInput
+              multiline
               style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
               underlineColorAndroid={'transparent'}
               placeholderTextColor="lightgrey"
@@ -377,7 +386,7 @@ class FeedbackScreen extends Component {
           title="Feedback"
         />
         <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
-          <Spinner visible={this.state.spinnerVisible} />
+          {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View style={styles.centerContent}>
             <Text style={Styles.title}>Feedback</Text>
           </View>

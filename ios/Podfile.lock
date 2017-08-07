@@ -8,12 +8,20 @@ PODS:
   - Fabric (1.6.12)
   - Facebook-iOS-SDK (3.24.4):
     - Bolts (~> 1.2)
+  - FBSDKCoreKit (4.25.0):
+    - Bolts (~> 1.7)
+  - FBSDKLoginKit (4.25.0):
+    - FBSDKCoreKit
+  - FBSDKShareKit (4.25.0):
+    - FBSDKCoreKit
   - Parse (1.15.1):
     - Bolts/Tasks (~> 1.8)
-  - ParseFacebookUtils (1.10.0):
-    - Bolts/Tasks (~> 1.5)
-    - Facebook-iOS-SDK (~> 3.24)
-    - Parse (~> 1.9)
+  - ParseFacebookUtilsV4 (1.11.1):
+    - Bolts/Tasks (>= 1.6)
+    - FBSDKCoreKit (~> 4.10)
+    - FBSDKLoginKit (~> 4.10)
+    - FBSDKTVOSKit (~> 4.10)
+    - Parse (~> 1.12)
   - React/BatchedBridge (0.45.1):
     - React/Core
     - React/cxxreact_legacy
@@ -52,7 +60,10 @@ PODS:
 DEPENDENCIES:
   - Fabric (~> 1.6.11)
   - Facebook-iOS-SDK
-  - ParseFacebookUtils
+  - FBSDKCoreKit
+  - FBSDKLoginKit
+  - FBSDKShareKit
+  - ParseFacebookUtilsV4
   - React/BatchedBridge (from `../node_modules/react-native`)
   - React/Core (from `../node_modules/react-native`)
   - React/RCTActionSheet (from `../node_modules/react-native`)
@@ -79,13 +90,16 @@ SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
   Fabric: f050464eac45a2ce5a8e6e6a07e977c0df32fe28
   Facebook-iOS-SDK: 5a7c414a084708220b72d5fd016f2cf3eb6deda4
+  FBSDKCoreKit: 53e3f4bfb64e80c5f229dd30ae33ff57fbbbd2d1
+  FBSDKLoginKit: f628c09684dae9c17f071cf90b014e886f5093ea
+  FBSDKShareKit: aea699d3cac749af08e360f4e949b82ffa8813f5
   Parse: b7a77b20b8a6dede8058da1e2b339593578ce158
-  ParseFacebookUtils: 7030f53c989fda36ad50029d90edec1327424317
+  ParseFacebookUtilsV4: 2f30c2b7021c8005d3042781da7ef87d06589421
   React: 0c9191a8b0c843d7004f950ac6b5f6cba9d125c7
   TwitterCore: e959987be23c767004d29eb7fab8d85d8585a2e5
   TwitterKit: 3b6044a7320340326a4098f3e37aa1dbaeb94942
   Yoga: 89c8738d42a0b46a113acb4e574336d61cba2985
 
-PODFILE CHECKSUM: 00790f00be0017e60b79685da255eb1b7d1291d0
+PODFILE CHECKSUM: d9225111037ee7a37604370e28cdec8919185ddb
 
 COCOAPODS: 1.2.1

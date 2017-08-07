@@ -72,6 +72,7 @@ export default class DrawerContent extends Component {
       <Image
         source={{ uri: imageURI }} style={{ width: 40,
           height: 40,
+          borderRadius: 20,
           borderTopLeftRadius: 40,
           borderTopRightRadius: 40,
           borderBottomLeftRadius: 40,

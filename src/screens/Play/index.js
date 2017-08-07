@@ -7,13 +7,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   Text,
-  TextInput,
-  Picker,
-  Switch,
-  Slider,
+  Platform,
   Dimensions,
 } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import Header from '@components/Header';
@@ -24,12 +20,13 @@ import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
 
 import API from '@utils/api';
+import commonFunc from '@utils/commonFunc';
 
 const { width } = Dimensions.get('window');
 
 const three = ( (width - 40) / 3) - 5;
 const two = ( (width - 40) / 2) - 5;
-
+const fontRegular = Platform.OS === 'ios' ? 'Cookie' : 'CookieRegular';
 
 const mapStateToProps = state => ({
   user: state.user,
@@ -113,7 +110,7 @@ class PlayScreen extends Component {
     return (
       <View style={Styles.flexColumn}>
         <Text style={{ color: '#000000', fontSize: 18, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2 }}>{match.user.first_name} {match.user.last_name}</Text>
-        <Text style={{ color: Colors.primary, fontFamily: 'CookieRegular', fontSize: 16 }}>{match.date} - {match.hour}</Text>
+        <Text style={{ color: Colors.primary, fontFamily: fontRegular, fontSize: 16 }}>{match.date} - {match.hour}</Text>
         <Text style={{ color: '#000000', fontSize: 12, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2, marginTop: 10 }}>{match.club_name}</Text>
         <Text numberOfLines={1}>{match.address}</Text>
         <TouchableOpacity
@@ -138,7 +135,7 @@ class PlayScreen extends Component {
           title="Quiero Jugar"
         />
         <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
-          <Spinner visible={this.state.spinnerVisible} />
+          {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
             <Text style={Styles.title}>Quiero Jugar</Text>
             <Text style={Styles.subTitle}>

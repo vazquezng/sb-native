@@ -4,16 +4,11 @@ import {
   ScrollView,
   View,
   Image,
-  TouchableOpacity,
   StyleSheet,
   Text,
-  TextInput,
-  Picker,
-  Switch,
   BackHandler,
   Alert,
 } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import Header from '@components/Header';
@@ -24,6 +19,7 @@ import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
 import Metrics from '@theme/Metrics';
 import API from '@utils/api';
+import commonFunc from '@utils/commonFunc';
 
 
 const mapStateToProps = state => ({
@@ -93,7 +89,7 @@ class SuggestedPlayersScreen extends Component {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${user.profile.token}`,
-        'Content-Type': 'application/json;charset=UTF-8'
+        'Content-Type': 'application/json;charset=UTF-8',
       },
       body: JSON.stringify(params),
     })
@@ -126,7 +122,20 @@ class SuggestedPlayersScreen extends Component {
           );
         });
       }
-
+    })
+    .catch(() => {
+      this.setState({
+        spinnerVisible: false,
+      }, () => {
+        Alert.alert(
+          'Error',
+          'Hubo un problema, intente más tarde.',
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') },
+          ],
+          { cancelable: false },
+        );
+      });
     });
   }
 
@@ -134,8 +143,8 @@ class SuggestedPlayersScreen extends Component {
     if (this.state.players.length === 0) {
       return (
         <View style={Styles.flexRow}>
-          <View>
-            <Text style={[Styles.subtitle, { textAlign: 'center' }]}>No se encontraron usuarios con las especificaciones</Text>
+          <View style={{ justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={[Styles.subtitle, { textAlign: 'center', selfAlign: 'center' }]}>No se encontraron usuarios con las especificaciones</Text>
           </View>
         </View>
       );
@@ -152,10 +161,10 @@ class SuggestedPlayersScreen extends Component {
     return null;
   }
 
-  renderPlayer(player, index){
+  renderPlayer(player, index) {
     const imageURI = player && player.image ? player.image : 'http://web.slambow.com/img/profile/profile-blank.png';
     return (
-      <View key={index} style={[Styles.flexColumn, { borderColor: Colors.second, borderWidth: 0.8, borderRadius: 50, paddingHorizontal: 10, paddingTop: 10, paddingBottom: 10}]}>
+      <View key={index} style={[Styles.flexColumn, { borderColor: Colors.second, borderWidth: 0.8, borderRadius: 50, paddingHorizontal: 10, paddingTop: 10, paddingBottom: 10 }]}>
         <TouchableItem
           onPress={() => this.props.navigation.navigate('ViewPlayer', { user: player.id, backName: 'SuggestedPlayers', backParams: { match: this.props.navigation.state.params.match } })}
         >
@@ -163,6 +172,7 @@ class SuggestedPlayersScreen extends Component {
             <Image
               source={{ uri: imageURI }} style={{ width: 160,
                 height: 160,
+                borderRadius: 80,
                 borderTopLeftRadius: 100,
                 borderTopRightRadius: 100,
                 borderBottomLeftRadius: 100,
@@ -201,7 +211,7 @@ class SuggestedPlayersScreen extends Component {
           title="Queres invitar a alguien?"
         />
         <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
-          <Spinner visible={this.state.spinnerVisible} />
+          {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View style={styles.centerContent}>
             <Text style={Styles.title}>Partido</Text>
             <Text style={[Styles.subtitle, { textAlign: 'center' }]}>Encontra un compañero/rival</Text>

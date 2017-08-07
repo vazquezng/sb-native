@@ -2,6 +2,7 @@ import { StyleSheet, Dimensions, Platform } from 'react-native';
 
 import Colors from './Colors';
 const { width } = Dimensions.get('window');
+const isAndroid = Platform.OS === 'android';
 
 const Styles = StyleSheet.create({
   containerPrimary: {
@@ -28,24 +29,27 @@ const Styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 5,
     color: '#414142',
+    borderTopWidth: isAndroid ? 0.8 : StyleSheet.hairlineWidth,
   },
   input: {
     fontSize: 14,
-    borderBottomWidth: 0.8,
+    borderBottomWidth: isAndroid ? 0.8 : StyleSheet.hairlineWidth,
     borderColor: Colors.primary,
     paddingBottom: 5,
+    height: 28,
   },
   inputDisabled: {
     fontSize: 14,
-    borderBottomWidth: 0.8,
+    borderBottomWidth: isAndroid ? 0.8 : StyleSheet.hairlineWidth,
     backgroundColor: '#FFFFFF',
     color: '#000000',
     borderColor: Colors.primary,
+    height: 28,
   },
   btnSave: {
     flex: 1,
     borderColor: Colors.primary,
-    borderWidth: 0.6,
+    borderWidth: isAndroid ? 0.8 : StyleSheet.hairlineWidth,
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingTop: 10,

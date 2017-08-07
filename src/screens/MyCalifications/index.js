@@ -3,17 +3,10 @@ import { connect } from 'react-redux';
 import {
   ScrollView,
   View,
-  Image,
-  TouchableOpacity,
   StyleSheet,
   Text,
-  TextInput,
-  Picker,
-  Switch,
-  Slider,
   Dimensions,
 } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import Header from '@components/Header';
@@ -22,6 +15,8 @@ import TouchableItem from '@components/TouchableItem';
 
 import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
+
+import commonFunc from '@utils/commonFunc';
 
 const { width } = Dimensions.get('window');
 
@@ -67,7 +62,7 @@ class MyCalificationsScreen extends Component {
           title="Mis Calificaciones"
         />
         <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
-          <Spinner visible={this.state.spinnerVisible} />
+          {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
             <Text style={Styles.title}>¿Qué opinaron de mí?</Text>
             <Text style={Styles.subTitle}>aún no tienes calificaciones</Text>

@@ -8,8 +8,8 @@ import {
   Text,
   TextInput,
   Alert,
+  Platform,
 } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import moment from 'moment';
 
 import Header from '@components/Header';
@@ -20,6 +20,9 @@ import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
 import Metrics from '@theme/Metrics';
 import API from '@utils/api';
+import commonFunc from '@utils/commonFunc';
+
+const fontRegular = Platform.OS === 'ios' ? 'Cookie' : 'CookieRegular';
 
 const mapStateToProps = state => ({
   user: state.user,
@@ -134,7 +137,7 @@ class PlayMatchScreen extends Component {
           <View style={[Styles.flexColumn, { marginBottom: 10 }]}>
             {this.renderImage(user)}
             <Text style={{ width: Metrics.buttonWidth, textAlign: 'center', color: '#000000', fontSize: 18, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2 }}>{user.user.first_name} {user.user.last_name}</Text>
-            <Text style={{ color: Colors.primary, fontFamily: 'CookieRegular', fontSize: 16 }}>{match.date} - {match.hour}</Text>
+            <Text style={{ color: Colors.primary, fontFamily: fontRegular, fontSize: 16 }}>{match.date} - {match.hour}</Text>
             <Text style={{ width: Metrics.buttonWidth, textAlign: 'center', color: '#000000', fontSize: 12, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2, marginTop: 10 }}>{match.club_name}</Text>
             <Text numberOfLines={1}>{match.address}</Text>
           </View>
@@ -150,6 +153,7 @@ class PlayMatchScreen extends Component {
             <View style={Styles.flexRow}>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
                 <TextInput
+                  multiline
                   style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 20 ) / 2 }]}
                   underlineColorAndroid={'transparent'}
                   placeholderTextColor="lightgrey"
@@ -161,6 +165,7 @@ class PlayMatchScreen extends Component {
 
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
                 <TextInput
+                  multiline
                   style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 20 ) / 2  }]}
                   underlineColorAndroid={'transparent'}
                   placeholderTextColor="lightgrey"
@@ -173,6 +178,7 @@ class PlayMatchScreen extends Component {
             <View style={Styles.flexRow}>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
                 <TextInput
+                  multiline
                   style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 20 ) / 2  }]}
                   underlineColorAndroid={'transparent'}
                   placeholderTextColor="lightgrey"
@@ -183,6 +189,7 @@ class PlayMatchScreen extends Component {
               </View>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
                 <TextInput
+                  multiline
                   style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 20 ) / 2  }]}
                   underlineColorAndroid={'transparent'}
                   placeholderTextColor="lightgrey"
@@ -195,6 +202,7 @@ class PlayMatchScreen extends Component {
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
               <TextInput
+                multiline
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
@@ -231,6 +239,8 @@ class PlayMatchScreen extends Component {
   infoPlayers(match) {
     if (match && match.matchPlayer && match.matchPlayer.length > 0) {
       return match.matchPlayer.map((p, key) => {
+        if (p.state !== 'confirmed') return null;
+        
         const imageURI = p.user.image ? p.user.image : 'http://web.slambow.com/img/profile/profile-blank.png';
         return (
           <View key={key} style={[Styles.flexRow, { justifyContent: 'flex-start', alignItems: 'center', marginRight: 10 }]}>
@@ -294,7 +304,7 @@ class PlayMatchScreen extends Component {
           title="Detalle del Partido"
         />
         <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
-          <Spinner visible={this.state.spinnerVisible} />
+          {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View>
             {this.infoMatch(match)}
 

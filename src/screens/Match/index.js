@@ -11,26 +11,45 @@ import {
   Alert,
   Dimensions,
 } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import Entypo from 'react-native-vector-icons/Entypo';
 import DatePicker from 'react-native-datepicker';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import  { GooglePlacesAutocomplete } from '@components/GooglePlaceAutoComplete';
 import moment from 'moment';
 
 import Header from '@components/Header';
 import HeaderButton from '@components/HeaderButton';
 import TouchableItem from '@components/TouchableItem';
+import PickerSB from '@components/Picker';
 
 import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
 import Metrics from '@theme/Metrics';
 import API from '@utils/api';
+import commonFunc from '@utils/commonFunc';
 
 const { width } = Dimensions.get('window');
 
 const three = ( (width - 40) / 3) - 5;
 const two = ( (width - 40) / 2) - 5;
+
+const pickerSexo = [{ label: 'Mixto', value: 'mixto' }, { label: 'Masculino', value: 'male' }, { label: 'Femenino', value: 'female' }];
+const pickerGameLevel = [
+  { label: '2.5', value: '2.5' },
+  { label: '3.0', value: '3' },
+  { label: '3.5', value: '3.5' },
+  { label: '4.0', value: '4' },
+  { label: '4.5', value: '4.5' },
+  { label: '5.0', value: '5' },
+  { label: '5.5', value: '5.5' },
+  { label: '6.0', value: '6' },
+  { label: '6.5', value: '6.5' },
+  { label: '7.0', value: '7' },
+];
+const pickerType = [
+  { label: 'Singles', value: 'singles' },
+  { label: 'Dobles', value: 'dobles' },
+];
 
 const mapStateToProps = state => ({
   user: state.user,
@@ -129,6 +148,7 @@ class MatchScreen extends Component {
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <TextInput
+                multiline
                 style={[Styles.input, { width: width - 50 }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
@@ -182,12 +202,18 @@ class MatchScreen extends Component {
     return null;
   }
 
-  renderItemCancha(cancha, index) {
-    return <Picker.Item label={cancha.name} value={cancha.id} />
-  }
-
   renderLevel() {
     const { match } = this.state;
+
+    let valueGameLevelFrom = pickerGameLevel.find(pgl => pgl.value === match.game_level_from);
+    valueGameLevelFrom = valueGameLevelFrom ? valueGameLevelFrom.label : '2.5';
+    let valueGameLevelTo = pickerGameLevel.find(pgl => pgl.value === match.game_level_to);
+    valueGameLevelTo = valueGameLevelTo ? valueGameLevelTo.label : '2.5';
+    let valueSexo = pickerSexo.find(ps => ps.value === match.sexo);
+    valueSexo = valueSexo ? valueSexo.label : 'Mixto';
+    let valueType = pickerType.find(ps => ps.value === match.type);
+    valueType = valueType ? valueType.label : 'Singles';
+
     return (
       <View>
         <View style={{marginTop: 20}}>
@@ -195,66 +221,49 @@ class MatchScreen extends Component {
         </View>
         <View style={[styles.flexRow, { marginTop: 20 }]}>
           <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-            <Picker
-              style={{ width: two, height: 28 }}
-              selectedValue={match.game_level_from}
-              onValueChange={game_level_from => this.setState({ match: Object.assign(match, { game_level_from }) })}
-            >
-              <Picker.Item label="2.5" value="2.5" />
-              <Picker.Item label="3.0" value="3" />
-              <Picker.Item label="3.5" value="3.5" />
-              <Picker.Item label="4.0" value="4" />
-              <Picker.Item label="4.5" value="4.5" />
-              <Picker.Item label="5.0" value="5" />
-              <Picker.Item label="5.5" value="5.5" />
-              <Picker.Item label="6.0" value="6" />
-              <Picker.Item label="6.5" value="6.5" />
-              <Picker.Item label="7.0" value="7" />
-            </Picker>
+            <PickerSB
+              containerStyle={[ Styles.input, { width: two, height: 32 }]}
+              buttonStyle={{ height: 40, justifyContent: 'center' }}
+              textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
+              selectedValue={valueGameLevelFrom.toString()}
+              list={pickerGameLevel}
+              onSelectValue={game_level_from => this.setState({ match: Object.assign(match, { game_level_from: game_level_from.value }) })}
+            />
             <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2, borderColor: Colors.primary, borderTopWidth: 1 }]}>DESDE</Text>
           </View>
           <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-            <Picker
-              style={{ width: two, height: 28 }}
-              selectedValue={match.game_level_to}
-              onValueChange={game_level_to => this.setState({ match: Object.assign(match, { game_level_to }) })}
-            >
-              <Picker.Item label="2.5" value="2.5" />
-              <Picker.Item label="3.0" value="3" />
-              <Picker.Item label="3.5" value="3.5" />
-              <Picker.Item label="4.0" value="4" />
-              <Picker.Item label="4.5" value="4.5" />
-              <Picker.Item label="5.0" value="5" />
-              <Picker.Item label="5.5" value="5.5" />
-              <Picker.Item label="6.0" value="6" />
-              <Picker.Item label="6.5" value="6.5" />
-              <Picker.Item label="7.0" value="7" />
-            </Picker>
+            <PickerSB
+              containerStyle={[ Styles.input, { width: two, height: 32 }]}
+              buttonStyle={{ height: 40, justifyContent: 'center' }}
+              textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
+              selectedValue={valueGameLevelTo.toString()}
+              list={pickerGameLevel}
+              onSelectValue={game_level_to => this.setState({ match: Object.assign(match, { game_level_to: game_level_to.value }) })}
+            />
             <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2, borderColor: Colors.primary, borderTopWidth: 1 }]}>HASTA</Text>
           </View>
         </View>
         <View style={[styles.flexRow, { marginTop: 20 }]}>
           <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-            <Picker
-              style={{ width: two, height: 28 }}
-              selectedValue={match.sexo}
-              onValueChange={sexo => this.setState({ match: Object.assign(match, { sexo }) })}
-            >
-              <Picker.Item label="Mixto" value="mixto" />
-              <Picker.Item label="Masculino" value="male" />
-              <Picker.Item label="Femenino" value="female" />
-            </Picker>
+            <PickerSB
+              containerStyle={[ Styles.input, { width: two, height: 32 }]}
+              buttonStyle={{ height: 40, justifyContent: 'center' }}
+              textStyle={Styles.input}
+              selectedValue={valueSexo}
+              list={pickerSexo}
+              onSelectValue={sexo => this.setState({ match: Object.assign(match, { sexo: sexo.value }) })}
+            />
             <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2, borderColor: Colors.primary, borderTopWidth: 1 }]}>SEXO</Text>
           </View>
           <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-            <Picker
-              style={{ width: two, height: 28 }}
-              selectedValue={match.type}
-              onValueChange={type => this.setState({ match: Object.assign(match, { type }) })}
-            >
-              <Picker.Item label="Singles" value="singles" />
-              <Picker.Item label="Dobles" value="dobles" />
-            </Picker>
+            <PickerSB
+              containerStyle={[ Styles.input, { width: two, height: 32 }]}
+              buttonStyle={{ height: 40, justifyContent: 'center' }}
+              textStyle={Styles.input}
+              selectedValue={valueType}
+              list={pickerType}
+              onSelectValue={type => this.setState({ match: Object.assign(match, { type: type.value }) })}
+            />
             <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2, borderColor: Colors.primary, borderTopWidth: 1 }]}>TIPO DE PARTIDO</Text>
           </View>
         </View>
@@ -272,11 +281,13 @@ class MatchScreen extends Component {
         <View style={[styles.flexRow, { marginTop: 20 }]}>
           <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <TextInput
+              multiline
               style={[Styles.input, { width: two }]}
               keyboardType="numeric"
               placeholder="EDAD"
               underlineColorAndroid={'transparent'}
               placeholderTextColor="lightgrey"
+              returnKeyType="done"
               value={match.years_from}
               onChangeText={(years_from) => this.setState({ match: Object.assign(match, { years_from }) })}
             />
@@ -284,9 +295,11 @@ class MatchScreen extends Component {
           </View>
           <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <TextInput
+              multiline
               style={[Styles.input, { width: two }]}
               keyboardType="numeric"
               placeholder="EDAD"
+              returnKeyType="done"
               underlineColorAndroid={'transparent'}
               placeholderTextColor="lightgrey"
               value={match.years_to}
@@ -300,8 +313,9 @@ class MatchScreen extends Component {
   }
 
 
-  changeCancha(idCancha) {
+  changeCancha(canchaOption) {
     const { match } = this.state;
+    const idCancha = canchaOption.value;
     match.id_cancha = idCancha;
     if (idCancha !== '0') {
       const cancha = this.state.canchas.find(c => c.id === parseInt(idCancha));
@@ -339,9 +353,23 @@ class MatchScreen extends Component {
     const { match } = this.state;
 
     if (details && details.address_components) {
+      console.log(details);
       match.address = details && details.formatted_address ? details.formatted_address : match.address;
-      match.address_lat = details && details.geometry ? details.geometry.location.lat() : match.address_lat;
-      match.address_lng = details && details.geometry ? details.geometry.location.lng() : match.address_lng;
+      if (details && details.geometry) {
+        if (commonFunc.isFunction(details.geometry.location.lat)) {
+          match.address_lat = details.geometry.location.lat();
+        } else {
+          match.address_lat = details.geometry.location.lat;
+        }
+        if (commonFunc.isFunction(details.geometry.location.lng)) {
+          match.address_lng = details.geometry.location.lng();
+        } else {
+          match.address_lng = details.geometry.location.lng;
+        }
+      } else {
+        match.address_lat = match.address_lat;
+        match.address_lng = match.address_lng;
+      }
 
       this.setState({ match });
     }
@@ -372,7 +400,7 @@ class MatchScreen extends Component {
         { cancelable: false },
       );
       // this.toaster.pop({type:'info', body:'En la hora del partido, solo se admiten intervalos de 30 minutos.'});
-      //mahour = new Date(moment('15:30', 'HH:mm'));
+      // mahour = new Date(moment('15:30', 'HH:mm'));
       return false;
     }
     return true;
@@ -409,6 +437,7 @@ class MatchScreen extends Component {
 
   save() {
     const { match } = this.state;
+    hour = new Date(moment(match.hour,'HH:mm'));
     if (this.validDateHour(match)) {
       if (this.validCancha(match) && this.validYear(match)) {
         this.setState({ spinnerVisible: true }, () => {
@@ -418,7 +447,7 @@ class MatchScreen extends Component {
               Authorization: `Bearer ${this.props.user.profile.token}`,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(Object.assign(match, { hour: match.hour.toLocaleTimeString() })),
+            body: JSON.stringify(Object.assign(match, { hour: hour.toLocaleTimeString() })),
           })
           .then(response => response.json())
           .then((responseJson) => {
@@ -453,7 +482,16 @@ class MatchScreen extends Component {
 
   render() {
     const { navigation } = this.props;
-    const { match } = this.state;
+    const { match, canchas } = this.state;
+
+    const pickerCanchas = [{ label: 'OTRA', value: '0' }];
+    canchas.forEach((c) => {
+      pickerCanchas.push({ label: c.name, value: c.id });
+    });
+
+    let valueClub = pickerCanchas.find(pc => pc.value === match.id_cancha);
+    valueClub = valueClub ? valueClub.label : 'OTRA';
+
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -462,7 +500,7 @@ class MatchScreen extends Component {
           title="Crear Partido"
         />
         <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
-          <Spinner visible={this.state.spinnerVisible} />
+          {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View>
             <Text style={Styles.title}>Creá un Partido</Text>
             <Text style={Styles.subTitle}>Completá los datos y que el juego empiece.</Text>
@@ -523,14 +561,15 @@ class MatchScreen extends Component {
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <Picker
-                style={{ width: width - 50, height: 28 }}
-                selectedValue={this.state.match.id_cancha}
-                onValueChange={id_cancha => this.changeCancha(id_cancha)}
-              >
-                <Picker.Item label="OTRA" value="0" />
-                {this.state.canchas && this.state.canchas.map((cancha, index) => this.renderItemCancha(cancha, index))}
-              </Picker>
+              <PickerSB
+                containerStyle={[Styles.input, { width: (width - 50), height: 28 }]}
+                buttonStyle={{ height: 40, justifyContent: 'center' }}
+                textStyle={{ color: 'black', fontSize: 16 }}
+                selectedValue={valueClub}
+                list={pickerCanchas}
+                onSelectValue={this.changeCancha.bind(this)}
+              />
+
               <Text style={[Styles.inputText, { width: width - 50, borderColor: Colors.primary, borderTopWidth: 1 }]}>CANCHAS REGISTRADAS</Text>
             </View>
           </View>
@@ -541,12 +580,12 @@ class MatchScreen extends Component {
           <View style={{ flex: 1, height: 200}}>
             <MapView
               style={styles.map}
-              provider={PROVIDER_GOOGLE}
               region={this.state.region}
               onRegionChange={this.onRegionChange}
             >
-              {this.state.markers && this.state.markers.map(marker => (
+              {this.state.markers && this.state.markers.map((marker, index) => (
                 <MapView.Marker
+                  key={index}
                   coordinate={marker.latlng}
                   title={marker.title}
                   description={marker.description}
@@ -562,7 +601,8 @@ class MatchScreen extends Component {
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <Text style={Styles.inputText}>COMENTARIO</Text>
               <TextInput
-                style={[Styles.input, { width: width - 50, borderWidth: 0.8, height: 100 }]}
+                multiline
+                style={[Styles.input, { width: width - 50, borderWidth: 1, height: 100 }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
                 value={match.about}
