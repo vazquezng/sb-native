@@ -70,9 +70,10 @@ class LoginScreen extends Component {
   _facebookLogin() {
     const self = this;
     FBLoginManager.loginWithPermissions([ "email", "user_friends"], (error, data) => {
+      console.log(data);
       if (!error) {
         let { profile, credentials } = data;
-        profile = profile ? profile : {};
+        profile = profile ? (typeof profile === 'string') ? JSON.parse(profile) : profile : {};
         profile.accessToken = credentials.token;
         profile.id = credentials.userId;
         fetch('http://api.slambow.com/api/v1/auth', {
@@ -242,7 +243,7 @@ class LoginScreen extends Component {
 
           <Text style={{ color: '#ffffff', paddingLeft: 5, paddingBottom: 20, backgroundColor: 'transparent'  }}>Iniciá sesión y empeza a jugar</Text>
           <TouchableOpacity
-            style={{ backgroundColor: '#3b5998', height: 30, width: 200 }}
+            style={{ backgroundColor: '#3b5998', height: 30, width: 200, marginBottom: 10, borderRadius: 5 }}
             onPress={this._facebookLogin.bind(this)}
           >
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',}}>
@@ -250,7 +251,7 @@ class LoginScreen extends Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{ backgroundColor: '#5baceb', height: 30, width: 200 }}
+            style={{ backgroundColor: '#5baceb', height: 30, width: 200, borderRadius: 5 }}
             onPress={this._twitterSignIn}
           >
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',}}>
@@ -258,7 +259,7 @@ class LoginScreen extends Component {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={{ position: 'absolute', bottom: 0, justifyContent: 'flex-end', alignItems: 'center' }}>
+        <View style={{ position: 'absolute', bottom: 0, width, justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ color: '#ffffff', paddingBottom: 10, backgroundColor: 'transparent' }}>Al hacer login aceptás los términos y condiciones   </Text>
         </View>
       </View>

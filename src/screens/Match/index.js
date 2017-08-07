@@ -222,7 +222,7 @@ class MatchScreen extends Component {
         <View style={[styles.flexRow, { marginTop: 20 }]}>
           <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <PickerSB
-              containerStyle={[ Styles.input, { width: two, height: 32 }]}
+              containerStyle={[ Styles.pickerContainer, { width: two }]}
               buttonStyle={{ height: 40, justifyContent: 'center' }}
               textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
               selectedValue={valueGameLevelFrom.toString()}
@@ -233,7 +233,7 @@ class MatchScreen extends Component {
           </View>
           <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <PickerSB
-              containerStyle={[ Styles.input, { width: two, height: 32 }]}
+              containerStyle={[ Styles.pickerContainer, { width: two }]}
               buttonStyle={{ height: 40, justifyContent: 'center' }}
               textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
               selectedValue={valueGameLevelTo.toString()}
@@ -246,9 +246,9 @@ class MatchScreen extends Component {
         <View style={[styles.flexRow, { marginTop: 20 }]}>
           <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <PickerSB
-              containerStyle={[ Styles.input, { width: two, height: 32 }]}
+              containerStyle={[ Styles.pickerContainer, { width: two}]}
               buttonStyle={{ height: 40, justifyContent: 'center' }}
-              textStyle={Styles.input}
+              textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
               selectedValue={valueSexo}
               list={pickerSexo}
               onSelectValue={sexo => this.setState({ match: Object.assign(match, { sexo: sexo.value }) })}
@@ -257,9 +257,9 @@ class MatchScreen extends Component {
           </View>
           <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <PickerSB
-              containerStyle={[ Styles.input, { width: two, height: 32 }]}
+              containerStyle={[ Styles.pickerContainer, { width: two}]}
               buttonStyle={{ height: 40, justifyContent: 'center' }}
-              textStyle={Styles.input}
+              textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
               selectedValue={valueType}
               list={pickerType}
               onSelectValue={type => this.setState({ match: Object.assign(match, { type: type.value }) })}
@@ -562,7 +562,7 @@ class MatchScreen extends Component {
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <PickerSB
-                containerStyle={[Styles.input, { width: (width - 50), height: 28 }]}
+                containerStyle={[Styles.pickerContainer, { width: (width - 50) }]}
                 buttonStyle={{ height: 40, justifyContent: 'center' }}
                 textStyle={{ color: 'black', fontSize: 16 }}
                 selectedValue={valueClub}

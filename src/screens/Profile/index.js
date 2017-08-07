@@ -217,23 +217,6 @@ class ProfileScreen extends Component {
     });
   }
 
-  renderImage() {
-    const { profile } = this.state;
-    const imageURI = profile && profile.image ? profile.image : 'http://web.slambow.com/img/profile/profile-blank.png';
-    console.log(imageURI);
-    return (
-      <Image
-        source={{ url: imageURI }} style={{ width: 160,
-          height: 160,
-          borderRadius: 80,
-          borderTopLeftRadius: 100,
-          borderTopRightRadius: 100,
-          borderBottomLeftRadius: 100,
-          borderBottomRightRadius: 100 }}
-      />
-    );
-  }
-
   _getCountryFromAddress(details) {
     for (let i = 0; i < details.address_components.length; i++) {
       for (let j = 0; j < details.address_components[i].types.length; j++) {
@@ -352,9 +335,24 @@ class ProfileScreen extends Component {
     this.setState({ profile: Object.assign(profile, { game_level: game_level.value }) });
   }
 
-  handleChangeClubMember(club_member) {
+  handleChangeClubMember(club_membrenderImageer) {
     const { profile } = this.state;
     this.setState({ profile: Object.assign(profile, { club_member: club_member.value }) });
+  }
+
+  renderImage(profile) {
+    const imageURI = profile && profile.image ? profile.image : 'http://web.slambow.com/img/profile/profile-blank.png';
+    return (
+      <Image
+        source={{ uri: imageURI }} style={{ width: 160,
+          height: 160,
+          borderRadius: 80,
+          borderTopLeftRadius: 100,
+          borderTopRightRadius: 100,
+          borderBottomLeftRadius: 100,
+          borderBottomRightRadius: 100 }}
+      />
+    );
   }
 
   render() {
@@ -389,12 +387,12 @@ class ProfileScreen extends Component {
           </View>
           <View style={styles.flexRow}>
               <View style={styles.containerPhoto}>
-                {this.renderImage()}
+                {this.renderImage(profile)}
               </View>
               <View style={styles.containerPhoto}>
                   <TouchableOpacity
                     onPress={() => this.getCamera()}>
-                    <View style={{ flexDirection: 'row', borderBottomWidth: 0.8, paddingBottom: 10}}>
+                    <View style={{ flexDirection: 'row', borderBottomWidth: 0.8, paddingBottom: 10 }}>
                       <Entypo
                         name='camera'
                         size={20}
@@ -473,9 +471,9 @@ class ProfileScreen extends Component {
             </View>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <PickerSB
-                containerStyle={[ Styles.input, { width: two, height: 32 }]}
+                containerStyle={[ Styles.pickerContainer, { width: two }]}
                 buttonStyle={{ height: 40, justifyContent: 'center' }}
-                textStyle={Styles.input}
+                textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
                 selectedValue={valueSexo}
                 list={pickerSexo}
                 onSelectValue={this.handleChangeSexo.bind(this)}
@@ -525,7 +523,7 @@ class ProfileScreen extends Component {
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <PickerSB
-                containerStyle={[Styles.input, { width: (width - 50), height: 28 }]}
+                containerStyle={[Styles.pickerContainer, { width: (width - 50) }]}
                 buttonStyle={{ height: 40, justifyContent: 'center' }}
                 textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
                 selectedValue={valueGameLevel.toString()}
@@ -597,7 +595,7 @@ class ProfileScreen extends Component {
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <PickerSB
-                containerStyle={[Styles.input, { width: (width - 50), height: 28 }]}
+                containerStyle={[Styles.pickerContainer, { width: (width - 50) }]}
                 buttonStyle={{ height: 40, justifyContent: 'center' }}
                 textStyle={{ color: 'black', fontSize: 16 }}
                 selectedValue={valueClubMember}

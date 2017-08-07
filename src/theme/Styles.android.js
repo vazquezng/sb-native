@@ -35,7 +35,12 @@ const Styles = StyleSheet.create({
     borderBottomWidth: isAndroid ? 0.8 : StyleSheet.hairlineWidth,
     borderColor: Colors.primary,
     paddingBottom: 5,
-    height: 28,
+    height: 32,
+  },
+  pickerContainer: {
+    borderColor: Colors.primary,
+    paddingBottom: 5,
+    height: 32,
   },
   inputDisabled: {
     fontSize: 14,
@@ -43,6 +48,7 @@ const Styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     color: '#000000',
     borderColor: Colors.primary,
+    height: 32,
   },
   btnSave: {
     flex: 1,

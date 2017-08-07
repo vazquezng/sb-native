@@ -44,15 +44,11 @@ export default class Picker extends React.Component {
             <Text style={textStyle}>
               { selectedValue || placeholder }
             </Text>
-            {
-              hasArrow && (
-                <MaterialIcons
-                  size={20}
-                  name="arrow-drop-down"
-                  style={{ color: 'white' }}
-                />
-              )
-            }
+            <MaterialIcons
+              size={20}
+              name="arrow-drop-down"
+              style={{ color: 'black' }}
+            />
           </View>
         </TouchableHighlight>
         <ModalPicker

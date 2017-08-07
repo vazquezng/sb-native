@@ -29,11 +29,15 @@ const Styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 5,
     color: '#414142',
-    borderTopWidth: isAndroid ? 0.8 : StyleSheet.hairlineWidth,
   },
   input: {
     fontSize: 14,
     borderBottomWidth: isAndroid ? 0.8 : StyleSheet.hairlineWidth,
+    borderColor: Colors.primary,
+    paddingBottom: 5,
+    height: 28,
+  },
+  pickerContainer: {
     borderColor: Colors.primary,
     paddingBottom: 5,
     height: 28,
