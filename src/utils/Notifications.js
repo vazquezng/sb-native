@@ -12,6 +12,9 @@ class Notifications {
     };
     const self = this;
     OneSignal.requestPermissions(permissions);
+    OneSignal.enableSound(true);
+    OneSignal.enableVibrate(true);
+    OneSignal.inFocusDisplaying(2);
 
     this.onReceived = (notification) => {
       console.log("Notification received: ", notification);
@@ -23,7 +26,9 @@ class Notifications {
       console.log('isActive: ', openResult.notification.isAppInFocus);
       console.log('openResult: ', openResult);
 
-      self.nav.navigate('MatchDetail', { match: openResult.notification.payload.additionalData.id });
+      if (self.nav && self.nav.navigate) {
+        self.nav.navigate('MatchDetail', { match: openResult.notification.payload.additionalData.id });
+      }
     }
 
     this.onRegistered = (notifData) => {

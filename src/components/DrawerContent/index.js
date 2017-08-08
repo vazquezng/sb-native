@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { View, Text, Image, StyleSheet, Platform } from 'react-native';
 import { connect } from 'react-redux';
 import { DrawerItems } from 'react-navigation';
 import compose from 'recompose/compose';

@@ -4,7 +4,6 @@ import {
   ScrollView,
   View,
   Image,
-  TouchableOpacity,
   StyleSheet,
   Text,
   Platform,
@@ -113,14 +112,14 @@ class PlayScreen extends Component {
         <Text style={{ color: Colors.primary, fontFamily: fontRegular, fontSize: 16 }}>{match.date} - {match.hour}</Text>
         <Text style={{ color: '#000000', fontSize: 12, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2, marginTop: 10 }}>{match.club_name}</Text>
         <Text numberOfLines={1}>{match.address}</Text>
-        <TouchableOpacity
+        <TouchableItem
           onPress={() => this.props.navigation.navigate('PlayMatch', { match: match.id })}
         >
           <Image
             source={require('../../assets/play/eye-icon.png')}
             style={{ width: 30, height: 25}}
           />
-        </TouchableOpacity>
+        </TouchableItem>
       </View>
     );
   }

@@ -159,7 +159,7 @@ class MatchDetailScreen extends Component {
             <View style={Styles.flexRow}>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
                 <TextInput
-                  multiline
+                  multiline={!commonFunc.isAndroid}
                   style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
                   underlineColorAndroid={'transparent'}
                   placeholderTextColor="lightgrey"
@@ -171,7 +171,7 @@ class MatchDetailScreen extends Component {
 
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
                 <TextInput
-                  multiline
+                  multiline={!commonFunc.isAndroid}
                   style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
                   underlineColorAndroid={'transparent'}
                   placeholderTextColor="lightgrey"
@@ -184,7 +184,7 @@ class MatchDetailScreen extends Component {
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
               <TextInput
-                multiline
+                multiline={!commonFunc.isAndroid}
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
@@ -196,7 +196,7 @@ class MatchDetailScreen extends Component {
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
               <TextInput
-                multiline
+                multiline={!commonFunc.isAndroid}
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
@@ -209,7 +209,7 @@ class MatchDetailScreen extends Component {
             <View style={Styles.flexRow}>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
                 <TextInput
-                  multiline
+                  multiline={!commonFunc.isAndroid}
                   style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
                   underlineColorAndroid={'transparent'}
                   placeholderTextColor="lightgrey"
@@ -221,7 +221,7 @@ class MatchDetailScreen extends Component {
 
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
                 <TextInput
-                  multiline
+                  multiline={!commonFunc.isAndroid}
                   style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
                   underlineColorAndroid={'transparent'}
                   placeholderTextColor="lightgrey"
@@ -234,7 +234,7 @@ class MatchDetailScreen extends Component {
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
               <TextInput
-                multiline
+                multiline={!commonFunc.isAndroid}
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
@@ -247,7 +247,7 @@ class MatchDetailScreen extends Component {
             <View style={Styles.flexRow}>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
                 <TextInput
-                  multiline
+                  multiline={!commonFunc.isAndroid}
                   style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
                   underlineColorAndroid={'transparent'}
                   placeholderTextColor="lightgrey"
@@ -258,7 +258,7 @@ class MatchDetailScreen extends Component {
               </View>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
                 <TextInput
-                  multiline
+                  multiline={!commonFunc.isAndroid}
                   style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
                   underlineColorAndroid={'transparent'}
                   placeholderTextColor="lightgrey"
@@ -271,7 +271,7 @@ class MatchDetailScreen extends Component {
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
               <TextInput
-                multiline
+                multiline={!commonFunc.isAndroid}
                 style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"

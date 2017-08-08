@@ -459,7 +459,7 @@ class MatchScreen extends Component {
               'Atención',
               'Se guardo correctamente el partido.',
               [
-                { text: 'OK', onPress: () => this.props.navigation.navigate('SuggestedPlayers', { match: responseJson.match_id }) },
+                { text: 'OK', onPress: () => this.props.navigation.navigate('SuggestedPlayers', { match: responseJson.match_id, backName: 'MatchDetail', backParams: { match: responseJson.match_id } }) },
               ],
               { cancelable: false },
             );

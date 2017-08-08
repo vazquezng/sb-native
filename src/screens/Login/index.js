@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import {
   View,
   Image,
-  TouchableOpacity,
   StyleSheet,
   Text,
   NativeModules,
@@ -15,6 +14,8 @@ import {
 import Spinner from 'react-native-loading-spinner-overlay';
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
 import Carousel from 'react-native-looped-carousel';
+
+import TouchableItem from '@components/TouchableItem';
 
 const { width, height } = Dimensions.get('window');
 const { RNTwitterSignIn } = NativeModules;
@@ -242,22 +243,22 @@ class LoginScreen extends Component {
           </View>
 
           <Text style={{ color: '#ffffff', paddingLeft: 5, paddingBottom: 20, backgroundColor: 'transparent'  }}>Iniciá sesión y empeza a jugar</Text>
-          <TouchableOpacity
+          <TouchableItem
             style={{ backgroundColor: '#3b5998', height: 30, width: 200, marginBottom: 10, borderRadius: 5 }}
             onPress={this._facebookLogin.bind(this)}
           >
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',}}>
               <Text style={{ color: 'white', fontSize: 14, backgroundColor: 'transparent'  }}>Login with Facebook</Text>
             </View>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </TouchableItem>
+          <TouchableItem
             style={{ backgroundColor: '#5baceb', height: 30, width: 200, borderRadius: 5 }}
             onPress={this._twitterSignIn}
           >
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',}}>
               <Text style={{ color: 'white', fontSize: 14, backgroundColor: 'transparent'  }}>Login with Twitter</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableItem>
         </View>
         <View style={{ position: 'absolute', bottom: 0, width, justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ color: '#ffffff', paddingBottom: 10, backgroundColor: 'transparent' }}>Al hacer login aceptás los términos y condiciones   </Text>

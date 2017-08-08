@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import React from 'react';
-import { View, Alert, ScrollView, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Alert, ScrollView, Text, Switch, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import compose from 'recompose/compose';
 import ModalFullSHOC from '@components/ModalFullS';
@@ -18,9 +18,9 @@ const enhance = compose(
 export default class CustomPlan extends React.Component {
   constructor(props) {
     super(props);
-
+console.log(props.availability);
     this.state = {
-      availability: props.availability
+      availability: props.availability,
     };
   }
 

@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View } from 'react-native';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+
+import TouchableItem from '@components/TouchableItem';
 
 import ModalHOC from '../Modal';
 import styles from './styles';
@@ -19,12 +21,14 @@ const ModalFullSHOC = () => (WrappedComponent) => {
       return (
         <View style={styles.modalFiltroContainer}>
           <View style={styles.modalFiltroContent}>
-            <TouchableOpacity
-              style={{ paddingLeft: 20, paddingTop: 10, }}
+            <TouchableItem
+              style={{ paddingLeft: 20, paddingTop: 10 }}
               onPress={() => onClose()}
+              pressColor={'white'}
+              delayPressIn={0}
             >
               <SimpleLineIcons name="close" size={26} color="rgba(0,0,0,.8)" />
-            </TouchableOpacity>
+            </TouchableItem>
             {super.render()}
           </View>
         </View>

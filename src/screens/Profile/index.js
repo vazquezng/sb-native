@@ -4,7 +4,6 @@ import {
   ScrollView,
   View,
   Image,
-  TouchableOpacity,
   StyleSheet,
   Text,
   TextInput,
@@ -54,6 +53,13 @@ const pickerGameLevel = [
   { label: '6.5', value: '6.5' },
   { label: '7.0', value: '7' },
 ];
+const availability = [{ day: '0', allDay: false, morning: false, evening: false, night: false },  // LUNES
+                      { day: '1', allDay: false, morning: false, evening: false, night: false },  // MARTES
+                      { day: '2', allDay: false, morning: false, evening: false, night: false },  // MIÉRCOLES
+                      { day: '3', allDay: false, morning: false, evening: false, night: false },  // JUEVES
+                      { day: '4', allDay: false, morning: false, evening: false, night: false },  // VIERNES
+                      { day: '5', allDay: false, morning: false, evening: false, night: false },  // SÁBADO
+                      { day: '6', allDay: false, morning: false, evening: false, night: false }]; // DOMINGO
 
 const API_UPLOAD_PHOTOID = `${API}/user/profile/image`;
 const mapStateToProps = state => ({
@@ -97,6 +103,8 @@ class ProfileScreen extends Component {
     super(props);
     Notifications.setNavigation(props.navigation);
     const { user } = props;
+
+    user.profile.years = user.profile.years ? user.profile.years : '';
     this.state = {
       spinnerVisible: false,
       profile: user.profile,
@@ -141,8 +149,9 @@ class ProfileScreen extends Component {
     })
     .then(response => response.json())
     .then((responseJson) => {
+
       this.setState({
-        profile: Object.assign(user.profile, { availability: responseJson.availability }),
+        profile: Object.assign(user.profile, { availability: responseJson.availability.length === 0 ? availability : responseJson.availability }),
       });
     });
   }
@@ -217,7 +226,7 @@ class ProfileScreen extends Component {
     });
   }
 
-  _getCountryFromAddress(details) {
+  _getCountryFromAddress = (details) => {
     for (let i = 0; i < details.address_components.length; i++) {
       for (let j = 0; j < details.address_components[i].types.length; j++) {
         if (details.address_components[i].types[j] === 'country') {
@@ -232,11 +241,12 @@ class ProfileScreen extends Component {
     const { profile } = this.state;
 
     if (details && details.address_components) {
+      console.log(details);
       profile.city = details.types && details.types[0] === 'street_address' ? details.vicinity : profile.city;
-      profile.country = details.types && details.types[0] === 'street_address' ? this.getCountryFromAddress(details): profile.country;
+      profile.country = details.types && details.types[0] === 'street_address' ? this._getCountryFromAddress(details): profile.country;
       profile.address = details && details.formatted_address ? details.formatted_address : profile.address;
-      profile.address_lat = details && details.geometry ? details.geometry.location.lat() : profile.address_lat;
-      profile.address_lng = details && details.geometry ? details.geometry.location.lng() : profile.address_lng;
+      profile.address_lat = details && details.geometry ? details.geometry.location.lat : profile.address_lat;
+      profile.address_lng = details && details.geometry ? details.geometry.location.lng : profile.address_lng;
 
       this.setState({ profile });
     }
@@ -283,7 +293,39 @@ class ProfileScreen extends Component {
     });
   }
 
+  validString(str) {
+    console.log(str);
+    return str !== null && typeof str === 'string' && str !== '';
+  }
+  validAddress(profile) {
+    return (profile.address && profile.address !== '' && profile.address_lat !== '' && profile.address_lng !== '');
+  }
+
+  formComplete() {
+    const { profile } = this.state;
+    if( this.validString(profile.first_name) && this.validString(profile.last_name)
+        && this.validString(profile.email) && this.validString(profile.about) && this.validString(profile.years.toString()) && this.validAddress(profile)
+        && ( profile.singles || profile.double) ) {
+          return true;
+    }
+
+    return false;
+  }
+
   saveProfile(alert = true) {
+    if (alert && !this.formComplete()) {
+      Alert.alert(
+        'Atención',
+        'Debes completar todos los campos.',
+        [
+          { text: 'OK', onPress: () => this.setState({ spinnerVisible: false }) },
+        ],
+        { cancelable: false },
+      );
+
+      return false;
+    }
+
     this.setState({
       spinnerVisible: true,
     }, () => {
@@ -335,7 +377,7 @@ class ProfileScreen extends Component {
     this.setState({ profile: Object.assign(profile, { game_level: game_level.value }) });
   }
 
-  handleChangeClubMember(club_membrenderImageer) {
+  handleChangeClubMember(club_member) {
     const { profile } = this.state;
     this.setState({ profile: Object.assign(profile, { club_member: club_member.value }) });
   }
@@ -366,7 +408,8 @@ class ProfileScreen extends Component {
       pickerCanchas.push({ label: c.name, value: c.id });
     });
 
-    const valueSexo = pickerSexo.find(ps => ps.value === profile.sexo).label;
+    let valueSexo = pickerSexo.find(ps => ps.value === profile.sexo);
+    valueSexo = valueSexo ? valueSexo.label : 'Masculino';
     let valueGameLevel = pickerGameLevel.find(pgl => pgl.value === profile.game_level);
     valueGameLevel = valueGameLevel ? valueGameLevel.label : '2.5';
     let valueClubMember = pickerCanchas.find(pc => pc.value === profile.club_member);
@@ -390,7 +433,7 @@ class ProfileScreen extends Component {
                 {this.renderImage(profile)}
               </View>
               <View style={styles.containerPhoto}>
-                  <TouchableOpacity
+                  <TouchableItem
                     onPress={() => this.getCamera()}>
                     <View style={{ flexDirection: 'row', borderBottomWidth: 0.8, paddingBottom: 10 }}>
                       <Entypo
@@ -399,8 +442,8 @@ class ProfileScreen extends Component {
                       />
                       <Text style={styles.textImage}>Tomar Foto</Text>
                     </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
+                  </TouchableItem>
+                  <TouchableItem
                     onPress={() => this.getGalery()}>
                     <View style={{ flexDirection: 'row', paddingTop: 10 }}>
                       <Entypo
@@ -409,7 +452,7 @@ class ProfileScreen extends Component {
                       />
                       <Text style={styles.textImage}>Seleccionar</Text>
                     </View>
-                  </TouchableOpacity>
+                  </TouchableItem>
               </View>
           </View>
 
@@ -556,7 +599,7 @@ class ProfileScreen extends Component {
               testID="profile-available"
               delayPressIn={0}
               pressColor={Colors.primary}
-              style={{ borderColor: Colors.primary, borderWidth: 0.8, borderRadius: 10, paddingHorizontal: 10, paddingTop: 10, paddingBottom: 10 }}
+              style={{ borderColor: Colors.primary, width: (width - 50), borderWidth: 0.8, borderRadius: 10, paddingHorizontal: 10, paddingTop: 10, paddingBottom: 10 }}
               onPress={this.openModalAvailable.bind(this)}
             >
               <View>

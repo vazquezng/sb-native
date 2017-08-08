@@ -47,6 +47,7 @@ const Styles = StyleSheet.create({
     borderBottomWidth: isAndroid ? 0.8 : StyleSheet.hairlineWidth,
     backgroundColor: '#FFFFFF',
     color: '#000000',
+    paddingBottom: 5,
     borderColor: Colors.primary,
     height: 32,
   },

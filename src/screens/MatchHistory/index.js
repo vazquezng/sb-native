@@ -4,7 +4,6 @@ import {
   ScrollView,
   View,
   Image,
-  TouchableOpacity,
   StyleSheet,
   Text,
   Platform,
@@ -110,14 +109,14 @@ class MatchHistoryScreen extends Component {
             {match.date} - {match.hour}
           </Text>
         </View>
-        <TouchableOpacity
+        <TouchableItem
           onPress={() => this.props.navigation.navigate('MatchDetail', { match: match.id })}
         >
           <Image
             source={require('../../assets/play/eye-icon.png')}
             style={{ width: 30, height: 25}}
           />
-        </TouchableOpacity>
+        </TouchableItem>
       </View>
     );
   }

@@ -11,14 +11,15 @@ import {
   StyleSheet,
   Dimensions,
   TouchableHighlight,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
   Platform,
   ActivityIndicator,
   PixelRatio
 } from 'react-native';
 import Qs from 'qs';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+import TouchableItem from '@components/TouchableItem';
+
 import Colors from '@theme/Colors';
 import Metrics from '@theme/Metrics';
 
@@ -282,11 +283,14 @@ const GooglePlacesAutocomplete = React.createClass({
   _getCurrentLocationView() {
     return (
       <View style={ defaultStyles.currentLocationContainer}>
-        <TouchableOpacity
+        <TouchableItem
           style={defaultStyles.currentLocationText}
-          onPress={() => this.onCurrentLocation()}>
+          onPress={() => this.onCurrentLocation()}
+          pressColor={'transparent'}
+          delayPressIn={0}
+        >
           <Text style={{fontWeight: 'bold'}}>Set Current Location</Text>
-        </TouchableOpacity>
+        </TouchableItem>
       </View>
     );
   },

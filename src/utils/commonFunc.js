@@ -13,6 +13,8 @@ const commonFunc = {
     const getType = {};
     return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
   },
+
+  isAndroid: Platform.OS === 'android',
 };
 
 export default commonFunc;
