@@ -172,7 +172,7 @@ class MatchScreen extends Component {
                 getDefaultValue={() => match.address }
                 query={{
                   key: 'AIzaSyDZOdwsf3vZEFQws7WldOWKeibaWiMjJCg',
-                  language: 'en',
+                  language: 'es',
                   types: ['(cities)'],
                 }}
                 styles={{
@@ -355,21 +355,25 @@ class MatchScreen extends Component {
     if (details && details.address_components) {
       console.log(details);
       match.address = details && details.formatted_address ? details.formatted_address : match.address;
-      if (details && details.geometry) {
-        if (commonFunc.isFunction(details.geometry.location.lat)) {
-          match.address_lat = details.geometry.location.lat();
-        } else {
-          match.address_lat = details.geometry.location.lat;
-        }
-        if (commonFunc.isFunction(details.geometry.location.lng)) {
-          match.address_lng = details.geometry.location.lng();
-        } else {
-          match.address_lng = details.geometry.location.lng;
-        }
-      } else {
-        match.address_lat = match.address_lat;
-        match.address_lng = match.address_lng;
-      }
+      match.address_lat = details && details.geometry ? details.geometry.location.lat : match.address_lat;
+      match.address_lng = details && details.geometry ? details.geometry.location.lng : match.address_lng;
+
+      const region = {
+        latitude: parseFloat(match.address_lat),
+        longitude: parseFloat(match.address_lng),
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      };
+      const markers = [{
+        latlng: {
+          latitude: parseFloat(match.address_lat),
+          longitude: parseFloat(match.address_lng),
+        },
+        title: match.club_name,
+        description: '',
+      }];
+
+      this.setState({ match, region, markers });
 
       this.setState({ match });
     }

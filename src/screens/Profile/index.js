@@ -361,6 +361,7 @@ class ProfileScreen extends Component {
               { cancelable: false },
             );
           }
+          this.state.profile.complete = 1;
           this.props.saveProfile(this.state.profile);
         });
       });
@@ -463,7 +464,7 @@ class ProfileScreen extends Component {
                 placeholder="NOMBRE"
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
-                multiline
+                multiline={!commonFunc.isAndroid}
                 value={profile.first_name}
                 onChangeText={(first_name) => this.setState({ profile: Object.assign(profile, { first_name }) })}
               />
@@ -475,7 +476,7 @@ class ProfileScreen extends Component {
                 style={[Styles.input, { width: two }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
-                multiline
+                multiline={!commonFunc.isAndroid}
                 value={profile.last_name}
                 onChangeText={(last_name) => this.setState({ profile: Object.assign(profile, { last_name }) })}
               />
@@ -490,7 +491,7 @@ class ProfileScreen extends Component {
                 style={[Styles.input, { width: Metrics.buttonWidth }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
-                multiline
+                multiline={!commonFunc.isAndroid}
                 value={profile.email}
                 onChangeText={(email) => this.setState({ profile: Object.assign(profile, { email }) })}
               />
@@ -506,7 +507,7 @@ class ProfileScreen extends Component {
                 placeholder="EDAD"
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
-                multiline
+                multiline={!commonFunc.isAndroid}
                 value={profile.years.toString()}
                 onChangeText={(years) => this.setState({ profile: Object.assign(profile, { years }) })}
               />
@@ -653,7 +654,7 @@ class ProfileScreen extends Component {
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <Text style={Styles.inputText}>SOBRE MI</Text>
               <TextInput
-                multiline
+                multiline={!commonFunc.isAndroid}
                 numberOfLines={4}
                 style={[Styles.input, { height: 100, width: width - 50, borderWidth: 1 }]}
                 underlineColorAndroid={'transparent'}

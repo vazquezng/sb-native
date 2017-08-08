@@ -133,7 +133,7 @@ class LoginScreen extends Component {
               body: JSON.stringify({
                 id: loginData.userID,
                 userName: loginData.userName,
-              })
+              }),
             })
             .then(response => response.json())
             .then((responseJson) => {
@@ -153,14 +153,7 @@ class LoginScreen extends Component {
             });
           }
         }).catch(error => {
-          Alert.alert(
-            'Ups!',
-            'Hubo un error, intento más tarde',
-            [
-              { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ],
-            { cancelable: false }
-          );
+          console.log(error);
         });
   }
 
@@ -253,7 +246,7 @@ class LoginScreen extends Component {
           </TouchableItem>
           <TouchableItem
             style={{ backgroundColor: '#5baceb', height: 30, width: 200, borderRadius: 5 }}
-            onPress={this._twitterSignIn}
+            onPress={this._twitterSignIn.bind(this)}
           >
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',}}>
               <Text style={{ color: 'white', fontSize: 14, backgroundColor: 'transparent'  }}>Login with Twitter</Text>
