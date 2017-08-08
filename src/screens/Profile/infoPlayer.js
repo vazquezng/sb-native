@@ -100,97 +100,70 @@ class ViewPlayerScreen extends Component {
         <View>
           <View style={[Styles.flexRow, { marginTop: 20 }]}>
             <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <TextInput
-                multiline
-                style={[Styles.inputDisabled, { width: two }]}
-                placeholder="NOMBRE"
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={profile.first_name}
-                editable={false}
-              />
+              <Text
+                style={[Styles.inputDisabled, { width: two, height: 25 }]}
+              >
+                {profile.first_name}
+              </Text>
               <Text style={Styles.inputText}>NOMBRE</Text>
             </View>
             <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <TextInput
-                multiline
-                placeholder="APELLIDO"
-                style={[Styles.inputDisabled, { width: two }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={profile.last_name}
-                editable={false}
-              />
+              <Text
+                style={[Styles.inputDisabled, { width: two, height: 25 }]}
+              >
+                {profile.last_name}
+              </Text>
               <Text style={Styles.inputText}>APELLIDO</Text>
             </View>
           </View>
           <View style={[Styles.flexRow, { marginTop: 20 }]}>
             <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <TextInput
-                multiline
-                placeholder="EMAIL"
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={profile.email}
-                editable={false}
-              />
+              <Text
+                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
+              >
+                {profile.email}
+              </Text>
               <Text style={Styles.inputText}>EMAIL</Text>
             </View>
           </View>
 
           <View style={[Styles.flexRow, { marginTop: 20 }]}>
             <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <TextInput
-                multiline
-                style={[Styles.inputDisabled, { width: two }]}
-                placeholder="EDAD"
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={profile.years.toString()}
-                editable={false}
-              />
+              <Text
+                style={[Styles.inputDisabled, { width: two, height: 25 }]}
+              >
+                {profile.years}
+              </Text>
               <Text style={Styles.inputText}>EDAD</Text>
             </View>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <TextInput
-                multiline
-                style={[Styles.inputDisabled, { width: two }]}
-                placeholder="EDAD"
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={sexo}
-                editable={false}
-              />
+              <Text
+                style={[Styles.inputDisabled, { width: two, height: 25 }]}
+              >
+                {sexo}
+              </Text>
               <Text style={Styles.inputText}>SEXO</Text>
             </View>
           </View>
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <TextInput
-                multiline
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                placeholder="EDAD"
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={profile.address}
-                editable={false}
-              />
+              <Text
+                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 50 }]}
+              >
+                {profile.address}
+              </Text>
               <Text style={Styles.inputText}>DIRECCION</Text>
             </View>
           </View>
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <TextInput
-                multiline
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={profile.game_level.toString()}
-                editable={false}
-              />
+              <Text
+                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
+              >
+                {profile.game_level}
+              </Text>
               <Text style={Styles.inputText}>NIVEL DE JUEGO</Text>
             </View>
           </View>
@@ -215,15 +188,11 @@ class ViewPlayerScreen extends Component {
           </View>
           <View style={[Styles.flexRow]}>
             <View style={[Styles.flexColumn, { flex: 1, width: width - 50 }]}>
-              <TextInput
-                multiline
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                placeholder="KM"
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={profile.distance.toString()+'KM'}
-                editable={false}
-              />
+              <Text
+                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
+              >
+                {profile.distance}
+              </Text>
               <Text style={Styles.inputText}>DISTANCIA PARA JUGAR UN PARTIDO</Text>
             </View>
           </View>

@@ -289,6 +289,7 @@ class MatchDetailScreen extends Component {
   renderButtonUserOne(match, player) {
     let blockOne = null;
     if (this.state.isPlayer && player.user.id !== this.props.user.profile.id) {
+      console.log('renderButtonUserOne');
       blockOne = this.conditionBlockOne(match, player);
     }
 
@@ -297,6 +298,7 @@ class MatchDetailScreen extends Component {
   renderButtonUserTwo(match, player) {
     let blockTwo = null;
     if (this.state.isPlayer && match.futureMatch) {
+      console.log('renderButtonUserTwo');
       blockTwo = this.conditionBlockTwo(match, player);
     }
 
@@ -322,7 +324,7 @@ class MatchDetailScreen extends Component {
           </TouchableItem>
         </View>
       );
-    } else if (match.futureMatch && player.state === 'pendingRequest') {
+    } else if (match.futureMatch && player.state === 'pendingRequest' && player.user.id === this.props.user.profile.id) {
       return (
         <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start'}]}>
           <TouchableItem
@@ -397,15 +399,15 @@ class MatchDetailScreen extends Component {
             </TouchableItem>
           </View>
         );
-      } else if (player.state === 'pendingRequest') {
-        return (
-          <View key={`btn-player-${player.user.id}`}>
-            <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>
-              SOLICITUD PENDIENTE
-            </Text>
-          </View>
-        );
       }
+    } else if (player.state === 'pendingRequest') {
+      return (
+        <View key={`btn-player-${player.user.id}`}>
+          <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>
+            SOLICITUD PENDIENTE
+          </Text>
+        </View>
+      );
     } else if (player.state === 'confirmed') {
       return (
         <View key={`btn-player-${player.user.id}`}>
