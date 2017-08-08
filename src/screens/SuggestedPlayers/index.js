@@ -113,8 +113,8 @@ class SuggestedPlayersScreen extends Component {
           spinnerVisible: false,
         }, () => {
           Alert.alert(
-            'Error',
-            'Hubo un problema, intente más tarde.',
+            'Atención',
+            responseJson.errorMessage,
             [
               { text: 'OK', onPress: () => console.log('OK Pressed') },
             ],

@@ -2,7 +2,6 @@
 # platform :ios, '9.0'
 source 'https://github.com/CocoaPods/Specs.git'
 
-use_frameworks!
 target 'sbnative' do
   # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
   # use_frameworks!
@@ -23,6 +22,7 @@ target 'sbnative' do
   'RCTWebSocket',
   'BatchedBridge'
   ]
+  use_frameworks!
   pod 'Facebook-iOS-SDK'
   pod 'ParseFacebookUtilsV4'
   pod 'FBSDKCoreKit'

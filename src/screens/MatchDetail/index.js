@@ -120,8 +120,8 @@ class MatchDetailScreen extends Component {
           );
         } else {
           Alert.alert(
-            'Error',
-            mjsError,
+            'Atención',
+            responseJson.errorMessage,
             [
               { text: 'OK', onPress: () => console.log(mjsError) },
             ],
@@ -158,126 +158,96 @@ class MatchDetailScreen extends Component {
           <View>
             <View style={Styles.flexRow}>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <TextInput
-                  multiline={!commonFunc.isAndroid}
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
-                  underlineColorAndroid={'transparent'}
-                  placeholderTextColor="lightgrey"
-                  value={match.date}
-                  editable={false}
-                />
+                <Text
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25 }]}
+                >
+                  {match.date}
+                </Text>
                 <Text style={[Styles.inputText]}>Fecha</Text>
               </View>
 
-              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <TextInput
-                  multiline={!commonFunc.isAndroid}
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
-                  underlineColorAndroid={'transparent'}
-                  placeholderTextColor="lightgrey"
-                  value={match.hour}
-                  editable={false}
-                />
+              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 }]}>
+                <Text
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25 }]}
+                >
+                  {match.hour}
+                </Text>
                 <Text style={[Styles.inputText]}>Hora</Text>
               </View>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                multiline={!commonFunc.isAndroid}
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.address}
-                editable={false}
-              />
+              <Text
+                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 50 }]}
+              >
+              {match.address}
+              </Text>
               <Text style={[Styles.inputText]}>Lugar</Text>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                multiline={!commonFunc.isAndroid}
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.club_name}
-                editable={false}
-              />
+              <Text
+                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
+              >
+              {match.club_name}
+              </Text>
               <Text style={[Styles.inputText]}>Nombre del Club</Text>
             </View>
 
             <View style={Styles.flexRow}>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <TextInput
-                  multiline={!commonFunc.isAndroid}
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
-                  underlineColorAndroid={'transparent'}
-                  placeholderTextColor="lightgrey"
-                  value={match.game_level_from}
-                  editable={false}
-                />
+                <Text
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25  }]}
+                >
+                  {match.game_level_from}
+                </Text>
                 <Text style={[Styles.inputText]}>Nivel del juego desde</Text>
               </View>
 
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <TextInput
-                  multiline={!commonFunc.isAndroid}
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
-                  underlineColorAndroid={'transparent'}
-                  placeholderTextColor="lightgrey"
-                  value={match.game_level_to}
-                  editable={false}
-                />
+                <Text
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25  }]}
+                >
+                  {match.game_level_to}
+                </Text>
                 <Text style={[Styles.inputText]}>Nivel del juego hasta</Text>
               </View>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                multiline={!commonFunc.isAndroid}
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={type}
-                editable={false}
-              />
+              <Text
+                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25  }]}
+              >
+                {type}
+              </Text>
               <Text style={[Styles.inputText]}>Tipo de partido</Text>
             </View>
 
             <View style={Styles.flexRow}>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <TextInput
-                  multiline={!commonFunc.isAndroid}
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
-                  underlineColorAndroid={'transparent'}
-                  placeholderTextColor="lightgrey"
-                  value={match.years_from}
-                  editable={false}
-                />
+                <Text
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25  }]}
+                >
+                  {match.years_from}
+                </Text>
                 <Text style={[Styles.inputText]}>Edad desde</Text>
               </View>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <TextInput
-                  multiline={!commonFunc.isAndroid}
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
-                  underlineColorAndroid={'transparent'}
-                  placeholderTextColor="lightgrey"
-                  value={match.years_to}
-                  editable={false}
-                />
+                <Text
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25  }]}
+                >
+                  {match.years_to}
+                </Text>
                 <Text style={[Styles.inputText]}>Edad hasta</Text>
               </View>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                multiline={!commonFunc.isAndroid}
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={sexo}
-                editable={false}
-              />
+              <Text
+                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25  }]}
+              >
+                {sexo}
+              </Text>
               <Text style={[Styles.inputText]}>Sexo</Text>
             </View>
           </View>
