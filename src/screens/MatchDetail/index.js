@@ -159,7 +159,7 @@ class MatchDetailScreen extends Component {
             <View style={Styles.flexRow}>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
                 <Text
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25 }]}
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
                 >
                   {match.date}
                 </Text>
@@ -168,7 +168,7 @@ class MatchDetailScreen extends Component {
 
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 }]}>
                 <Text
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25 }]}
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
                 >
                   {match.hour}
                 </Text>
@@ -206,7 +206,7 @@ class MatchDetailScreen extends Component {
 
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
                 <Text
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25  }]}
+                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25 }]}
                 >
                   {match.game_level_to}
                 </Text>
@@ -216,7 +216,7 @@ class MatchDetailScreen extends Component {
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
               <Text
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25  }]}
+                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
               >
                 {type}
               </Text>
