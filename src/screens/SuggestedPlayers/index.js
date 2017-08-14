@@ -142,10 +142,8 @@ class SuggestedPlayersScreen extends Component {
   renderNotPlayers() {
     if (this.state.players.length === 0) {
       return (
-        <View style={Styles.flexRow}>
-          <View style={{ justifyContent: 'center', alignItems: 'center'}}>
-            <Text style={[Styles.subtitle, { textAlign: 'center', selfAlign: 'center' }]}>No se encontraron usuarios con las especificaciones</Text>
-          </View>
+        <View style={{ justifyContent: 'center', alignItems: 'center', selfAlign: 'center' }}>
+          <Text style={[Styles.subtitle, { textAlign: 'center', selfAlign: 'center' }]}>No se encontraron usuarios con las especificaciones</Text>
         </View>
       );
     }

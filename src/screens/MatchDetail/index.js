@@ -158,96 +158,116 @@ class MatchDetailScreen extends Component {
           <View>
             <View style={Styles.flexRow}>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <Text
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
-                >
-                  {match.date}
-                </Text>
+                <View style={Styles.borderInput}>
+                  <Text
+                    style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
+                  >
+                    {match.date}
+                  </Text>
+                </View>
                 <Text style={[Styles.inputText]}>Fecha</Text>
               </View>
 
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 }]}>
-                <Text
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
-                >
-                  {match.hour}
-                </Text>
+                <View style={Styles.borderInput}>
+                  <Text
+                    style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
+                  >
+                    {match.hour}
+                  </Text>
+                </View>
                 <Text style={[Styles.inputText]}>Hora</Text>
               </View>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <Text
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 50 }]}
-              >
-              {match.address}
-              </Text>
+              <View style={Styles.borderInput}>
+                <Text
+                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: commonFunc.isAndroid ? 50 : 35 }]}
+                >
+                {match.address}
+                </Text>
+              </View>
               <Text style={[Styles.inputText]}>Lugar</Text>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <Text
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
-              >
-              {match.club_name}
-              </Text>
+              <View style={Styles.borderInput}>
+                <Text
+                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
+                >
+                {match.club_name}
+                </Text>
+              </View>
               <Text style={[Styles.inputText]}>Nombre del Club</Text>
             </View>
 
             <View style={Styles.flexRow}>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <Text
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25  }]}
-                >
-                  {match.game_level_from}
-                </Text>
+                <View style={Styles.borderInput}>
+                  <Text
+                    style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
+                  >
+                    {match.game_level_from}
+                  </Text>
+                </View>
                 <Text style={[Styles.inputText]}>Nivel del juego desde</Text>
               </View>
 
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <Text
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25 }]}
-                >
-                  {match.game_level_to}
-                </Text>
+                <View style={Styles.borderInput}>
+                  <Text
+                    style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2}]}
+                  >
+                    {match.game_level_to}
+                  </Text>
+                </View>
                 <Text style={[Styles.inputText]}>Nivel del juego hasta</Text>
               </View>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <Text
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
-              >
-                {type}
-              </Text>
+              <View style={Styles.borderInput}>
+                <Text
+                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
+                >
+                  {type}
+                </Text>
+              </View>
               <Text style={[Styles.inputText]}>Tipo de partido</Text>
             </View>
 
             <View style={Styles.flexRow}>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <Text
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25  }]}
-                >
-                  {match.years_from}
-                </Text>
+                <View style={Styles.borderInput}>
+                  <Text
+                    style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
+                  >
+                    {match.years_from}
+                  </Text>
+                </View>
                 <Text style={[Styles.inputText]}>Edad desde</Text>
               </View>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <Text
-                  style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25  }]}
-                >
-                  {match.years_to}
-                </Text>
+                <View style={Styles.borderInput}>
+                  <Text
+                    style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25  }]}
+                  >
+                    {match.years_to}
+                  </Text>
+                </View>
                 <Text style={[Styles.inputText]}>Edad hasta</Text>
               </View>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <Text
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25  }]}
-              >
-                {sexo}
-              </Text>
+              <View style={Styles.borderInput}>
+                <Text
+                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
+                >
+                  {sexo}
+                </Text>
+              </View>
               <Text style={[Styles.inputText]}>Sexo</Text>
             </View>
           </View>
@@ -265,13 +285,13 @@ class MatchDetailScreen extends Component {
           <View key={key} style={[Styles.flexRow, { justifyContent: 'flex-start', alignItems: 'center' }]}>
             <View>
               <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <TextInput
-                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth / 2 }]}
-                  underlineColorAndroid={'transparent'}
-                  placeholderTextColor="lightgrey"
-                  value={p.user.first_name}
-                  editable={false}
-                />
+                <View style={Styles.borderInput}>
+                  <Text
+                    style={[Styles.inputDisabled, { width: Metrics.buttonWidth / 2 }]}
+                  >
+                    {p.user.first_name}
+                  </Text>
+                </View>
                 <Text style={[Styles.inputText]}>Jugador</Text>
               </View>
             </View>

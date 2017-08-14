@@ -57,7 +57,7 @@ console.log(props.availability);
         <View>
           <Text style={Styles.title}>Disponibilidad</Text>
         </View>
-        <ScrollView style={{ flex: 1}} showsHorizontalScrollIndicator={true}>
+        <View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <View style={{ flexDirection: 'column', alignItems: 'center' }}>
               <Text></Text>
@@ -68,28 +68,28 @@ console.log(props.availability);
             </View>
             <View style={{ flexDirection: 'column', alignItems: 'center' }}>
               <Text>Lun.</Text>
-              <View style={{marginTop: 10 }}>
+              <View style={{ marginTop: 10 }}>
                 <Switch
                   onTintColor={Colors.primary}
                   value={Boolean(availability[0].allDay)}
                   onValueChange={(value) => this.setAvailability(0, 'allDay', value)}
                 />
               </View>
-              <View style={{marginTop: 10 }}>
+              <View style={{ marginTop: 10 }}>
                 <Switch
                   onTintColor={Colors.primary}
                   value={Boolean(availability[0].morning)}
                   onValueChange={(value) => this.setAvailability(0, 'morning', value)}
                 />
               </View>
-              <View style={{marginTop: 10 }}>
+              <View style={{ marginTop: 10 }}>
                 <Switch
                   onTintColor={Colors.primary}
                   value={Boolean(availability[0].evening)}
                   onValueChange={(value) => this.setAvailability(0, 'evening', value)}
                 />
               </View>
-              <View style={{marginTop: 10 }}>
+              <View style={{ marginTop: 10 }}>
                 <Switch
                   onTintColor={Colors.primary}
                   value={Boolean(availability[0].night)}
@@ -99,28 +99,28 @@ console.log(props.availability);
             </View>
             <View style={{ flexDirection: 'column', alignItems: 'center' }}>
               <Text>Mar.</Text>
-              <View style={{marginTop: 10 }}>
+              <View style={{ marginTop: 10 }}>
                 <Switch
                   onTintColor={Colors.primary}
                   value={Boolean(availability[1].allDay)}
                   onValueChange={(value) => this.setAvailability(1, 'allDay', value)}
                 />
               </View>
-              <View style={{marginTop: 10 }}>
+              <View style={{ marginTop: 10 }}>
                 <Switch
                   onTintColor={Colors.primary}
                   value={Boolean(availability[1].morning)}
                   onValueChange={(value) => this.setAvailability(1, 'morning', value)}
                 />
               </View>
-              <View style={{marginTop: 10 }}>
+              <View style={{ marginTop: 10 }}>
                 <Switch
                   onTintColor={Colors.primary}
                   value={Boolean(availability[1].evening)}
                   onValueChange={(value) => this.setAvailability(1, 'evening', value)}
                 />
               </View>
-              <View style={{marginTop: 10 }}>
+              <View style={{ marginTop: 10 }}>
                 <Switch
                   onTintColor={Colors.primary}
                   value={Boolean(availability[1].night)}
@@ -189,6 +189,17 @@ console.log(props.availability);
                   onValueChange={(value) => this.setAvailability(3, 'night', value)}
                 />
               </View>
+            </View>
+          </View>
+        </View>
+        <View style={{ marginTop: 20 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+              <Text></Text>
+              <Text style={{ paddingTop: 20 }}>8 A 23HS.</Text>
+              <Text style={{ paddingTop: 20 }}>8 A 12HS.</Text>
+              <Text style={{ paddingTop: 20 }}>12 A 19HS.</Text>
+              <Text style={{ paddingTop: 20 }}>19 A 23HS.</Text>
             </View>
             <View style={{ flexDirection: 'column', alignItems: 'center' }}>
               <Text>Vie.</Text>
@@ -284,23 +295,24 @@ console.log(props.availability);
               </View>
             </View>
           </View>
-          <View style={[styles.flexRow, { marginTop: 20, marginBottom: 20 }]}>
-            <TouchableItem
-              pointerEvents="box-only"
-              accessibilityComponentType="button"
-              accessibilityTraits="button"
-              testID="profile-available"
-              delayPressIn={0}
-              style={Styles.btnSave}
-              onPress={() => onSuccess(availability)}
-              pressColor={Colors.primary}
-            >
-              <View pointerEvents="box-only">
-                <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center'}]}>GUARDAR</Text>
-              </View>
-            </TouchableItem>
-          </View>
-        </ScrollView>
+        </View>
+
+        <View style={[styles.flexRow, { marginTop: 20, marginBottom: 20 }]}>
+          <TouchableItem
+            pointerEvents="box-only"
+            accessibilityComponentType="button"
+            accessibilityTraits="button"
+            testID="profile-available"
+            delayPressIn={0}
+            style={Styles.btnSave}
+            onPress={() => onSuccess(availability)}
+            pressColor={Colors.primary}
+          >
+            <View pointerEvents="box-only">
+              <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center'}]}>GUARDAR</Text>
+            </View>
+          </TouchableItem>
+        </View>
       </ScrollView>
     );
   }

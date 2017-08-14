@@ -38,6 +38,7 @@ const Styles = StyleSheet.create({
     height: 32,
   },
   pickerContainer: {
+    borderBottomWidth: isAndroid ? 0.8 : StyleSheet.hairlineWidth,
     borderColor: Colors.primary,
     paddingBottom: 5,
     height: 32,
@@ -74,6 +75,8 @@ const Styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },
+  borderInput: {
+  }
 });
 
 export default Styles;

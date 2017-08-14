@@ -225,6 +225,7 @@ class PlayMatchScreen extends Component {
       <Image
         source={{ uri: imageURI }} style={{ width: 100,
           height: 100,
+          borderRadius: 50,
           borderTopLeftRadius: 80,
           borderTopRightRadius: 80,
           borderBottomLeftRadius: 80,
@@ -240,7 +241,7 @@ class PlayMatchScreen extends Component {
     if (match && match.matchPlayer && match.matchPlayer.length > 0) {
       return match.matchPlayer.map((p, key) => {
         if (p.state !== 'confirmed') return null;
-        
+
         const imageURI = p.user.image ? p.user.image : 'http://web.slambow.com/img/profile/profile-blank.png';
         return (
           <View key={key} style={[Styles.flexRow, { justifyContent: 'flex-start', alignItems: 'center', marginRight: 10 }]}>
@@ -252,6 +253,7 @@ class PlayMatchScreen extends Component {
                   <Image
                     source={{ uri: imageURI }} style={{ width: 100,
                       height: 100,
+                      borderRadius: 50,
                       borderTopLeftRadius: 80,
                       borderTopRightRadius: 80,
                       borderBottomLeftRadius: 80,

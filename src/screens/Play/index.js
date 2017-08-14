@@ -98,6 +98,7 @@ class PlayScreen extends Component {
       <Image
         source={{ uri: imageURI }} style={{ width: 100,
           height: 100,
+          borderRadius: 50,
           borderTopLeftRadius: 80,
           borderTopRightRadius: 80,
           borderBottomLeftRadius: 80,
@@ -141,7 +142,15 @@ class PlayScreen extends Component {
               Aqui podras visualizar los partidos que fueron creados por otros usuarios, quienes cumplen
               "tus mismos requisitos" y están en la búsqueda de jugadores como vos.
             </Text>
-            <Image resizeMode="center" source={require('../../assets/play/play.png')}/>
+            <View style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+              <Image
+                source={require('../../assets/play/play.png')}
+                style={{
+                  aspectRatio: 8,
+                  resizeMode: 'center',
+                }}
+              />
+            </View>
           </View>
           <View>
             {this.renderMatchs()}

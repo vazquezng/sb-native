@@ -100,70 +100,84 @@ class ViewPlayerScreen extends Component {
         <View>
           <View style={[Styles.flexRow, { marginTop: 20 }]}>
             <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <Text
-                style={[Styles.inputDisabled, { width: two, height: 25 }]}
-              >
-                {profile.first_name}
-              </Text>
+              <View style={Styles.borderInput}>
+                <Text
+                  style={[Styles.inputDisabled, { width: two, height: 25 }]}
+                >
+                  {profile.first_name}
+                </Text>
+              </View>
               <Text style={Styles.inputText}>NOMBRE</Text>
             </View>
             <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <Text
-                style={[Styles.inputDisabled, { width: two, height: 25 }]}
-              >
-                {profile.last_name}
-              </Text>
+              <View style={Styles.borderInput}>
+                <Text
+                  style={[Styles.inputDisabled, { width: two, height: 25 }]}
+                >
+                  {profile.last_name}
+                </Text>
+              </View>
               <Text style={Styles.inputText}>APELLIDO</Text>
             </View>
           </View>
           <View style={[Styles.flexRow, { marginTop: 20 }]}>
             <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <Text
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
-              >
-                {profile.email}
-              </Text>
+              <View style={Styles.borderInput}>
+                <Text
+                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
+                >
+                  {profile.email}
+                </Text>
+              </View>
               <Text style={Styles.inputText}>EMAIL</Text>
             </View>
           </View>
 
           <View style={[Styles.flexRow, { marginTop: 20 }]}>
             <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <Text
-                style={[Styles.inputDisabled, { width: two, height: 25 }]}
-              >
-                {profile.years}
-              </Text>
+              <View style={Styles.borderInput}>
+                <Text
+                  style={[Styles.inputDisabled, { width: two, height: 25 }]}
+                >
+                  {profile.years}
+                </Text>
+              </View>
               <Text style={Styles.inputText}>EDAD</Text>
             </View>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <Text
-                style={[Styles.inputDisabled, { width: two, height: 25 }]}
-              >
-                {sexo}
-              </Text>
+              <View style={Styles.borderInput}>
+                <Text
+                  style={[Styles.inputDisabled, { width: two, height: 25 }]}
+                >
+                  {sexo}
+                </Text>
+              </View>
               <Text style={Styles.inputText}>SEXO</Text>
             </View>
           </View>
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <Text
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 50 }]}
-              >
-                {profile.address}
-              </Text>
+              <View style={Styles.borderInput}>
+                <Text
+                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: commonFunc.isAndroid ? 50 : 35 }]}
+                >
+                  {profile.address}
+                </Text>
+              </View>
               <Text style={Styles.inputText}>DIRECCION</Text>
             </View>
           </View>
 
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <Text
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
-              >
-                {profile.game_level}
-              </Text>
+              <View style={Styles.borderInput}>
+                <Text
+                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
+                >
+                  {profile.game_level}
+                </Text>
+              </View>
               <Text style={Styles.inputText}>NIVEL DE JUEGO</Text>
             </View>
           </View>
@@ -188,11 +202,13 @@ class ViewPlayerScreen extends Component {
           </View>
           <View style={[Styles.flexRow]}>
             <View style={[Styles.flexColumn, { flex: 1, width: width - 50 }]}>
-              <Text
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
-              >
-                {profile.distance}
-              </Text>
+              <View style={Styles.borderInput}>
+                <Text
+                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
+                >
+                  {profile.distance}
+                </Text>
+              </View>
               <Text style={Styles.inputText}>DISTANCIA PARA JUGAR UN PARTIDO</Text>
             </View>
           </View>
