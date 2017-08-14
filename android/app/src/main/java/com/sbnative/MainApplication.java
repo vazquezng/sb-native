@@ -31,12 +31,12 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new MapsPackage(),
-            new ReactNativeOneSignalPackage(),
-            new ImagePickerPackage(),
-            new UploadFilePackage(),
-            new TwitterSigninPackage(),
-            new VectorIconsPackage(),
+          new MapsPackage(),
+          new ReactNativeOneSignalPackage(),
+          new ImagePickerPackage(),
+          new UploadFilePackage(),
+          new TwitterSigninPackage(),
+          new VectorIconsPackage(),
           new SplashScreenReactPackage(),
           new FacebookLoginPackage()
       );

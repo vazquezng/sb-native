@@ -12,7 +12,7 @@ import {
   Dimensions,
   NativeModules,
   Alert,
-  Platform,
+  Modal,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import ImagePicker from 'react-native-image-picker';
@@ -110,6 +110,7 @@ class ProfileScreen extends Component {
       profile: user.profile,
       canchas: [],
       modalAvailable: false,
+      modalAddress: false,
     };
   }
 
@@ -159,12 +160,37 @@ class ProfileScreen extends Component {
   componentDidMount() {
     const devices = Notifications.getDevice();
     const { profile } = this.state;
+    const self = this;
     console.log(devices);
     if (devices && (!profile.onesignal_app_pushToken || profile.onesignal_app_pushToken !== devices.pushToken) ) {
       profile.onesignal_app_pushToken = devices.pushToken;
       profile.onesignal_app_userId = devices.userId;
       this.saveProfile(false);
     }
+
+    if (profile.newuser && profile.newuser !== 'false') {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const initialPosition = JSON.stringify(position);
+          this.setState({ initialPosition });
+          fetch(`http://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&sensor=true`)
+          .then(response => response.json())
+          .then((responseJson) => {
+            self.onSetCurrentPosition(null, responseJson.results[0]);
+            console.log(responseJson);
+          })
+          console.log(position);
+        },
+        error => console.log(error.message),
+        { enableHighAccuracy: false, timeout: 20000, maximumAge: 5000 },
+      );
+    }
+
+  }
+
+
+  componentWillUnmount() {
+    navigator.geolocation.clearWatch(this.watchID);
   }
 
   getCamera() {
@@ -305,7 +331,7 @@ class ProfileScreen extends Component {
     const { profile } = this.state;
     if( this.validString(profile.first_name) && this.validString(profile.last_name)
         && this.validString(profile.email) && this.validString(profile.about) && this.validString(profile.years.toString()) && this.validAddress(profile)
-        && ( profile.singles || profile.double) ) {
+        && ( profile.single || profile.double) ) {
           return true;
     }
 
@@ -357,6 +383,7 @@ class ProfileScreen extends Component {
               'Tu perfil se guardo correctamente!',
               [
                 { text: 'OK', onPress: () => this.setState({ spinnerVisible: false }) },
+                { text: 'Crear Partido', onPress: () => { this.setState({ spinnerVisible: false });this.props.navigation.navigate('Match'); }},
               ],
               { cancelable: false },
             );
@@ -381,6 +408,10 @@ class ProfileScreen extends Component {
   handleChangeClubMember(club_member) {
     const { profile } = this.state;
     this.setState({ profile: Object.assign(profile, { club_member: club_member.value }) });
+  }
+
+  aplicarAddress() {
+    this.setState({ modalAddress: false })
   }
 
   renderImage(profile) {
@@ -423,276 +454,352 @@ class ProfileScreen extends Component {
           onPress={() => navigation.navigate('DrawerOpen')}
           title="Mi Perfil"
         />
-        <ScrollView style={Styles.containerPrimary}>
+        <ScrollView style={[Styles.containerPrimary, { paddingHorizontal: 0 }]}>
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View>
             <Text style={Styles.title}>Tu Perfil</Text>
             <Text style={Styles.subTitle}>Completá los datos de tu perfil para contactarte con otros jugadores.</Text>
           </View>
-          <View style={styles.flexRow}>
+          <View style={styles.containerInformationBasic}>
+            <View style={styles.flexRow}>
+              <View style={styles.containerPhoto}>
+                  <TouchableItem
+                    onPress={() => this.getCamera()}>
+                    <View style={{ flexDirection: 'row', backgroundColor: '#00a5d7', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5 }}>
+                      <Entypo
+                        name='camera'
+                        size={28}
+                        style={{ color: 'white' }}
+                      />
+                    </View>
+                  </TouchableItem>
+              </View>
               <View style={styles.containerPhoto}>
                 {this.renderImage(profile)}
               </View>
               <View style={styles.containerPhoto}>
                   <TouchableItem
-                    onPress={() => this.getCamera()}>
-                    <View style={{ flexDirection: 'row', borderBottomWidth: 0.8, paddingBottom: 10 }}>
-                      <Entypo
-                        name='camera'
-                        size={20}
-                      />
-                      <Text style={styles.textImage}>Tomar Foto</Text>
-                    </View>
-                  </TouchableItem>
-                  <TouchableItem
                     onPress={() => this.getGalery()}>
-                    <View style={{ flexDirection: 'row', paddingTop: 10 }}>
+                    <View style={{ flexDirection: 'row', backgroundColor: '#00a5d7', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5 }}>
                       <Entypo
                         name='image'
-                        size={20}
+                        size={28}
+                        style={{ color: 'white' }}
                       />
-                      <Text style={styles.textImage}>Seleccionar</Text>
                     </View>
                   </TouchableItem>
               </View>
+            </View>
+
+            <View style={{ marginTop: 20 }}>
+              <View style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' } ]}>
+                <Text style={[Styles.inputText, { color: 'white' }]}>NOMBRE</Text>
+                <TextInput
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 5, width: width / 2, textAlign: 'right', textDecorationLine: 'none', textDecorationColor:'transparent' }]}
+                  value={profile.first_name}
+                  onChangeText={(first_name) => this.setState({ profile: Object.assign(profile, { first_name }) })}
+                />
+              </View>
+            </View>
+
+            <View style={{ marginTop: 10 }}>
+              <View style={[ Styles.flexRow, Styles.borderBottomInput ]}>
+                <Text style={[Styles.inputText, { color: 'white' }]}>APELLIDO</Text>
+                <TextInput
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 5, width: width / 2, textAlign: 'right' }]}
+                  value={profile.last_name}
+                  onChangeText={(last_name) => this.setState({ profile: Object.assign(profile, { last_name }) })}
+                />
+              </View>
+            </View>
+
+            <View style={{ marginTop: 10 }}>
+              <View style={[ Styles.flexRow, Styles.borderBottomInput ]}>
+                <Text style={[Styles.inputText, { color: 'white' }]}>EMAIL</Text>
+                <TextInput
+                  keyboardType="email-address"
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 5, width: width / 2, textAlign: 'right', textDecorationLine: 'none' }]}
+                  value={profile.email}
+                  onChangeText={email => this.setState({ profile: Object.assign(profile, { email }) })}
+                />
+              </View>
+            </View>
+
+            <View style={{ marginTop: 10 }}>
+              <View style={[ Styles.flexRow, Styles.borderBottomInput ]}>
+                <Text style={[Styles.inputText, { color: 'white' }]}>SEXO</Text>
+                <PickerSB
+                  containerStyle={[ Styles.inputText, { paddingBottom: 0}]}
+                  buttonStyle={{ justifyContent: 'center' }}
+                  textStyle={{ color: '#079ac8' }}
+                  selectedValue={valueSexo}
+                  list={pickerSexo}
+                  onSelectValue={this.handleChangeSexo.bind(this)}
+                />
+              </View>
+            </View>
+
+            <View style={{ marginTop: 10 }}>
+              <View style={[ Styles.flexRow ]}>
+                <Text style={[Styles.inputText, { color: 'white' }]}>EDAD</Text>
+                <Text style={[Styles.inputText, { color: '#079ac8' }]}>{profile.years}</Text>
+              </View>
+              <View style={[styles.flexRow, Styles.borderBottomInput]}>
+                <View style={[styles.flexColumn, { flex: 1, width: width - 50 }]}>
+                  <Slider
+                    style={{ width: width - 50, height: 33 }}
+                    minimumValue={18}
+                    maximumValue={99}
+                    maximumTrackTintColor={Colors.primary}
+                    minimumTrackTintColor={Colors.primary}
+                    thumbTintColor={Colors.primary}
+                    step={1}
+                    value={parseInt(profile.years)}
+                    onValueChange={years => this.setState({ profile: Object.assign(profile, { years }) })} />
+                </View>
+              </View>
+            </View>
+
+            <View style={{ marginTop: 10 }}>
+              <View style={[ Styles.flexRow ]}>
+                <Text style={[Styles.inputText, { color: 'white' }]}>UBICACIÓN</Text>
+                <TouchableItem
+                  onPress={() => this.setState({ modalAddress: true })}
+                >
+                  <View>
+                    <Text style={[Styles.inputText, { color: 'white' }]}>Buscar ></Text>
+                  </View>
+                </TouchableItem>
+
+              </View>
+              <View style={[ Styles.flexRow ]}>
+                <Text style={[Styles.inputText, { color: 'white', fontSize: 12, color: '#b8b9bb' }]}>Mi ubicación actual</Text>
+                <Text style={[Styles.inputText, { color: '#079ac8', fontSize: 12 }]}
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                >{profile.address && profile.address.substring(0, 30)}...</Text>
+              </View>
+            </View>
+
           </View>
 
-          <View style={[Styles.flexRow, { marginTop: 20 }]}>
-            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <TextInput
-                style={[Styles.input, { width: two }]}
-                placeholder="NOMBRE"
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                multiline={!commonFunc.isAndroid}
-                value={profile.first_name}
-                onChangeText={(first_name) => this.setState({ profile: Object.assign(profile, { first_name }) })}
-              />
-              <Text style={Styles.inputText}>NOMBRE</Text>
-            </View>
-            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <TextInput
-                placeholder="APELLIDO"
-                style={[Styles.input, { width: two }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                multiline={!commonFunc.isAndroid}
-                value={profile.last_name}
-                onChangeText={(last_name) => this.setState({ profile: Object.assign(profile, { last_name }) })}
-              />
-              <Text style={Styles.inputText}>APELLIDO</Text>
-            </View>
+          <View style={{ backgroundColor: '#eeeeee', paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8}}>
+            <Text style={{ color: '#86888b'}}>INFORMACIÓN DE EXPLORACIÓN</Text>
           </View>
 
-          <View style={[Styles.flexRow, { marginTop: 20 }]}>
-            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <TextInput
-                placeholder="EMAIL"
-                style={[Styles.input, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                multiline={!commonFunc.isAndroid}
-                value={profile.email}
-                onChangeText={(email) => this.setState({ profile: Object.assign(profile, { email }) })}
-              />
-              <Text style={Styles.inputText}>EMAIL</Text>
+          <View style={{ paddingHorizontal: 20 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+              <Text style={Styles.inputText}>NIVEL DE JUEGO</Text>
+              <Text style={{ color: Colors.primary }}>{profile.game_level}</Text>
+            </View>
+            <View style={[styles.flexRow]}>
+              <View style={[styles.flexColumn, { flex: 1, width: width - 50 }]}>
+                <Slider
+                  style={{ width: width - 50, height: 33 }}
+                  minimumValue={2.5}
+                  maximumValue={7}
+                  maximumTrackTintColor={Colors.primary}
+                  minimumTrackTintColor={Colors.primary}
+                  thumbTintColor={Colors.primary}
+                  step={0.5}
+                  value={parseInt(profile.game_level)}
+                  onValueChange={(game_level) => this.setState({ profile: Object.assign(profile, { game_level }) })} />
+              </View>
+            </View>
+            <View style={[ Styles.borderBottomInput, { flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5} ]}>
+              <Text>2.5</Text>
+              <Text>7.0</Text>
+            </View>
+
+            <View style={[Styles.flexRow, { justifyContent: 'space-around', marginTop: 20 }]}>
+              <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
+                <Switch
+                  onTintColor={Colors.primary}
+                  value={single}
+                  onValueChange={single => this.setState({ profile: Object.assign(profile, { single }) })}
+                />
+                <Text style={Styles.inputText}>SINGLES</Text>
+              </View>
+              <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
+                <Switch onTintColor={Colors.primary} value={double} onValueChange={double => this.setState({ profile: Object.assign(profile, { double }) })} />
+                <Text style={Styles.inputText}>DOBLES</Text>
+              </View>
+            </View>
+
+            <View style={[Styles.flexRow, { justifyContent: 'flex-start', marginTop: 20 }]}>
+              <TouchableItem
+                accessibilityComponentType="button"
+                accessibilityTraits="button"
+                testID="profile-available"
+                delayPressIn={0}
+                pressColor={Colors.primary}
+                style={[ Styles.borderBottomInput, { width: (width - 50), paddingBottom: 5 } ]}
+                onPress={this.openModalAvailable.bind(this)}
+              >
+                <View style={Styles.flexRow}>
+                  <View>
+                    <Text>DISPONIBILIDAD</Text>
+                  </View>
+                  <Entypo
+                    name="calendar"
+                    size={24}
+                  />
+                </View>
+              </TouchableItem>
+            </View>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+              <Text style={Styles.inputText}>DISTANCIA PARA JUGAR UN PARTIDO</Text>
+              <Text style={{ color: Colors.primary }}>{profile.distance}KM</Text>
+            </View>
+            <View style={[styles.flexRow]}>
+              <View style={[styles.flexColumn, { flex: 1, width: width - 50 }]}>
+                <Slider
+                  style={{ width: width - 50, height: 33 }}
+                  minimumValue={2}
+                  maximumValue={50}
+                  maximumTrackTintColor={Colors.primary}
+                  minimumTrackTintColor={Colors.primary}
+                  thumbTintColor={Colors.primary}
+                  step={2}
+                  value={profile.distance}
+                  onValueChange={(distance) => this.setState({ profile: Object.assign(profile, { distance }) })} />
+              </View>
+            </View>
+            <View style={[ Styles.borderBottomInput, { flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5} ]}>
+              <Text>2Km</Text>
+              <Text>50Km</Text>
+            </View>
+
+            <View style={[styles.flexRow, { marginTop: 20 }]}>
+              <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
+                <PickerSB
+                  containerStyle={[Styles.pickerContainer, { width: (width - 50) }]}
+                  buttonStyle={{ height: 40, justifyContent: 'center' }}
+                  textStyle={{ color: 'black', fontSize: 16 }}
+                  selectedValue={valueClubMember}
+                  list={pickerCanchas}
+                  onSelectValue={this.handleChangeClubMember.bind(this)}
+                />
+                <Text style={[Styles.inputText, { width: width - 50, borderColor: Colors.primary, borderTopWidth: 1 }]}>SOS SOCIO DE ALGUN CLUB</Text>
+              </View>
+            </View>
+
+            <View style={[styles.flexRow, { marginTop: 20 }]}>
+              <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
+                <Text style={Styles.inputText}>SOBRE MI</Text>
+                <TextInput
+                  multiline={!commonFunc.isAndroid}
+                  numberOfLines={4}
+                  style={[Styles.input, { height: 100, width: width - 50, borderWidth: 1, textAlignVertical: 'top' }]}
+                  underlineColorAndroid={'transparent'}
+                  placeholderTextColor="lightgrey"
+                  value={profile.about}
+                  onChangeText={(about) => this.setState({ profile: Object.assign(profile, { about }) })}
+                />
+              </View>
+            </View>
+
+            <View style={[styles.flexRow, { marginTop: 20, marginBottom: 20 }]}>
+              <TouchableItem
+                pointerEvents="box-only"
+                accessibilityComponentType="button"
+                accessibilityTraits="button"
+                testID="profile-available"
+                delayPressIn={0}
+                style={Styles.btnSave}
+                onPress={() => this.saveProfile()}
+                pressColor={Colors.primary}
+              >
+                <View pointerEvents="box-only">
+                  <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center'}]}>GUARDAR</Text>
+                </View>
+              </TouchableItem>
             </View>
           </View>
+        </ScrollView>
 
-
-          <View style={[Styles.flexRow, { marginTop: 20 }]}>
-            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <TextInput
-                style={[Styles.input, { width: two }]}
-                placeholder="EDAD"
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                multiline={!commonFunc.isAndroid}
-                value={profile.years.toString()}
-                onChangeText={(years) => this.setState({ profile: Object.assign(profile, { years }) })}
-              />
-              <Text style={Styles.inputText}>EDAD</Text>
-            </View>
-            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <PickerSB
-                containerStyle={[ Styles.pickerContainer, { width: two }]}
-                buttonStyle={{ height: 40, justifyContent: 'center' }}
-                textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
-                selectedValue={valueSexo}
-                list={pickerSexo}
-                onSelectValue={this.handleChangeSexo.bind(this)}
-              />
-              <Text style={[Styles.inputText, { width: two, borderColor: Colors.primary, borderTopWidth: 1 }]}>SEXO</Text>
-            </View>
-          </View>
-
-          <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
+        <Modal
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.modalAddress}
+          onRequestClose={() => console.log('close')}
+          supportedOrientations={['portrait', 'landscape']}
+        >
+          <View style={{ marginTop: 22, paddingHorizontal: 20 }}>
+           <View style={[styles.flexRow, { marginTop: 20 }]}>
+             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <GooglePlacesAutocomplete
-                ref={(ref) => this._googlePlace = ref}
-                placeholder='DIRECCION'
+                ref={ref => this._googlePlace = ref}
+                placeholder="INGRESE DIRECCIÓN"
                 minLength={1}
                 autoFocus={false}
-                fetchDetails={true}
+                fetchDetails
                 onPress={(data, details = null) => {
                   this.onSetCurrentPosition(data, details);
                 }}
-                getDefaultValue={() => profile.address }
+                getDefaultValue={() => profile.address}
                 query={{
                   key: 'AIzaSyDZOdwsf3vZEFQws7WldOWKeibaWiMjJCg',
                   language: 'en',
                   types: ['(cities)'],
                 }}
                 styles={{
-                  description: { fontSize: 14, color: Colors.second, width: width - 50 },
-                  predefinedPlacesDescription: { fontSize: 14, color: Colors.second, width: width - 50 },
+                  description: { fontSize: 14, color: Colors.second, width },
+                  predefinedPlacesDescription: { fontSize: 14, color: Colors.second, width: width, borderWidth: 1 },
                 }}
-                nearbyPlacesAPI='GooglePlacesSearch'
+                nearbyPlacesAPI="GooglePlacesSearch"
                 GoogleReverseGeocodingQuery={{
                 }}
                 GooglePlacesSearchQuery={{
                 }}
-                enablePoweredByContainer = {true}
+                enablePoweredByContainer
                 filterReverseGeocodingByTypes={['locality',
-                                                'administrative_area_level_1',
-                                                'sublocality',
-                                                'postal_code',
-                                                'country' ]}
+                  'administrative_area_level_1',
+                  'sublocality',
+                  'postal_code',
+                  'country']}
                 predefinedPlaces={[]}
               />
-              <Text style={Styles.inputText}>DIRECCION</Text>
+              <Text style={Styles.inputText}>INGRESE DIRECCIÓN</Text>
             </View>
           </View>
+           <View style={[ styles.flexRow, { marginTop: 20, marginBottom: 20 }]}>
+             <TouchableItem
+               pointerEvents="box-only"
+               accessibilityComponentType="button"
+               accessibilityTraits="button"
+               testID="profile-available"
+               delayPressIn={0}
+               style={Styles.btnSave}
+               onPress={() => this.aplicarAddress()}
+               pressColor={Colors.primary}
+             >
+               <View pointerEvents="box-only">
+                 <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>APLICAR</Text>
+               </View>
+             </TouchableItem>
+           </View>
+         </View>
+        </Modal>
 
-          <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <PickerSB
-                containerStyle={[Styles.pickerContainer, { width: (width - 50) }]}
-                buttonStyle={{ height: 40, justifyContent: 'center' }}
-                textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
-                selectedValue={valueGameLevel.toString()}
-                list={pickerGameLevel}
-                onSelectValue={this.handleChangeGameLevel.bind(this)}
-              />
-              <Text style={[Styles.inputText, { width: width - 50, borderColor: Colors.primary, borderTopWidth: 1 }]}>NIVEL DE JUEGO</Text>
-            </View>
-          </View>
-
-          <View style={[Styles.flexRow, { justifyContent: 'space-around', marginTop: 20 }]}>
-            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <Switch
-                onTintColor={Colors.primary}
-                value={single}
-                onValueChange={single => this.setState({ profile: Object.assign(profile, { single }) })}
-              />
-              <Text style={Styles.inputText}>SINGLES</Text>
-            </View>
-            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <Switch onTintColor={Colors.primary} value={double} onValueChange={(double) => this.setState({ profile: Object.assign(profile, { double }) })} />
-              <Text style={Styles.inputText}>DOBLES</Text>
-            </View>
-          </View>
-
-          <View style={[Styles.flexRow, { justifyContent: 'flex-start', marginTop: 20 }]}>
-            <TouchableItem
-              accessibilityComponentType="button"
-              accessibilityTraits="button"
-              testID="profile-available"
-              delayPressIn={0}
-              pressColor={Colors.primary}
-              style={{ borderColor: Colors.primary, width: (width - 50), borderWidth: 0.8, borderRadius: 10, paddingHorizontal: 10, paddingTop: 10, paddingBottom: 10 }}
-              onPress={this.openModalAvailable.bind(this)}
-            >
-              <View>
-                <Entypo
-                  name="calendar"
-                  size={24}
-                />
-                <View>
-                  <Text>DISPONIBILIDAD</Text>
-                </View>
-              </View>
-            </TouchableItem>
-          </View>
-
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
-            <Text>2</Text>
-            <Text style={{ color: Colors.primary }}>{this.state.profile.distance}KM</Text>
-            <Text>50</Text>
-          </View>
-          <View style={[styles.flexRow]}>
-            <View style={[styles.flexColumn, { flex: 1, width: width - 50 }]}>
-              <Slider
-                style={{ width: width - 50, height: 33 }}
-                minimumValue={2}
-                maximumValue={50}
-                maximumTrackTintColor={Colors.primary}
-                minimumTrackTintColor={Colors.primary}
-                thumbTintColor={Colors.primary}
-                step={2}
-                value={profile.distance}
-                onValueChange={(distance) => this.setState({ profile: Object.assign(profile, { distance }) })} />
-              <Text style={Styles.inputText}>DISTANCIA PARA JUGAR UN PARTIDO</Text>
-            </View>
-          </View>
-
-          <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <PickerSB
-                containerStyle={[Styles.pickerContainer, { width: (width - 50) }]}
-                buttonStyle={{ height: 40, justifyContent: 'center' }}
-                textStyle={{ color: 'black', fontSize: 16 }}
-                selectedValue={valueClubMember}
-                list={pickerCanchas}
-                onSelectValue={this.handleChangeClubMember.bind(this)}
-              />
-              <Text style={[Styles.inputText, { width: width - 50, borderColor: Colors.primary, borderTopWidth: 1 }]}>SOS SOCIO DE ALGUN CLUB</Text>
-            </View>
-          </View>
-
-          <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <Text style={Styles.inputText}>SOBRE MI</Text>
-              <TextInput
-                multiline={!commonFunc.isAndroid}
-                numberOfLines={4}
-                style={[Styles.input, { height: 100, width: width - 50, borderWidth: 1 }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={profile.about}
-                onChangeText={(about) => this.setState({ profile: Object.assign(profile, { about }) })}
-              />
-            </View>
-          </View>
-
-          <View style={[styles.flexRow, { marginTop: 20, marginBottom: 20 }]}>
-            <TouchableItem
-              pointerEvents="box-only"
-              accessibilityComponentType="button"
-              accessibilityTraits="button"
-              testID="profile-available"
-              delayPressIn={0}
-              style={Styles.btnSave}
-              onPress={() => this.saveProfile()}
-              pressColor={Colors.primary}
-            >
-              <View pointerEvents="box-only">
-                <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center'}]}>GUARDAR</Text>
-              </View>
-            </TouchableItem>
-          </View>
-        </ScrollView>
         <ModalAvailable
           availability={profile.availability}
           onClose={this.closeModalAvailable.bind(this)}
           isVisible={this.state.modalAvailable}
-          onSuccess={this.saveAvailable.bind(this)}></ModalAvailable>
+          onSuccess={this.saveAvailable.bind(this)} />
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  containerInformationBasic: {
+    backgroundColor: 'black',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
   textImage: {
     color: Colors.primary,
     fontSize: 18,

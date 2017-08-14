@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "931016694606",
+    "project_id": "slambow-170704"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:931016694606:android:b6abf68c9bf8a42c",
+        "android_client_info": {
+          "package_name": "com.sbnative"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "931016694606-klki0jipetpo4lififmhl3d4ck3h8crt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sbnative",
+            "certificate_hash": "079847be8e8e258061838789304d0659c653851b"
+          }
+        },
+        {
+          "client_id": "931016694606-bj35ac8hq9kumjvm0nd4plb9lfngeit5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAB33ES09S99EbRgSbKli8--lTr73u7p2U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

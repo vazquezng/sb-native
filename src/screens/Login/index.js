@@ -10,9 +10,11 @@ import {
   Dimensions,
   Alert,
   Platform,
+  Linking,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
+// import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
 import Carousel from 'react-native-looped-carousel';
 
 import TouchableItem from '@components/TouchableItem';
@@ -157,6 +159,18 @@ class LoginScreen extends Component {
         });
   }
 
+  _googleSignIn() {
+    // GoogleSignin.signIn()
+    // .then((user) => {
+    //   console.log(user);
+    //   this.setState({ user });
+    // })
+    // .catch((err) => {
+    //   console.log('WRONG SIGNIN', err);
+    // })
+    // .done();
+  }
+
   standar(profile) {
     return Object.assign({}, { ...profile.user, newuser: profile.newuser, token: profile.token.token});
   }
@@ -228,6 +242,12 @@ class LoginScreen extends Component {
             </Image>
           </View>
         </Carousel>
+        <View style={[{ backgroundColor: 'rgba(0, 0, 0, .8)', paddingBottom: 10, paddingTop: 10, position: 'absolute', top: 0, width }]}>
+          <Image
+            style={{ alignSelf: 'center' }} source={require('../../assets/logo-mobile.png')}
+          />
+        </View>
+
         <View style={[styles.loginContent, { bottom: 50 }]}>
           <View style={{ flexDirection: 'row', width: 200, justifyContent: 'center', marginBottom: 10 }}>
             {this._renderBullet(0)}
@@ -254,7 +274,15 @@ class LoginScreen extends Component {
           </TouchableItem>
         </View>
         <View style={{ position: 'absolute', bottom: 0, width, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ color: '#ffffff', paddingBottom: 10, backgroundColor: 'transparent' }}>Al hacer login aceptás los términos y condiciones   </Text>
+          <TouchableItem
+            onPress={() => {
+              Linking.openURL('http://web.slambow.com/tycs').catch(err => console.error('An error occurred', err));
+            }}
+          >
+            <View>
+              <Text style={{ color: '#ffffff', paddingBottom: 10, backgroundColor: 'transparent' }}>Al hacer login aceptás los términos y condiciones</Text>
+            </View>
+          </TouchableItem>
         </View>
       </View>
     );

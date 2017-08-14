@@ -26,7 +26,6 @@ import Metrics from '@theme/Metrics';
 const WINDOW = Dimensions.get('window');
 const defaultStyles = {
   container: {
-    flex: 1,
     marginLeft: 0,
     marginRight: 0,
     width: Metrics.screenWidth - Metrics.defaultMargin * 2,

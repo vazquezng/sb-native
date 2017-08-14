@@ -76,7 +76,11 @@ const Styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   borderInput: {
-  }
+  },
+  borderBottomInput: {
+    borderColor: '#71767a',
+    borderBottomWidth: isAndroid ? 0.8 : StyleSheet.hairlineWidth,
+  },
 });
 
 export default Styles;

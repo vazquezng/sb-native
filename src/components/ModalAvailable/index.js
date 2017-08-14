@@ -18,7 +18,6 @@ const enhance = compose(
 export default class CustomPlan extends React.Component {
   constructor(props) {
     super(props);
-console.log(props.availability);
     this.state = {
       availability: props.availability,
     };
