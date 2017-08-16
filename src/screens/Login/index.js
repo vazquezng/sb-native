@@ -242,7 +242,7 @@ class LoginScreen extends Component {
             </Image>
           </View>
         </Carousel>
-        <View style={[{ backgroundColor: 'rgba(0, 0, 0, .8)', paddingBottom: 10, paddingTop: 10, position: 'absolute', top: 0, width }]}>
+        <View style={[{ backgroundColor: 'rgba(0, 0, 0, .4)', paddingBottom: 10, paddingTop: 10, position: 'absolute', top: 0, width }]}>
           <Image
             style={{ alignSelf: 'center' }} source={require('../../assets/logo-mobile.png')}
           />

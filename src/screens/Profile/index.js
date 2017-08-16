@@ -330,8 +330,7 @@ class ProfileScreen extends Component {
   formComplete() {
     const { profile } = this.state;
     if( this.validString(profile.first_name) && this.validString(profile.last_name)
-        && this.validString(profile.email) && this.validString(profile.about) && this.validString(profile.years.toString()) && this.validAddress(profile)
-        && ( profile.single || profile.double) ) {
+        && this.validString(profile.email) && this.validString(profile.about) && this.validString(profile.years.toString()) && this.validAddress(profile)) {
           return true;
     }
 
@@ -397,7 +396,7 @@ class ProfileScreen extends Component {
 
   handleChangeSexo(sexo) {
     const { profile } = this.state;
-    this.setState({ profile: Object.assign(profile, { sexo: sexo.value }) });
+    this.setState({ profile: Object.assign(profile, { sexo }) });
   }
 
   handleChangeGameLevel(game_level) {
@@ -495,7 +494,8 @@ class ProfileScreen extends Component {
               <View style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' } ]}>
                 <Text style={[Styles.inputText, { color: 'white' }]}>NOMBRE</Text>
                 <TextInput
-                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 5, width: width / 2, textAlign: 'right', textDecorationLine: 'none', textDecorationColor:'transparent' }]}
+                  underlineColorAndroid="transparent"
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textDecorationLine: 'none', textDecorationColor: 'transparent' }]}
                   value={profile.first_name}
                   onChangeText={(first_name) => this.setState({ profile: Object.assign(profile, { first_name }) })}
                 />
@@ -506,7 +506,8 @@ class ProfileScreen extends Component {
               <View style={[ Styles.flexRow, Styles.borderBottomInput ]}>
                 <Text style={[Styles.inputText, { color: 'white' }]}>APELLIDO</Text>
                 <TextInput
-                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 5, width: width / 2, textAlign: 'right' }]}
+                  underlineColorAndroid="transparent"
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right' }]}
                   value={profile.last_name}
                   onChangeText={(last_name) => this.setState({ profile: Object.assign(profile, { last_name }) })}
                 />
@@ -517,8 +518,9 @@ class ProfileScreen extends Component {
               <View style={[ Styles.flexRow, Styles.borderBottomInput ]}>
                 <Text style={[Styles.inputText, { color: 'white' }]}>EMAIL</Text>
                 <TextInput
+                  underlineColorAndroid="transparent"
                   keyboardType="email-address"
-                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 5, width: width / 2, textAlign: 'right', textDecorationLine: 'none' }]}
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textDecorationLine: 'none' }]}
                   value={profile.email}
                   onChangeText={email => this.setState({ profile: Object.assign(profile, { email }) })}
                 />
@@ -526,16 +528,30 @@ class ProfileScreen extends Component {
             </View>
 
             <View style={{ marginTop: 10 }}>
-              <View style={[ Styles.flexRow, Styles.borderBottomInput ]}>
+              <View style={[ Styles.flexRow ]}>
                 <Text style={[Styles.inputText, { color: 'white' }]}>SEXO</Text>
-                <PickerSB
+                {/* <PickerSB
                   containerStyle={[ Styles.inputText, { paddingBottom: 0}]}
                   buttonStyle={{ justifyContent: 'center' }}
                   textStyle={{ color: '#079ac8' }}
                   selectedValue={valueSexo}
                   list={pickerSexo}
                   onSelectValue={this.handleChangeSexo.bind(this)}
-                />
+                /> */}
+              </View>
+              <View style={[ Styles.borderBottomInput ]}>
+                <View style={[ Styles.flexRow, { backgroundColor: 'black', borderRadius: 10, marginBottom: 10 }]}>
+                  <TouchableItem
+                    onPress={ () => this.handleChangeSexo('male') }
+                    style={[{ borderRadius: 10, flex: 0.5 }, profile.sexo === 'male' ? { backgroundColor: Colors.primary } : {} ]}>
+                    <Text style={{ color: 'white', textAlign: 'center', fontSize: 16  }}>Hombre</Text>
+                  </TouchableItem>
+                  <TouchableItem
+                    onPress={ () => this.handleChangeSexo('female') }
+                    style={[{ borderRadius: 10, flex: 0.5 }, profile.sexo === 'female' ? { backgroundColor: Colors.primary } : {}]}>
+                    <Text style={{ color: 'white', textAlign: 'center', fontSize: 16 }}>Mujer</Text>
+                  </TouchableItem>
+                </View>
               </View>
             </View>
 
@@ -611,7 +627,7 @@ class ProfileScreen extends Component {
               <Text>7.0</Text>
             </View>
 
-            <View style={[Styles.flexRow, { justifyContent: 'space-around', marginTop: 20 }]}>
+            {/* <View style={[Styles.flexRow, { justifyContent: 'space-around', marginTop: 20 }]}>
               <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
                 <Switch
                   onTintColor={Colors.primary}
@@ -624,7 +640,7 @@ class ProfileScreen extends Component {
                 <Switch onTintColor={Colors.primary} value={double} onValueChange={double => this.setState({ profile: Object.assign(profile, { double }) })} />
                 <Text style={Styles.inputText}>DOBLES</Text>
               </View>
-            </View>
+            </View> */}
 
             <View style={[Styles.flexRow, { justifyContent: 'flex-start', marginTop: 20 }]}>
               <TouchableItem
@@ -671,7 +687,7 @@ class ProfileScreen extends Component {
               <Text>50Km</Text>
             </View>
 
-            <View style={[styles.flexRow, { marginTop: 20 }]}>
+            {/* <View style={[styles.flexRow, { marginTop: 20 }]}>
               <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
                 <PickerSB
                   containerStyle={[Styles.pickerContainer, { width: (width - 50) }]}
@@ -683,7 +699,7 @@ class ProfileScreen extends Component {
                 />
                 <Text style={[Styles.inputText, { width: width - 50, borderColor: Colors.primary, borderTopWidth: 1 }]}>SOS SOCIO DE ALGUN CLUB</Text>
               </View>
-            </View>
+            </View> */}
 
             <View style={[styles.flexRow, { marginTop: 20 }]}>
               <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
@@ -727,43 +743,48 @@ class ProfileScreen extends Component {
           supportedOrientations={['portrait', 'landscape']}
         >
           <View style={{ marginTop: 22, paddingHorizontal: 20 }}>
-           <View style={[styles.flexRow, { marginTop: 20 }]}>
-             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <GooglePlacesAutocomplete
-                ref={ref => this._googlePlace = ref}
-                placeholder="INGRESE DIRECCIÓN"
-                minLength={1}
-                autoFocus={false}
-                fetchDetails
-                onPress={(data, details = null) => {
-                  this.onSetCurrentPosition(data, details);
-                }}
-                getDefaultValue={() => profile.address}
-                query={{
-                  key: 'AIzaSyDZOdwsf3vZEFQws7WldOWKeibaWiMjJCg',
-                  language: 'en',
-                  types: ['(cities)'],
-                }}
-                styles={{
-                  description: { fontSize: 14, color: Colors.second, width },
-                  predefinedPlacesDescription: { fontSize: 14, color: Colors.second, width: width, borderWidth: 1 },
-                }}
-                nearbyPlacesAPI="GooglePlacesSearch"
-                GoogleReverseGeocodingQuery={{
-                }}
-                GooglePlacesSearchQuery={{
-                }}
-                enablePoweredByContainer
-                filterReverseGeocodingByTypes={['locality',
-                  'administrative_area_level_1',
-                  'sublocality',
-                  'postal_code',
-                  'country']}
-                predefinedPlaces={[]}
-              />
-              <Text style={Styles.inputText}>INGRESE DIRECCIÓN</Text>
+            <View>
+              <Text style={Styles.title}>Tu Perfil</Text>
+              {/* <Text style={Styles.subTitle}>Completá tú dirección</Text> */}
             </View>
-          </View>
+            <View style={[styles.flexRow, { marginTop: 20 }]}>
+              <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
+                <GooglePlacesAutocomplete
+                  ref={ref => this._googlePlace = ref}
+                  placeholder="INGRESE DIRECCIÓN"
+                  minLength={1}
+                  autoFocus={false}
+                  fetchDetails
+                  onPress={(data, details = null) => {
+                    this.onSetCurrentPosition(data, details);
+                  }}
+                  getDefaultValue={() => profile.address}
+                  query={{
+                    key: 'AIzaSyDZOdwsf3vZEFQws7WldOWKeibaWiMjJCg',
+                    language: 'en',
+                    types: ['(cities)'],
+                  }}
+                  styles={{
+                    description: { fontSize: 14, color: Colors.second, width },
+                    predefinedPlacesDescription: { fontSize: 14, color: Colors.second, width, borderWidth: 1 },
+                  }}
+                  nearbyPlacesAPI="GooglePlacesSearch"
+                  GoogleReverseGeocodingQuery={{
+                  }}
+                  GooglePlacesSearchQuery={{
+                  }}
+                  enablePoweredByContainer
+                  filterReverseGeocodingByTypes={['locality',
+                    'administrative_area_level_1',
+                    'sublocality',
+                    'postal_code',
+                    'country']}
+                  predefinedPlaces={[]}
+                  caretHidden={true}
+                />
+                <Text style={Styles.inputText}>INGRESE DIRECCIÓN</Text>
+              </View>
+            </View>
            <View style={[ styles.flexRow, { marginTop: 20, marginBottom: 20 }]}>
              <TouchableItem
                pointerEvents="box-only"
@@ -795,7 +816,7 @@ class ProfileScreen extends Component {
 
 const styles = StyleSheet.create({
   containerInformationBasic: {
-    backgroundColor: 'black',
+    backgroundColor: '#393e44',
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 20,

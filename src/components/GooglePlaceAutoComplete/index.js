@@ -700,7 +700,7 @@ const GooglePlacesAutocomplete = React.createClass({
               ref="textInput"
               autoFocus={this.props.autoFocus}
               onChangeText={onChangeText ? text => {this._onChangeText(text); onChangeText(text)} : this._onChangeText}
-              style={[{fontSize: 16, flex: 1, marginHorizontal: 0, paddingBottom: Platform.OS==='android' ? 5 : 0},
+              style={[{fontSize: 16, flex: 1, marginHorizontal: 0, height: 70, paddingBottom: Platform.OS==='android' ? 5 : 0},
                 this.props.styles.textInput]
               }
               value={this.state.text}
@@ -709,6 +709,8 @@ const GooglePlacesAutocomplete = React.createClass({
               onFocus={onFocus ? () => {this._onFocus(); onFocus();} : this._onFocus}
               clearButtonMode="while-editing"
               underlineColorAndroid={this.props.underlineColorAndroid}
+              multiline={true}
+              numberOfLines={4}
             />
           {this._locationButton()}
           </View>

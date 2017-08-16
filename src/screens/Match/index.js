@@ -98,8 +98,8 @@ class MatchScreen extends Component {
       now: moment().format('DD-MM-YYYY'),
       time: moment().format('LT'),
       region: {
-        latitude: -34.6038966,
-        longitude: -58.3817433,
+        latitude: 0,
+        longitude: 0,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
@@ -229,7 +229,7 @@ class MatchScreen extends Component {
               list={pickerGameLevel}
               onSelectValue={game_level_from => this.setState({ match: Object.assign(match, { game_level_from: game_level_from.value }) })}
             />
-            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2, borderColor: Colors.primary, borderTopWidth: 1 }]}>DESDE</Text>
+            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2 }]}>DESDE</Text>
           </View>
           <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <PickerSB
@@ -240,7 +240,7 @@ class MatchScreen extends Component {
               list={pickerGameLevel}
               onSelectValue={game_level_to => this.setState({ match: Object.assign(match, { game_level_to: game_level_to.value }) })}
             />
-            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2, borderColor: Colors.primary, borderTopWidth: 1 }]}>HASTA</Text>
+            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2 }]}>HASTA</Text>
           </View>
         </View>
         <View style={[styles.flexRow, { marginTop: 20 }]}>
@@ -253,7 +253,7 @@ class MatchScreen extends Component {
               list={pickerSexo}
               onSelectValue={sexo => this.setState({ match: Object.assign(match, { sexo: sexo.value }) })}
             />
-            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2, borderColor: Colors.primary, borderTopWidth: 1 }]}>SEXO</Text>
+            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2 }]}>SEXO</Text>
           </View>
           <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <PickerSB
@@ -264,7 +264,7 @@ class MatchScreen extends Component {
               list={pickerType}
               onSelectValue={type => this.setState({ match: Object.assign(match, { type: type.value }) })}
             />
-            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2, borderColor: Colors.primary, borderTopWidth: 1 }]}>TIPO DE PARTIDO</Text>
+            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2 }]}>TIPO DE PARTIDO</Text>
           </View>
         </View>
       </View>
@@ -574,29 +574,31 @@ class MatchScreen extends Component {
                 onSelectValue={this.changeCancha.bind(this)}
               />
 
-              <Text style={[Styles.inputText, { width: width - 50, borderColor: Colors.primary, borderTopWidth: 1 }]}>CANCHAS REGISTRADAS</Text>
+              <Text style={[Styles.inputText, { width: width - 50 }]}>CANCHAS REGISTRADAS</Text>
             </View>
           </View>
 
           <View>
             {this.renderOtherClub()}
           </View>
-          <View style={{ flex: 1, height: 200}}>
-            <MapView
-              style={styles.map}
-              region={this.state.region}
-              onRegionChange={this.onRegionChange}
-            >
-              {this.state.markers && this.state.markers.map((marker, index) => (
-                <MapView.Marker
-                  key={index}
-                  coordinate={marker.latlng}
-                  title={marker.title}
-                  description={marker.description}
-                />
-              ))}
-            </MapView>
-          </View>
+          { this.state.region.latitude !== 0 &&
+            <View style={{ flex: 1, height: 200}}>
+              <MapView
+                style={styles.map}
+                region={this.state.region}
+                onRegionChange={this.onRegionChange}
+              >
+                {this.state.markers && this.state.markers.map((marker, index) => (
+                  <MapView.Marker
+                    key={index}
+                    coordinate={marker.latlng}
+                    title={marker.title}
+                    description={marker.description}
+                  />
+                ))}
+              </MapView>
+            </View>
+          }
 
           {this.renderLevel()}
           {this.renderYear()}

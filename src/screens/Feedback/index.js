@@ -22,6 +22,7 @@ import Metrics from '@theme/Metrics';
 import API from '@utils/api';
 import commonFunc from '@utils/commonFunc';
 
+const pickerSexo = [{ label: 'Masculino', value: 'male' }, { label: 'Femenino', value: 'female' }, { label: 'mixto', value: 'mixto' }];
 
 const mapStateToProps = state => ({
   user: state.user,
@@ -106,6 +107,7 @@ class FeedbackScreen extends Component {
   }
   infoMatch() {
     const { match } = this.state;
+    //let valueSexo = pickerSexo.find(ps => ps.value === match.sexo);
     if (match) {
       return (
         <View>
@@ -115,86 +117,37 @@ class FeedbackScreen extends Component {
 
           <View>
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                multiline
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.date}
-                editable={false}
-              />
+              <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{match.date}</Text>
               <Text style={[Styles.inputText]}>Fecha</Text>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                multiline
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.hour}
-                editable={false}
-              />
+              <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{match.hour}</Text>
               <Text style={[Styles.inputText]}>Hora</Text>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                multiline
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.address}
-                editable={false}
-              />
+              <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{match.address}</Text>
               <Text style={[Styles.inputText]}>Lugar</Text>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                multiline
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.game_level_from}
-                editable={false}
-              />
+              <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{match.game_level_from}</Text>
               <Text style={[Styles.inputText]}>Nivel del juego desde</Text>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                multiline
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.type}
-                editable={false}
-              />
+              <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{match.type}</Text>
               <Text style={[Styles.inputText]}>Tipo de partido</Text>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                multiline
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.years_from}
-                editable={false}
-              />
+              <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{match.years_from}</Text>
               <Text style={[Styles.inputText]}>Edad</Text>
             </View>
 
             <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <TextInput
-                multiline
-                style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.sexo}
-                editable={false}
-              />
+              <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{match.sexo}</Text>
               <Text style={[Styles.inputText]}>Sexo</Text>
             </View>
           </View>
@@ -214,14 +167,7 @@ class FeedbackScreen extends Component {
             <Text style={[Styles.inputText, { color: Colors.primary }]}>JUGADOR</Text>
           </View>
           <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-            <TextInput
-              multiline
-              style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
-              underlineColorAndroid={'transparent'}
-              placeholderTextColor="lightgrey"
-              value={game_level}
-              editable={false}
-            />
+            <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{game_level}</Text>
             <Text style={[Styles.inputText]}>Nivel declarado del jugador</Text>
           </View>
         </View>
@@ -358,11 +304,46 @@ class FeedbackScreen extends Component {
   }
 
   saveFeedback() {
-    const { feedback } = this.state;
+    const { feedback, match, user } = this.state;
 
     if (feedback.comment === '' || (feedback.has_attended === '0' && feedback.reason === '') ) {
       this.completeForm();
     }
+
+    feedback.id_user_to = user.id; // jugado
+    feedback.id_match = match.id;
+    console.log(feedback);
+    this.setState({ spinnerVisible: true });
+    fetch(`${API}/feedback/save`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.props.user.profile.token}`,
+      },
+      body: JSON.stringify(feedback)
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+      this.setState({ spinnerVisible: false });
+      Alert.alert(
+        'Atención',
+        'Se guardo correctamente.',
+        [
+          { text: 'OK', onPress: () => console.log('Complete los campos.') },
+        ],
+        { cancelable: false },
+      );
+    })
+    .catch(() => {
+      this.setState({ spinnerVisible: false });
+      Alert.alert(
+        'Atención',
+        'Hubo un error, intente más tarde.',
+        [
+          { text: 'OK', onPress: () => console.log('Complete los campos.') },
+        ],
+        { cancelable: false },
+      );
+    });
   }
 
   completeForm() {
@@ -404,7 +385,7 @@ class FeedbackScreen extends Component {
               testID="profile-available"
               delayPressIn={0}
               style={Styles.btnSave}
-              onPress={() => this.saveFeedback(this)}
+              onPress={this.saveFeedback.bind(this)}
               pressColor={Colors.primary}
             >
               <View pointerEvents="box-only">
