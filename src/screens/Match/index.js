@@ -10,7 +10,10 @@ import {
   Picker,
   Alert,
   Dimensions,
+  Slider,
+  Keyboard,
 } from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview'
 import Entypo from 'react-native-vector-icons/Entypo';
 import DatePicker from 'react-native-datepicker';
 import MapView from 'react-native-maps';
@@ -87,8 +90,8 @@ class MatchScreen extends Component {
         club_name: '',
         game_level_from: '2.5',
         game_level_to: '2.5',
-        years_from: '',
-        years_to: '',
+        years_from: '18',
+        years_to: '99',
         type: 'singles',
         sexo: 'mixto',
         about: '',
@@ -127,7 +130,6 @@ class MatchScreen extends Component {
       );
     }
 
-
     fetch(`${API}/canchas`, {
       method: 'GET',
     })
@@ -138,6 +140,11 @@ class MatchScreen extends Component {
         canchas: responseJson.canchas.filter(c => c.state === 'confirmed'),
       });
     });
+
+    this.keyboardDidShowListener = Keyboard
+      .addListener('keyboardDidShow', () => this.setState({ focus: true }));
+    this.keyboardDidHideListener = Keyboard
+      .addListener('keyboardDidHide', () => this.setState({ focus: false }));
   }
 
   renderOtherClub() {
@@ -154,6 +161,8 @@ class MatchScreen extends Component {
                 placeholderTextColor="lightgrey"
                 value={match.club_name}
                 onChangeText={club_name => this.setState({ match: Object.assign(match, { club_name }) })}
+                ref={(r) => { this._clubName = r; }}
+                returnKeyType={'next'}
               />
               <Text style={Styles.inputText}>NOMBRE DEL CLUB</Text>
             </View>
@@ -161,7 +170,6 @@ class MatchScreen extends Component {
           <View style={[styles.flexRow, { marginTop: 20 }]}>
             <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
               <GooglePlacesAutocomplete
-                ref={(ref) => this._googlePlace = ref}
                 placeholder='Indicar Dirección'
                 minLength={1}
                 autoFocus={false}
@@ -278,34 +286,44 @@ class MatchScreen extends Component {
         <View style={{marginTop: 20}}>
           <Text style={{ color: Colors.primary, fontSize: 20}}>EDAD</Text>
         </View>
-        <View style={[styles.flexRow, { marginTop: 20 }]}>
-          <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-            <TextInput
-              multiline
-              style={[Styles.input, { width: two }]}
-              keyboardType="numeric"
-              placeholder="EDAD"
-              underlineColorAndroid={'transparent'}
-              placeholderTextColor="lightgrey"
-              returnKeyType="done"
-              value={match.years_from}
-              onChangeText={(years_from) => this.setState({ match: Object.assign(match, { years_from }) })}
-            />
-            <Text style={Styles.inputText}>DESDE</Text>
+        <View style={{ marginTop: 10 }}>
+          <View style={[ Styles.flexRow ]}>
+            <Text style={[Styles.inputText, { color: 'black' }]}>DESDE</Text>
+            <Text style={[Styles.inputText, { color: '#079ac8' }]}>{match.years_from}</Text>
           </View>
-          <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-            <TextInput
-              multiline
-              style={[Styles.input, { width: two }]}
-              keyboardType="numeric"
-              placeholder="EDAD"
-              returnKeyType="done"
-              underlineColorAndroid={'transparent'}
-              placeholderTextColor="lightgrey"
-              value={match.years_to}
-              onChangeText={(years_to) => this.setState({ match: Object.assign(match, { years_to }) })}
-            />
-            <Text style={Styles.inputText}>HASTA</Text>
+        </View>
+        <View style={[styles.flexRow, Styles.borderBottomInput]}>
+          <View style={[styles.flexColumn, { flex: 1, width: width - 50 }]}>
+            <Slider
+              style={{ width: width - 50 , height: 33 }}
+              minimumValue={18}
+              maximumValue={99}
+              maximumTrackTintColor={Colors.primary}
+              minimumTrackTintColor={Colors.primary}
+              thumbTintColor={Colors.primary}
+              step={1}
+              value={parseInt(match.years_from)}
+              onValueChange={years_from => this.setState({ match: Object.assign(match, { years_from }) })} />
+          </View>
+        </View>
+        <View style={{ marginTop: 10 }}>
+          <View style={[ Styles.flexRow ]}>
+            <Text style={[Styles.inputText, { color: 'black' }]}>HASTA</Text>
+            <Text style={[Styles.inputText, { color: '#079ac8' }]}>{match.years_to}</Text>
+          </View>
+        </View>
+        <View style={[styles.flexRow, Styles.borderBottomInput]}>
+          <View style={[styles.flexColumn, { flex: 1, width: width - 50 }]}>
+            <Slider
+              style={{ width: width - 50 , height: 33 }}
+              minimumValue={18}
+              maximumValue={99}
+              maximumTrackTintColor={Colors.primary}
+              minimumTrackTintColor={Colors.primary}
+              thumbTintColor={Colors.primary}
+              step={1}
+              value={parseInt(match.years_to)}
+              onValueChange={years_to => this.setState({ match: Object.assign(match, { years_to }) })} />
           </View>
         </View>
       </View>
@@ -436,7 +454,7 @@ class MatchScreen extends Component {
     return (match.address !== '' && match.address_lat !== '' && match.address_lng !== '' && match.club_name !== '');
   }
   validYear(match) {
-    return (parseInt(match.years_from) > 18 && parseInt(match.years_to) > 18);
+    return (parseInt(match.years_from) > 17 && parseInt(match.years_to) > 18);
   }
 
   save() {
@@ -503,7 +521,13 @@ class MatchScreen extends Component {
           onPress={() => this.props.navigation.navigate('DrawerOpen')}
           title="Crear Partido"
         />
-        <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
+        <KeyboardAwareScrollView
+          keyboardDismissMode='interactive'
+          keyboardShouldPersistTaps={'never'}
+           getTextInputRefs={() => {
+             return [this._clubName, this._about];
+           }}
+           style={Styles.containerPrimary}>
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View>
             <Text style={Styles.title}>Creá un Partido</Text>
@@ -584,6 +608,9 @@ class MatchScreen extends Component {
           { this.state.region.latitude !== 0 &&
             <View style={{ flex: 1, height: 200}}>
               <MapView
+                zoomEnabled={true}
+                minZoomLevel={16}
+                maxZoomLevel={20}
                 style={styles.map}
                 region={this.state.region}
                 onRegionChange={this.onRegionChange}
@@ -613,6 +640,8 @@ class MatchScreen extends Component {
                 placeholderTextColor="lightgrey"
                 value={match.about}
                 onChangeText={about => this.setState({ match: Object.assign(match, { about }) })}
+                ref={(r) => { this._about = r; }}
+                returnKeyType={'next'}
               />
             </View>
           </View>
@@ -632,7 +661,7 @@ class MatchScreen extends Component {
               </View>
             </TouchableItem>
           </View>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </View>
     );
   }

@@ -76,7 +76,11 @@ const Styles = StyleSheet.create({
   borderInput: {
     borderBottomWidth: isAndroid ? 0.8 : StyleSheet.hairlineWidth,
     borderColor: Colors.primary,
-  }
+  },
+  borderBottomInput: {
+    borderColor: '#71767a',
+    borderBottomWidth: isAndroid ? 0.8 : StyleSheet.hairlineWidth,
+  },
 });
 
 export default Styles;

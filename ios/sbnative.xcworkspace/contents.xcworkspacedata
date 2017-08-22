@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:sbnative/Images.xcassets/Image.imageset/logo.png">
+   </FileRef>
+   <FileRef
       location = "group:sbnative.xcodeproj">
    </FileRef>
    <FileRef

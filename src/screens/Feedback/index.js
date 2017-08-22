@@ -7,14 +7,16 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  Picker,
+  Slider,
   Alert,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview'
 
 import Header from '@components/Header';
 import HeaderButton from '@components/HeaderButton';
 import TouchableItem from '@components/TouchableItem';
+import PickerSB from '@components/Picker';
 
 import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
@@ -182,62 +184,47 @@ class FeedbackScreen extends Component {
       return (
         <View>
           <View style={[ styles.flexColumn, { marginTop: 10 }]}>
-            <Picker
-              style={{ width: Metrics.buttonWidth}}
-              selectedValue={ feedback.game_level.toString()}
-              onValueChange={ game_level => this.setState({ feedback: Object.assign(feedback, { game_level }) })}
-            >
-              <Picker.Item label="2.5" value="2.5" />
-              <Picker.Item label="3.0" value="3" />
-              <Picker.Item label="3.5" value="3.5" />
-              <Picker.Item label="4.0" value="4" />
-              <Picker.Item label="4.5" value="4.5" />
-              <Picker.Item label="5.0" value="5" />
-              <Picker.Item label="5.5" value="5.5" />
-              <Picker.Item label="6.0" value="6" />
-              <Picker.Item label="6.5" value="6.5" />
-              <Picker.Item label="7.0" value="7" />
-            </Picker>
+            <Text>{feedback.game_level}</Text>
+            <Slider
+              style={{ width: Metrics.buttonWidth, height: 33 }}
+              minimumValue={2.5}
+              maximumValue={7}
+              maximumTrackTintColor={Colors.primary}
+              minimumTrackTintColor={Colors.primary}
+              thumbTintColor={Colors.primary}
+              step={0.5}
+              value={parseInt(feedback.game_level)}
+              onValueChange={game_level => this.setState({ feedback: Object.assign(feedback, { game_level }) })} />
             <Text style={Styles.inputText}>NIVEL DE JUEGO</Text>
           </View>
 
           <View style={[ styles.flexColumn, { marginTop: 10 }]}>
-            <Picker
-              style={{ width: Metrics.buttonWidth}}
-              selectedValue={ feedback.punctuality.toString()}
-              onValueChange={ punctuality => this.setState({ feedback: Object.assign(feedback, { punctuality }) })}
-            >
-              <Picker.Item label="1" value="1" />
-              <Picker.Item label="2" value="2" />
-              <Picker.Item label="3" value="3" />
-              <Picker.Item label="4" value="4" />
-              <Picker.Item label="5" value="5" />
-              <Picker.Item label="6" value="6" />
-              <Picker.Item label="7" value="7" />
-              <Picker.Item label="8" value="8" />
-              <Picker.Item label="9" value="9" />
-              <Picker.Item label="10" value="10" />
-            </Picker>
+            <Text>{feedback.punctuality}</Text>
+            <Slider
+              style={{ width: Metrics.buttonWidth, height: 33 }}
+              minimumValue={1}
+              maximumValue={10}
+              maximumTrackTintColor={Colors.primary}
+              minimumTrackTintColor={Colors.primary}
+              thumbTintColor={Colors.primary}
+              step={1}
+              value={parseInt(feedback.punctuality)}
+              onValueChange={punctuality => this.setState({ feedback: Object.assign(feedback, { punctuality }) })} />
             <Text style={Styles.inputText}>PUNTUALIDAD</Text>
           </View>
 
           <View style={[ styles.flexColumn, { marginTop: 10 }]}>
-            <Picker
-              style={{ width: Metrics.buttonWidth}}
-              selectedValue={ feedback.respect.toString()}
-              onValueChange={ respect => this.setState({ feedback: Object.assign(feedback, { respect }) })}
-            >
-              <Picker.Item label="1" value="1" />
-              <Picker.Item label="2" value="2" />
-              <Picker.Item label="3" value="3" />
-              <Picker.Item label="4" value="4" />
-              <Picker.Item label="5" value="5" />
-              <Picker.Item label="6" value="6" />
-              <Picker.Item label="7" value="7" />
-              <Picker.Item label="8" value="8" />
-              <Picker.Item label="9" value="9" />
-              <Picker.Item label="10" value="10" />
-            </Picker>
+            <Text>{feedback.respect}</Text>
+            <Slider
+              style={{ width: Metrics.buttonWidth, height: 33 }}
+              minimumValue={1}
+              maximumValue={10}
+              maximumTrackTintColor={Colors.primary}
+              minimumTrackTintColor={Colors.primary}
+              thumbTintColor={Colors.primary}
+              step={1}
+              value={parseInt(feedback.respect)}
+              onValueChange={respect => this.setState({ feedback: Object.assign(feedback, { respect }) })} />
             <Text style={Styles.inputText}>RESPETO</Text>
           </View>
         </View>
@@ -253,11 +240,13 @@ class FeedbackScreen extends Component {
           <View style={[styles.flexColumn]}>
             <Text style={Styles.inputText}>¿Cuál fue el motivo?</Text>
             <TextInput
-              style={[Styles.input, { width: Metrics.buttonWidth, borderWidth: 0.8, height: 100 }]}
+              style={[Styles.input, { width: Metrics.buttonWidth, borderWidth: StyleSheet.hairlineWidth, height: 100, textAlignVertical: 'top' }]}
               underlineColorAndroid={'transparent'}
               placeholderTextColor="lightgrey"
+              multiline
               value={feedback.reason}
               onChangeText={reason => this.setState({ profile: Object.assign(feedback, { reason }) })}
+              ref={(r) => { this._reason = r; }}
             />
           </View>
         </View>
@@ -268,6 +257,7 @@ class FeedbackScreen extends Component {
 
   renderFeedback() {
     const { feedback } = this.state;
+    const has_attended = parseInt(feedback.has_attended) === 1 ? 'SI' : 'NO';
     return (
       <View>
         <View style={Styles.flexColumn}>
@@ -275,13 +265,14 @@ class FeedbackScreen extends Component {
             INGRESA A TU CRITERIO EL NIVEL DEL JUGADOR Y COMPLETA EL RESTO DE LOS CAMPOS
           </Text>
           <View style={[styles.flexColumn]}>
-            <Picker
-              style={{ width: Metrics.buttonWidth}}
-              selectedValue={feedback.has_attended}
-              onValueChange={(has_attended) => this.setState({ profile: Object.assign(feedback, { has_attended }) })}>
-              <Picker.Item label="SI" value="1" />
-              <Picker.Item label="NO" value="0" />
-            </Picker>
+            <PickerSB
+              containerStyle={[Styles.pickerContainer, { width: Metrics.buttonWidth  }]}
+              buttonStyle={{ height: 40, justifyContent: 'center' }}
+              textStyle={{ color: 'black', fontSize: 16 }}
+              selectedValue={has_attended}
+              list={[{ label: 'SI', value: '1' }, { label: 'NO', value: '0' }]}
+              onSelectValue={option => this.setState({ profile: Object.assign(feedback, { has_attended: option.value }) })}
+            />
             <Text style={Styles.inputText}>ASISTIÓ AL PARTIDO</Text>
           </View>
           {this.renderHasAttended()}
@@ -290,11 +281,17 @@ class FeedbackScreen extends Component {
             <View style={[styles.flexColumn]}>
               <Text style={Styles.inputText}>Dejanos tu comentario...</Text>
               <TextInput
-                style={[Styles.input, { width: Metrics.buttonWidth, borderWidth: 0.8, height: 100 }]}
+                style={[Styles.input, { width: Metrics.buttonWidth, borderWidth: StyleSheet.hairlineWidth, height: 100, textAlignVertical: 'top' }]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
+                multiline
                 value={feedback.comment}
-                onChangeText={(comment) => this.setState({ feedback: Object.assign(feedback, { comment }) })}
+                onChangeText={comment => this.setState({ feedback: Object.assign(feedback, { comment }) })}
+                ref={(r) => { this._comment = r; }}
+                returnKeyType={'next'}
+                onBlur={() => console.log('blur')}
+                enablesReturnKeyAutomatically={true}
+                onKeyPress={(event) => console.log(event)}
               />
             </View>
           </View>
@@ -308,6 +305,8 @@ class FeedbackScreen extends Component {
 
     if (feedback.comment === '' || (feedback.has_attended === '0' && feedback.reason === '') ) {
       this.completeForm();
+
+      return false;
     }
 
     feedback.id_user_to = user.id; // jugado
@@ -318,6 +317,7 @@ class FeedbackScreen extends Component {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${this.props.user.profile.token}`,
+        "Content-Type": "application/json;charset=UTF-8",
       },
       body: JSON.stringify(feedback)
     })
@@ -344,6 +344,8 @@ class FeedbackScreen extends Component {
         { cancelable: false },
       );
     });
+
+    return true;
   }
 
   completeForm() {
@@ -366,7 +368,11 @@ class FeedbackScreen extends Component {
           onPress={() => navigation.navigate('MatchDetail', { match: navigation.state.params.match })}
           title="Feedback"
         />
-        <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
+        <KeyboardAwareScrollView
+          keyboardDismissMode='interactive'
+          keyboardShouldPersistTaps={'never'}
+          style={Styles.containerPrimary}
+        >
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View style={styles.centerContent}>
             <Text style={Styles.title}>Feedback</Text>
@@ -377,23 +383,25 @@ class FeedbackScreen extends Component {
             {this.renderInfoUser()}
             {this.renderFeedback()}
           </View>
-          <View style={[styles.flexRow, { marginTop: 20, marginBottom: 20 }]}>
-            <TouchableItem
-              pointerEvents="box-only"
-              accessibilityComponentType="button"
-              accessibilityTraits="button"
-              testID="profile-available"
-              delayPressIn={0}
-              style={Styles.btnSave}
-              onPress={this.saveFeedback.bind(this)}
-              pressColor={Colors.primary}
-            >
-              <View pointerEvents="box-only">
-                <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center'}]}>GUARDAR</Text>
-              </View>
-            </TouchableItem>
-          </View>
-        </ScrollView>
+          {!this.state.complete &&
+            <View style={[styles.flexRow, { marginTop: 20, marginBottom: 20 }]}>
+              <TouchableItem
+                pointerEvents="box-only"
+                accessibilityComponentType="button"
+                accessibilityTraits="button"
+                testID="profile-available"
+                delayPressIn={0}
+                style={Styles.btnSave}
+                onPress={this.saveFeedback.bind(this)}
+                pressColor={Colors.primary}
+              >
+                <View pointerEvents="box-only">
+                  <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center'}]}>GUARDAR</Text>
+                </View>
+              </TouchableItem>
+            </View>
+          }
+        </KeyboardAwareScrollView>
       </View>
     );
   }

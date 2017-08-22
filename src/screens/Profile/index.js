@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import ImagePicker from 'react-native-image-picker';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 
 import Header from '@components/Header';
 import HeaderButton from '@components/HeaderButton';
@@ -150,25 +151,13 @@ class ProfileScreen extends Component {
     })
     .then(response => response.json())
     .then((responseJson) => {
-
       this.setState({
         profile: Object.assign(user.profile, { availability: responseJson.availability.length === 0 ? availability : responseJson.availability }),
       });
     });
-  }
 
-  componentDidMount() {
-    const devices = Notifications.getDevice();
-    const { profile } = this.state;
     const self = this;
-    console.log(devices);
-    if (devices && (!profile.onesignal_app_pushToken || profile.onesignal_app_pushToken !== devices.pushToken) ) {
-      profile.onesignal_app_pushToken = devices.pushToken;
-      profile.onesignal_app_userId = devices.userId;
-      this.saveProfile(false);
-    }
-
-    if (profile.newuser && profile.newuser !== 'false') {
+    if (user.profile.address === null || user.profile.address === '' ) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const initialPosition = JSON.stringify(position);
@@ -181,11 +170,31 @@ class ProfileScreen extends Component {
           })
           console.log(position);
         },
-        error => console.log(error.message),
-        { enableHighAccuracy: false, timeout: 20000, maximumAge: 5000 },
+        (error) => {
+          console.log(error);
+          Alert.alert(
+            'Atención',
+            'No pudimos detectar tu ubicación. Activa el GPS para disfrutar mejor de Slambow',
+            [
+              { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ],
+            { cancelable: false },
+          );
+        },
+        { enableHighAccuracy: false, timeout: 30000, maximumAge: 10000 },
       );
     }
+  }
 
+  componentDidMount() {
+    const devices = Notifications.getDevice();
+    const { profile } = this.state;
+    const self = this;
+    if (devices && (!profile.onesignal_app_pushToken || profile.onesignal_app_pushToken !== devices.pushToken) ) {
+      profile.onesignal_app_pushToken = devices.pushToken;
+      profile.onesignal_app_userId = devices.userId;
+      this.saveProfile(false);
+    }
   }
 
 
@@ -242,10 +251,15 @@ class ProfileScreen extends Component {
         console.log(returnMessage);
         console.log(returnCode);
         console.log(resultData);
-
-        if (returnCode === 200) {
+        if (commonFunc.isAndroid) {
+          if (returnCode === 200) {
+            const { profile } = this.state;
+            profile.image = resultData.data;
+            this.setState({ profile });
+          }
+        } else if (returnMessage.status === 200) {
           const { profile } = this.state;
-          profile.image = resultData.data;
+          profile.image = returnMessage.data;
           this.setState({ profile });
         }
       });
@@ -453,7 +467,12 @@ class ProfileScreen extends Component {
           onPress={() => navigation.navigate('DrawerOpen')}
           title="Mi Perfil"
         />
-        <ScrollView style={[Styles.containerPrimary, { paddingHorizontal: 0 }]}>
+        <KeyboardAwareScrollView keyboardDismissMode="interactive"
+                                 keyboardShouldPersistTaps={'never'}
+                                 getTextInputRefs={() => {
+                                   return [this._about];
+                                 }}
+                                 style={[Styles.containerPrimary, { paddingHorizontal: 0 }]}>
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View>
             <Text style={Styles.title}>Tu Perfil</Text>
@@ -491,10 +510,12 @@ class ProfileScreen extends Component {
             </View>
 
             <View style={{ marginTop: 20 }}>
-              <View style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' } ]}>
+              <View style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}>
                 <Text style={[Styles.inputText, { color: 'white' }]}>NOMBRE</Text>
                 <TextInput
                   underlineColorAndroid="transparent"
+                  placeholderTextColor="lightgrey"
+                  numberOfLines={1}
                   style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textDecorationLine: 'none', textDecorationColor: 'transparent' }]}
                   value={profile.first_name}
                   onChangeText={(first_name) => this.setState({ profile: Object.assign(profile, { first_name }) })}
@@ -507,6 +528,7 @@ class ProfileScreen extends Component {
                 <Text style={[Styles.inputText, { color: 'white' }]}>APELLIDO</Text>
                 <TextInput
                   underlineColorAndroid="transparent"
+                  placeholderTextColor="lightgrey"
                   style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right' }]}
                   value={profile.last_name}
                   onChangeText={(last_name) => this.setState({ profile: Object.assign(profile, { last_name }) })}
@@ -519,6 +541,7 @@ class ProfileScreen extends Component {
                 <Text style={[Styles.inputText, { color: 'white' }]}>EMAIL</Text>
                 <TextInput
                   underlineColorAndroid="transparent"
+                  placeholderTextColor="lightgrey"
                   keyboardType="email-address"
                   style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textDecorationLine: 'none' }]}
                   value={profile.email}
@@ -530,14 +553,6 @@ class ProfileScreen extends Component {
             <View style={{ marginTop: 10 }}>
               <View style={[ Styles.flexRow ]}>
                 <Text style={[Styles.inputText, { color: 'white' }]}>SEXO</Text>
-                {/* <PickerSB
-                  containerStyle={[ Styles.inputText, { paddingBottom: 0}]}
-                  buttonStyle={{ justifyContent: 'center' }}
-                  textStyle={{ color: '#079ac8' }}
-                  selectedValue={valueSexo}
-                  list={pickerSexo}
-                  onSelectValue={this.handleChangeSexo.bind(this)}
-                /> */}
               </View>
               <View style={[ Styles.borderBottomInput ]}>
                 <View style={[ Styles.flexRow, { backgroundColor: 'black', borderRadius: 10, marginBottom: 10 }]}>
@@ -704,15 +719,19 @@ class ProfileScreen extends Component {
             <View style={[styles.flexRow, { marginTop: 20 }]}>
               <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
                 <Text style={Styles.inputText}>SOBRE MI</Text>
-                <TextInput
-                  multiline={!commonFunc.isAndroid}
-                  numberOfLines={4}
-                  style={[Styles.input, { height: 100, width: width - 50, borderWidth: 1, textAlignVertical: 'top' }]}
-                  underlineColorAndroid={'transparent'}
-                  placeholderTextColor="lightgrey"
-                  value={profile.about}
-                  onChangeText={(about) => this.setState({ profile: Object.assign(profile, { about }) })}
-                />
+                <View>
+                  <TextInput
+                    multiline={!commonFunc.isAndroid}
+                    numberOfLines={4}
+                    style={[Styles.input, { height: 100, width: width - 50, borderWidth: 1, textAlignVertical: 'top' }]}
+                    underlineColorAndroid={'transparent'}
+                    placeholderTextColor="lightgrey"
+                    value={profile.about}
+                    onChangeText={(about) => this.setState({ profile: Object.assign(profile, { about }) })}
+                    ref={(r) => { this._about = r; }}
+                    returnKeyType={'go'}
+                  />
+                </View>
               </View>
             </View>
 
@@ -733,7 +752,7 @@ class ProfileScreen extends Component {
               </TouchableItem>
             </View>
           </View>
-        </ScrollView>
+        </KeyboardAwareScrollView>
 
         <Modal
           animationType={"slide"}
@@ -742,7 +761,9 @@ class ProfileScreen extends Component {
           onRequestClose={() => console.log('close')}
           supportedOrientations={['portrait', 'landscape']}
         >
-          <View style={{ marginTop: 22, paddingHorizontal: 20 }}>
+          <KeyboardAwareScrollView keyboardDismissMode="interactive"
+                                   keyboardShouldPersistTaps={'always'}
+                                   style={{ marginTop: 22, paddingHorizontal: 20 }}>
             <View>
               <Text style={Styles.title}>Tu Perfil</Text>
               {/* <Text style={Styles.subTitle}>Completá tú dirección</Text> */}
@@ -766,7 +787,7 @@ class ProfileScreen extends Component {
                   }}
                   styles={{
                     description: { fontSize: 14, color: Colors.second, width },
-                    predefinedPlacesDescription: { fontSize: 14, color: Colors.second, width, borderWidth: 1 },
+                    predefinedPlacesDescription: { fontSize: 14, color: Colors.second, width, borderWidth: 1, height: 32 },
                   }}
                   nearbyPlacesAPI="GooglePlacesSearch"
                   GoogleReverseGeocodingQuery={{
@@ -801,7 +822,7 @@ class ProfileScreen extends Component {
                </View>
              </TouchableItem>
            </View>
-         </View>
+         </KeyboardAwareScrollView>
         </Modal>
 
         <ModalAvailable

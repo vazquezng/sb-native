@@ -17,6 +17,7 @@ import PlayMatchScreen from './screens/Play/PlayMatch';
 import MatchHistoryScreen from './screens/MatchHistory';
 import MatchDetailScreen from './screens/MatchDetail';
 import MyCalificationsScreen from './screens/MyCalifications';
+import MyCalificationsDetailsScreen from './screens/MyCalifications/details';
 import FeedbackScreen from './screens/Feedback';
 import SuggestedPlayersScreen from './screens/SuggestedPlayers';
 import ViewPlayerScreen from './screens/Profile/infoPlayer';
@@ -118,6 +119,19 @@ const AuthNavigationDrawer = lang => DrawerNavigator({
   },
   MyCalifications: {
     screen: MyCalificationsScreen,
+    navigationOptions: {
+      drawerLabel: ({ focused }) => (
+        <DrawerItem
+          focused={focused}
+          label="Mis Calificaciones"
+          icon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
+        />
+      ),
+    },
+  },
+  MyCalificationsDetails: {
+    screen: MyCalificationsDetailsScreen,
     navigationOptions: {
       drawerLabel: ({ focused }) => (
         <DrawerItem

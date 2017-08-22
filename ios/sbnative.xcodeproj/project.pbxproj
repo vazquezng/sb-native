@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -18,6 +19,7 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		140DFA071F44AB9700BF4F58 /* libRNTwitterSignIn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 14333AD31F2B1BD200C956F7 /* libRNTwitterSignIn.a */; };
 		1430EEFC1F2B1D81006ED914 /* RobotoMedium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1430EEF81F2B1D81006ED914 /* RobotoMedium.ttf */; };
 		1430EEFD1F2B1D82006ED914 /* RobotoLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1430EEF91F2B1D81006ED914 /* RobotoLight.ttf */; };
 		1430EEFE1F2B1D82006ED914 /* OpenSansRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1430EEFA1F2B1D81006ED914 /* OpenSansRegular.ttf */; };
@@ -31,6 +33,7 @@
 		147860661F37B803009ED3FF /* TwitterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 147860651F37B803009ED3FF /* TwitterKit.framework */; };
 		147860681F37BCB8009ED3FF /* Images-2.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 147860671F37BCB8009ED3FF /* Images-2.xcassets */; };
 		1478606A1F381ACB009ED3FF /* FileUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 147860691F381ACB009ED3FF /* FileUpload.m */; };
+		1492845F1F462D8E00A8FD8C /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 1492845E1F462D8E00A8FD8C /* logo.png */; };
 		2EBB5B8853A54C8E9E47E77F /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7FFE325662A449F8A471EC74 /* EvilIcons.ttf */; };
 		2F4978BCD6A6429BAD296CEC /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CA054E14BC054A7D81063F80 /* libRNVectorIcons.a */; };
 		329E41CFACAE4A7EBB58DA1D /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71AB628542A74D2EB830521C /* Foundation.ttf */; };
@@ -331,6 +334,7 @@
 		147860651F37B803009ED3FF /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwitterKit.framework; path = Pods/TwitterKit/iOS/TwitterKit.framework; sourceTree = "<group>"; };
 		147860671F37BCB8009ED3FF /* Images-2.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = "Images-2.xcassets"; path = "sbnative/Images-2.xcassets"; sourceTree = "<group>"; };
 		147860691F381ACB009ED3FF /* FileUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileUpload.m; path = "../node_modules/react-native-upload-file/FileUpload.m"; sourceTree = "<group>"; };
+		1492845E1F462D8E00A8FD8C /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = sbnative/Images.xcassets/Image.imageset/logo.png; sourceTree = "<group>"; };
 		2DBC7E7299AB4B69AF23F844 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		53241D2C89B44547B661FE1C /* libReact.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReact.a; sourceTree = "<group>"; };
 		5672952C50F94CF9BA1EE963 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
@@ -366,6 +370,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				140DFA071F44AB9700BF4F58 /* libRNTwitterSignIn.a in Frameworks */,
 				147860611F3785A2009ED3FF /* FBSDKShareKit.framework in Frameworks */,
 				1478605F1F3782EA009ED3FF /* FBSDKCoreKit.framework in Frameworks */,
 				147860601F3782EA009ED3FF /* FBSDKLoginKit.framework in Frameworks */,
@@ -627,6 +632,7 @@
 			isa = PBXGroup;
 			children = (
 				147860691F381ACB009ED3FF /* FileUpload.m */,
+				1492845E1F462D8E00A8FD8C /* logo.png */,
 				13B07FAE1A68108700A75B9A /* sbnative */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
@@ -1050,6 +1056,7 @@
 			files = (
 				1430EEFC1F2B1D81006ED914 /* RobotoMedium.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				1492845F1F462D8E00A8FD8C /* logo.png in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				4462EBAE386144E7A08B1702 /* Entypo.ttf in Resources */,
 				1430EEFD1F2B1D82006ED914 /* RobotoLight.ttf in Resources */,
@@ -1163,7 +1170,6 @@
 			baseConfigurationReference = 11F8363160DB660978717018 /* Pods-sbnative.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1192,9 +1198,7 @@
 				INFOPLIST_FILE = sbnative/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1211,7 +1215,6 @@
 			baseConfigurationReference = 04771BDD59D5AD1BB1EE5044 /* Pods-sbnative.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1239,9 +1242,7 @@
 				INFOPLIST_FILE = sbnative/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
