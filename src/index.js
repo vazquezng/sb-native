@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { AsyncStorage, View, Image, Platform } from 'react-native';
-import { NavigationActions } from 'react-navigation';
+import { AsyncStorage, View, Image } from 'react-native';
 import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import SplashScreen from 'react-native-splash-screen';
 
 import store from './store';
-import AppNavigator from './AppNavigator';
+import AppWithNavigationState from './AppNavigator';
 
 import Notifications from '@utils/Notifications';
 
@@ -30,7 +29,7 @@ export default class App extends Component {
       this.hideSplash();
       return (
         <Provider store={store}>
-          <AppNavigator />
+          <AppWithNavigationState />
         </Provider>
       );
     }

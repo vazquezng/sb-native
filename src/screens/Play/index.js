@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 
+import { setScreenMain } from '@store/screen/';
+
 import Header from '@components/Header';
 import HeaderButton from '@components/HeaderButton';
 import TouchableItem from '@components/TouchableItem';
@@ -21,17 +23,18 @@ import Colors from '@theme/Colors';
 import API from '@utils/api';
 import commonFunc from '@utils/commonFunc';
 
-const { width } = Dimensions.get('window');
-
-const three = ( (width - 40) / 3) - 5;
-const two = ( (width - 40) / 2) - 5;
+const two = ( (Dimensions.get('window') - 40) / 2) - 5;
 const fontRegular = Platform.OS === 'ios' ? 'Cookie' : 'CookieRegular';
 
 const mapStateToProps = state => ({
   user: state.user,
 });
 
-@connect(mapStateToProps)
+const mapDispatchToProps = dispatch => ({
+  onSetScreenMain: main => dispatch(setScreenMain(main)),
+});
+
+@connect(mapStateToProps, mapDispatchToProps)
 class PlayScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Quiero Jugar',
@@ -59,6 +62,8 @@ class PlayScreen extends Component {
   }
 
   componentWillMount() {
+    this.props.onSetScreenMain(false);
+
     fetch(`${API}/match`, {
       method: 'GET',
       headers: {
@@ -134,7 +139,7 @@ class PlayScreen extends Component {
           onPress={() => this.props.navigation.navigate('DrawerOpen')}
           title="Quiero Jugar"
         />
-        <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
+        <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="never">
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
             <Text style={Styles.title}>Quiero Jugar</Text>

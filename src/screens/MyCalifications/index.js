@@ -21,9 +21,6 @@ import Metrics from '@theme/Metrics';
 import commonFunc from '@utils/commonFunc';
 import API from '@utils/api';
 
-const fontRegular = Platform.OS === 'ios' ? 'Cookie' : 'CookieRegular';
-const fontRobotoLight = Platform.OS === 'ios' ? 'OpenSans' : 'RobotoLight';
-
 const mapStateToProps = state => ({
   user: state.user,
 });
@@ -107,12 +104,12 @@ class MyCalificationsScreen extends Component {
             <Text style={{ color: Colors.primary}}>{feedback.name}</Text>
           </View>
           <View>
-            <Text style={{ fontFamily: fontRegular, fontSize: 14, color: '#000000' }}>
+            <Text style={{ fontFamily: commonFunc.fontRegular, fontSize: 14, color: '#000000' }}>
               {feedback.date}
             </Text>
           </View>
           <View>
-            <Text style={{ fontFamily: fontRegular, fontSize: 14, color: '#000000' }}>
+            <Text style={{ fontFamily: commonFunc.fontRegular, fontSize: 14, color: '#000000' }}>
               {feedback.comment}
             </Text>
           </View>
@@ -175,7 +172,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   feedbackContainer: {
-    width: Metrics.buttonWidth,
+    width: Metrics.width,
     borderColor: Colors.primary,
     borderWidth: commonFunc.isAndroid ? 0.8 : StyleSheet.hairlineWidth,
     paddingHorizontal: 10,

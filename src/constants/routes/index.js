@@ -3,7 +3,8 @@ const isAuthRoutes = [
   'Match',
   'Play',
   'MatchHistory',
-  'MyCalifications'
+  'MyCalifications',
+  'SearchUsers',
 ];
 
 export default {

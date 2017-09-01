@@ -73,6 +73,12 @@ const Styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },
+  centerContent: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   borderInput: {
     borderBottomWidth: isAndroid ? 0.8 : StyleSheet.hairlineWidth,
     borderColor: Colors.primary,

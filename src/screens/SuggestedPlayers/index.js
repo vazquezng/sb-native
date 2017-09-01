@@ -3,17 +3,18 @@ import { connect } from 'react-redux';
 import {
   ScrollView,
   View,
-  Image,
   StyleSheet,
   Text,
-  BackHandler,
   Alert,
 } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
+import SwipeCards from 'react-native-swipe-cards';
 
 import Header from '@components/Header';
 import HeaderButton from '@components/HeaderButton';
 import TouchableItem from '@components/TouchableItem';
+
+import Card from './components/Card';
+import NoMoreCards from './components/NoMoreCards';
 
 import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
@@ -138,17 +139,11 @@ class SuggestedPlayersScreen extends Component {
       });
     });
   }
-
-  renderNotPlayers() {
-    if (this.state.players.length === 0) {
-      return (
-        <View style={{ justifyContent: 'center', alignItems: 'center', selfAlign: 'center' }}>
-          <Text style={[Styles.subtitle, { textAlign: 'center', selfAlign: 'center' }]}>No se encontraron usuarios con las especificaciones</Text>
-        </View>
-      );
-    }
-
-    return null;
+  handleYup (player) {
+    this.invite(player.id);
+  }
+  handleNope (player) {
+    this.clearUser()
   }
 
   renderPlayers() {
@@ -157,45 +152,6 @@ class SuggestedPlayersScreen extends Component {
     }
 
     return null;
-  }
-
-  renderPlayer(player, index) {
-    const imageURI = player && player.image ? player.image : 'http://web.slambow.com/img/profile/profile-blank.png';
-    return (
-      <View key={index} style={[Styles.flexColumn, { borderColor: Colors.second, borderWidth: 0.8, borderRadius: 50, paddingHorizontal: 10, paddingTop: 10, paddingBottom: 10 }]}>
-        <TouchableItem
-          onPress={() => this.props.navigation.navigate('ViewPlayer', { user: player.id, backName: 'SuggestedPlayers', backParams: { match: this.props.navigation.state.params.match } })}
-        >
-          <View style={{ marginBottom: 10 }}>
-            <Image
-              source={{ uri: imageURI }} style={{ width: 160,
-                height: 160,
-                borderRadius: 80,
-                borderTopLeftRadius: 100,
-                borderTopRightRadius: 100,
-                borderBottomLeftRadius: 100,
-                borderBottomRightRadius: 100 }}
-            />
-          </View>
-        </TouchableItem>
-        <View style={{ backgroundColor: 'rgba(204, 204, 208, 0.3)', paddingHorizontal: 10, paddingTop: 5, paddingBottom: 5, width: 100, marginBottom: 10 }}>
-          <Text style={{ color: Colors.primary, textAlign: 'center' }}>{player.first_name}</Text>
-          <Text style={{ textAlign: 'center' }}>{player.last_name}</Text>
-        </View>
-        <View style={{ backgroundColor: 'rgba(204, 204, 208, 0.3)', paddingHorizontal: 10, paddingTop: 5, paddingBottom: 5, width: 100, marginBottom: 10 }}>
-          <Text style={{ color: Colors.primary, textAlign: 'center' }}>Nivel</Text>
-          <Text style={{ textAlign: 'center' }}>{player.game_level}</Text>
-        </View>
-        <View style={[Styles.flexRow, { justifyContent: 'space-between', flex: 1 }]}>
-          <TouchableItem onPress={() => this.clearUser()} style={{ marginRight: 10 }}>
-            <Entypo name="circle-with-cross" size={30} />
-          </TouchableItem>
-          <TouchableItem onPress={() => this.invite(player.id)} style={{ marginLeft: 10 }}>
-            <Entypo name="circle-with-plus" size={30} style={{ color: Colors.primary }} />
-          </TouchableItem>
-        </View>
-      </View>
-    );
   }
 
   render() {
@@ -208,15 +164,28 @@ class SuggestedPlayersScreen extends Component {
           onPress={() => navigation.navigate(params.backName, { ...params.backParams })}
           title="Queres invitar a alguien?"
         />
-        <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
+        <View style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View style={styles.centerContent}>
             <Text style={Styles.title}>Partido</Text>
-            <Text style={[Styles.subtitle, { textAlign: 'center' }]}>Encontra un compañero/rival</Text>
+            <Text style={[Styles.subtitle, { textAlign: 'center' }]}>
+              Encontra tu compañero/rival. Para enviar invitación, desliza el dedo sobre el usuario hacia la derecha. Para ver otro, desliza para la izquierda
+            </Text>
           </View>
-          {this.renderNotPlayers()}
-          {this.renderPlayers()}
-        </ScrollView>
+          <SwipeCards
+            cards={this.state.players}
+            loop={false}
+            showYup={false}
+            showNope={false}
+            onClickHandler={() => {}}
+            dragY={false}
+
+            renderCard={ (cardData) => <Card {...cardData} navigation={this.props.navigation} clearUser={this.clearUser.bind(this)} invite={this.invite.bind(this)} />}
+            renderNoMoreCards={() => <NoMoreCards />}
+            handleYup={this.handleYup.bind(this)}
+            handleNope={this.handleNope.bind(this)}
+          />
+        </View>
       </View>
     );
   }

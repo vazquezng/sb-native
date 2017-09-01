@@ -10,19 +10,20 @@ const defaultPadding = 20;
 const defaultComponentHeight = 45;
 
 const metrics = {
-  screenWidth: screenWidth,
-  screenHeight: screenHeight,
+  screenWidth,
+  screenHeight,
 
   navBarHeight: 60,
   tabHeight: 50,
 
-  defaultMargin: defaultMargin,
-  defaultPadding: defaultPadding,
+  defaultMargin,
+  defaultPadding,
 
-  defaultComponentHeight:defaultComponentHeight,
-  defaultTextPaddingLeft: Platform.OS === 'ios'? 0 : -10,
-  buttonWidth: screenWidth - defaultPadding * 2,
+  defaultComponentHeight,
+  defaultTextPaddingLeft: Platform.OS === 'ios' ? 0 : -10,
+  buttonWidth: screenWidth - (defaultPadding * 2),
   buttonHeight: defaultComponentHeight,
+  width: screenWidth - (defaultPadding * 2),
 };
 
 export default metrics;

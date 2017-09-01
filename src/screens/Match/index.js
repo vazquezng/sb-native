@@ -114,11 +114,13 @@ class MatchScreen extends Component {
         title: '',
         description: '',
       }],
+      inviteUser: null,
     };
   }
 
   componentWillMount() {
     const { user, navigation } = this.props;
+
     if (!user.profile.complete) {
       Alert.alert(
         'Error',
@@ -140,11 +142,202 @@ class MatchScreen extends Component {
         canchas: responseJson.canchas.filter(c => c.state === 'confirmed'),
       });
     });
+    console.log(navigation.state.params);
+    if (navigation.state.params && navigation.state.params.inviteUser) {
+      this.setState({
+        inviteUser: navigation.state.params.inviteUser,
+      });
+    } else {
+      this.setState({
+        inviteUser: null,
+      });
+    }
+    this.props.navigation.setParams({ inviteUser: null });
+  }
 
-    this.keyboardDidShowListener = Keyboard
-      .addListener('keyboardDidShow', () => this.setState({ focus: true }));
-    this.keyboardDidHideListener = Keyboard
-      .addListener('keyboardDidHide', () => this.setState({ focus: false }));
+  changeCancha(canchaOption) {
+    const { match } = this.state;
+    const idCancha = canchaOption.value;
+    match.id_cancha = idCancha;
+    if (idCancha !== '0') {
+      const cancha = this.state.canchas.find(c => c.id === parseInt(idCancha));
+      match.address = cancha.address;
+      match.address_lat = cancha.address_lat;
+      match.address_lng = cancha.address_lng;
+      match.club_name = cancha.name;
+      const region = {
+        latitude: parseFloat(cancha.address_lat),
+        longitude: parseFloat(cancha.address_lng),
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      };
+      const markers = [{
+        latlng: {
+          latitude: parseFloat(cancha.address_lat),
+          longitude: parseFloat(cancha.address_lng),
+        },
+        title: cancha.name,
+        description: cancha.about,
+      }];
+
+      this.setState({ match, region, markers });
+    } else {
+      match.address = '';
+      match.address_lat = '';
+      match.address_lng = '';
+      match.club_name = '';
+      this.setState({ match });
+    }
+  }
+
+  onSetCurrentPosition(data, details) {
+    const { navigation } = this.props;
+    const { match } = this.state;
+
+    if (details && details.address_components) {
+      console.log(details);
+      match.address = details && details.formatted_address ? details.formatted_address : match.address;
+      match.address_lat = details && details.geometry ? details.geometry.location.lat : match.address_lat;
+      match.address_lng = details && details.geometry ? details.geometry.location.lng : match.address_lng;
+
+      const region = {
+        latitude: parseFloat(match.address_lat),
+        longitude: parseFloat(match.address_lng),
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      };
+      const markers = [{
+        latlng: {
+          latitude: parseFloat(match.address_lat),
+          longitude: parseFloat(match.address_lng),
+        },
+        title: match.club_name,
+        description: '',
+      }];
+
+      this.setState({ match, region, markers });
+
+      this.setState({ match });
+    }
+  }
+
+  validTime(hour) {
+    hour = new Date(moment(hour,'HH:mm'));
+    if (hour.getHours() < 8 || hour.getHours() > 23) {
+      Alert.alert(
+        'Error',
+        'El partido se debe jugar entre las 8 y las 23hs.',
+        [
+          { text: 'OK', onPress: () => console.log('OK') },
+        ],
+        { cancelable: false },
+      );
+      // this.toaster.pop({type:'info', body:'El partido se debe jugar entre las 8 y las 23hs.'});
+      return false;
+    }
+
+    if (hour.getMinutes() !== 0 && hour.getMinutes() !== 30) {
+      Alert.alert(
+        'Error',
+        'En la hora del partido, solo se admiten intervalos de 30 minutos.',
+        [
+          { text: 'OK', onPress: () => console.log('OK') },
+        ],
+        { cancelable: false },
+      );
+      // this.toaster.pop({type:'info', body:'En la hora del partido, solo se admiten intervalos de 30 minutos.'});
+      // mahour = new Date(moment('15:30', 'HH:mm'));
+      return false;
+    }
+    return true;
+  }
+
+  validateDate(match) {
+    const now = new Date();
+    const date = new Date(moment(match.date));
+    if (date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth()
+        && date.getDate() === now.getDate() && match.hour < now) {
+      Alert.alert(
+        'Error',
+        'La fecha y/o hora ya pasarón.',
+        [
+          { text: 'OK', onPress: () => console.log('OK') },
+        ],
+        { cancelable: false },
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  validDateHour(match) {
+    return (this.validateDate(match) && this.validTime(match.hour));
+  }
+  validCancha(match) {
+    return (match.address !== '' && match.address_lat !== '' && match.address_lng !== '' && match.club_name !== '');
+  }
+  validYear(match) {
+    return (parseInt(match.years_from) > 17 && parseInt(match.years_to) > 18);
+  }
+
+  save() {
+    const { match, inviteUser } = this.state;
+    hour = new Date(moment(match.hour,'HH:mm'));
+    if (this.validDateHour(match)) {
+      if (this.validCancha(match) && this.validYear(match)) {
+        this.setState({ spinnerVisible: true }, () => {
+          fetch(`${API}/match`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${this.props.user.profile.token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(Object.assign(match, { hour: hour.toLocaleTimeString() })),
+          })
+          .then(response => response.json())
+          .then((responseJson) => {
+            if (inviteUser) {
+              const params = { user_id: inviteUser, match_id: responseJson.match_id };
+              fetch(`${API}/match/invite`, {
+                method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${this.props.user.profile.token}`,
+                  'Content-Type': 'application/json;charset=UTF-8',
+                },
+                body: JSON.stringify(params),
+              })
+              .then(() => this.createMatchSuccess(responseJson.match_id));
+            } else {
+              this.createMatchSuccess(responseJson.match_id);
+            }
+          });
+        });
+      } else {
+        Alert.alert(
+          'Error',
+          'Complete todos los campos.',
+          [
+            { text: 'OK', onPress: () => console.log('OK') },
+          ],
+          { cancelable: false },
+        );
+      }
+    }
+  }
+
+  createMatchSuccess(idMatch) {
+    this.setState({
+      spinnerVisible: false,
+    });
+    Alert.alert(
+      'Atención',
+      'Se guardo correctamente el partido.',
+      [
+        { text: 'OK', onPress: () => this.props.navigation.navigate('SuggestedPlayers', { match: idMatch, backName: 'MatchDetail', backParams: { match: idMatch } }) },
+      ],
+      { cancelable: false },
+    );
   }
 
   renderOtherClub() {
@@ -329,178 +522,6 @@ class MatchScreen extends Component {
       </View>
     );
   }
-
-
-  changeCancha(canchaOption) {
-    const { match } = this.state;
-    const idCancha = canchaOption.value;
-    match.id_cancha = idCancha;
-    if (idCancha !== '0') {
-      const cancha = this.state.canchas.find(c => c.id === parseInt(idCancha));
-      match.address = cancha.address;
-      match.address_lat = cancha.address_lat;
-      match.address_lng = cancha.address_lng;
-      match.club_name = cancha.name;
-      const region = {
-        latitude: parseFloat(cancha.address_lat),
-        longitude: parseFloat(cancha.address_lng),
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      };
-      const markers = [{
-        latlng: {
-          latitude: parseFloat(cancha.address_lat),
-          longitude: parseFloat(cancha.address_lng),
-        },
-        title: cancha.name,
-        description: cancha.about,
-      }];
-
-      this.setState({ match, region, markers });
-    } else {
-      match.address = '';
-      match.address_lat = '';
-      match.address_lng = '';
-      match.club_name = '';
-      this.setState({ match });
-    }
-  }
-
-  onSetCurrentPosition(data, details) {
-    const { navigation } = this.props;
-    const { match } = this.state;
-
-    if (details && details.address_components) {
-      console.log(details);
-      match.address = details && details.formatted_address ? details.formatted_address : match.address;
-      match.address_lat = details && details.geometry ? details.geometry.location.lat : match.address_lat;
-      match.address_lng = details && details.geometry ? details.geometry.location.lng : match.address_lng;
-
-      const region = {
-        latitude: parseFloat(match.address_lat),
-        longitude: parseFloat(match.address_lng),
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      };
-      const markers = [{
-        latlng: {
-          latitude: parseFloat(match.address_lat),
-          longitude: parseFloat(match.address_lng),
-        },
-        title: match.club_name,
-        description: '',
-      }];
-
-      this.setState({ match, region, markers });
-
-      this.setState({ match });
-    }
-  }
-
-  validTime(hour) {
-    hour = new Date(moment(hour,'HH:mm'));
-    if (hour.getHours() < 8 || hour.getHours() > 23) {
-      Alert.alert(
-        'Error',
-        'El partido se debe jugar entre las 8 y las 23hs.',
-        [
-          { text: 'OK', onPress: () => console.log('OK') },
-        ],
-        { cancelable: false },
-      );
-      // this.toaster.pop({type:'info', body:'El partido se debe jugar entre las 8 y las 23hs.'});
-      return false;
-    }
-
-    if (hour.getMinutes() !== 0 && hour.getMinutes() !== 30) {
-      Alert.alert(
-        'Error',
-        'En la hora del partido, solo se admiten intervalos de 30 minutos.',
-        [
-          { text: 'OK', onPress: () => console.log('OK') },
-        ],
-        { cancelable: false },
-      );
-      // this.toaster.pop({type:'info', body:'En la hora del partido, solo se admiten intervalos de 30 minutos.'});
-      // mahour = new Date(moment('15:30', 'HH:mm'));
-      return false;
-    }
-    return true;
-  }
-
-  validateDate(match) {
-    const now = new Date();
-    const date = new Date(moment(match.date));
-    if (date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth()
-        && date.getDate() === now.getDate() && match.hour < now) {
-      Alert.alert(
-        'Error',
-        'La fecha y/o hora ya pasarón.',
-        [
-          { text: 'OK', onPress: () => console.log('OK') },
-        ],
-        { cancelable: false },
-      );
-      return false;
-    }
-
-    return true;
-  }
-
-  validDateHour(match) {
-    return (this.validateDate(match) && this.validTime(match.hour));
-  }
-  validCancha(match) {
-    return (match.address !== '' && match.address_lat !== '' && match.address_lng !== '' && match.club_name !== '');
-  }
-  validYear(match) {
-    return (parseInt(match.years_from) > 17 && parseInt(match.years_to) > 18);
-  }
-
-  save() {
-    const { match } = this.state;
-    hour = new Date(moment(match.hour,'HH:mm'));
-    if (this.validDateHour(match)) {
-      if (this.validCancha(match) && this.validYear(match)) {
-        this.setState({ spinnerVisible: true }, () => {
-          fetch(`${API}/match`, {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${this.props.user.profile.token}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(Object.assign(match, { hour: hour.toLocaleTimeString() })),
-          })
-          .then(response => response.json())
-          .then((responseJson) => {
-            console.log(responseJson);
-            this.setState({
-              spinnerVisible: false,
-            });
-            Alert.alert(
-              'Atención',
-              'Se guardo correctamente el partido.',
-              [
-                { text: 'OK', onPress: () => this.props.navigation.navigate('SuggestedPlayers', { match: responseJson.match_id, backName: 'MatchDetail', backParams: { match: responseJson.match_id } }) },
-              ],
-              { cancelable: false },
-            );
-            // this.props.navigation.navigate('SuggestedPlayers', { match: responseJson.match_id })
-          });
-        });
-      } else {
-        Alert.alert(
-          'Error',
-          'Complete todos los campos.',
-          [
-            { text: 'OK', onPress: () => console.log('OK') },
-          ],
-          { cancelable: false },
-        );
-      }
-    }
-  }
-
 
   render() {
     const { navigation } = this.props;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, Platform } from 'react-native';
+import { View, Text, Image, StyleSheet, Platform, BackHandler, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { DrawerItems } from 'react-navigation';
 import compose from 'recompose/compose';
@@ -33,22 +33,29 @@ export default class DrawerContent extends Component {
     firstTime: true,
   }
 
-  componentWillMount() {
-    const { navigation } = this.props;
-    // this.notifications = new Notifications(navigation);
-
-    if (this.state.firstTime && !this.props.user.isAuth) {
-      this.setState({ firstTime: false });
-      // navigation.navigate('Login');
-    }
-  }
-
   componentDidMount() {
-    // this.notifications.on();
-  }
-
-  componentWillUnmount() {
-    // this.notifications.off();
+    const { navigation } = this.props;
+    console.log(this.props.navigation);
+    BackHandler.removeEventListener('hardwareBackPress', () => {
+      console.log('hardwareBackPress');
+    });
+    BackHandler.addEventListener('hardwareBackPress', () => {
+      console.log(this.props.navigation);
+      if (screen.main) {
+        Alert.alert(
+          'Atención',
+          'Desea salir de la aplicación?',
+          [
+            { text: 'NO', onPress: () => false },
+            { text: 'SI', onPress: () => BackHandler.exitApp() },
+          ],
+          { cancelable: true },
+        );
+      } else {
+        navigation.goBack();
+      }
+      return false;
+    });
   }
 
   getFilteredRoutes = () => {

@@ -12,16 +12,16 @@ import {
   Platform,
   Linking,
 } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
-import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
-// import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
+import { FBLoginManager } from 'react-native-facebook-login';
 import Carousel from 'react-native-looped-carousel';
 
 import TouchableItem from '@components/TouchableItem';
+import commonFunc from '@utils/commonFunc';
 
 const { width, height } = Dimensions.get('window');
 const { RNTwitterSignIn } = NativeModules;
 
+import GoogleService from '@utils/google';
 import { login } from '@store/user/actions';
 
 const Constants = {
@@ -160,15 +160,44 @@ class LoginScreen extends Component {
   }
 
   _googleSignIn() {
-    // GoogleSignin.signIn()
-    // .then((user) => {
-    //   console.log(user);
-    //   this.setState({ user });
-    // })
-    // .catch((err) => {
-    //   console.log('WRONG SIGNIN', err);
-    // })
-    // .done();
+    GoogleService.signIn()
+    .then((user) => {
+      console.log(user);
+      fetch('http://api.slambow.com/api/v1/auth/google', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          image: user.photoURL,
+          email: user.email,
+          accessToken: user.accessToken,
+        }),
+      })
+      .then(response => response.json())
+      .then((responseJson) => {
+        this.props.login(this.standar(responseJson));
+        this.setState({
+          spinnerVisible: false,
+        }, () => {
+          this.goProfile();
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        this.setState({
+          spinnerVisible: false,
+        });
+      });
+    })
+    .catch((err) => {
+      console.log('WRONG SIGNIN', err);
+    })
+    .done(err => console.log('WRONG SIGNIN', err));
   }
 
   standar(profile) {
@@ -206,6 +235,7 @@ class LoginScreen extends Component {
     const { navigation } = this.props;
     return (
       <View style={{ flex: 1 }} onLayout={this._onLayoutDidChange}>
+        {commonFunc.renderSpinner(this.state.spinnerVisible)}
         <Carousel
           style={this.state.size}
           autoplay={false}
@@ -260,16 +290,25 @@ class LoginScreen extends Component {
             style={{ backgroundColor: '#3b5998', height: 30, width: 200, marginBottom: 10, borderRadius: 5 }}
             onPress={this._facebookLogin.bind(this)}
           >
-            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',}}>
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
               <Text style={{ color: 'white', fontSize: 14, backgroundColor: 'transparent'  }}>Login with Facebook</Text>
             </View>
           </TouchableItem>
           <TouchableItem
-            style={{ backgroundColor: '#5baceb', height: 30, width: 200, borderRadius: 5 }}
+            style={{ backgroundColor: '#5baceb', height: 30, width: 200, borderRadius: 5, marginBottom: 10 }}
             onPress={this._twitterSignIn.bind(this)}
           >
-            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',}}>
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
               <Text style={{ color: 'white', fontSize: 14, backgroundColor: 'transparent'  }}>Login with Twitter</Text>
+            </View>
+          </TouchableItem>
+
+          <TouchableItem
+            style={{ backgroundColor: 'red', height: 30, width: 200, borderRadius: 5 }}
+            onPress={this._googleSignIn.bind(this)}
+          >
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',}}>
+              <Text style={{ color: 'white', fontSize: 14, backgroundColor: 'transparent'  }}>Login with Google</Text>
             </View>
           </TouchableItem>
         </View>

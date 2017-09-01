@@ -57,6 +57,7 @@ class ViewPlayerScreen extends Component {
     this.state = {
       spinnerVisible: false,
       profile: null,
+      inviteMatch: false,
     };
   }
 
@@ -74,6 +75,94 @@ class ViewPlayerScreen extends Component {
         profile: responseJson.user,
       });
     });
+
+    if (navigation.state.params.inviteMatch) {
+      this.setState({
+        inviteMatch: true,
+      });
+    }
+  }
+
+  renderInformationBasic(profile) {
+    if (!profile) {
+      return null;
+    }
+
+    return (
+      <View style={styles.containerInformationBasic}>
+        <View style={[Styles.flexRow, { justifyContent: 'center' }]}>
+          {this.renderImage(profile)}
+        </View>
+
+        <View style={{ marginTop: 20 }}>
+          <View
+            style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+          >
+            <Text style={[Styles.inputText, { color: 'white' }]}>NOMBRE</Text>
+            <Text
+              style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top' }]}
+            >{profile.first_name}</Text>
+          </View>
+        </View>
+
+        <View style={{ marginTop: 10 }}>
+          <View style={[ Styles.flexRow, Styles.borderBottomInput ]}>
+            <Text style={[Styles.inputText, { color: 'white' }]}>APELLIDO</Text>
+            <Text
+              style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top' }]}
+            >{profile.last_name}</Text>
+          </View>
+        </View>
+
+        <View style={{ marginTop: 10 }}>
+          <View style={[ Styles.flexRow, Styles.borderBottomInput ]}>
+            <Text style={[Styles.inputText, { color: 'white' }]}>EMAIL</Text>
+            <Text
+              style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top' }]}
+            >{profile.email}</Text>
+          </View>
+        </View>
+
+        <View style={{ marginTop: 10 }}>
+          <View style={[ Styles.flexRow ]}>
+            <Text style={[Styles.inputText, { color: 'white' }]}>SEXO</Text>
+          </View>
+          <View style={[ Styles.borderBottomInput ]}>
+            <View style={[ Styles.flexRow, { backgroundColor: 'black', borderRadius: 10, marginBottom: 10 }]}>
+              <TouchableItem
+                style={[{ borderRadius: 10, flex: 0.5 }, profile.sexo === 'male' ? { backgroundColor: Colors.primary } : {} ]}>
+                <Text style={{ color: 'white', textAlign: 'center', fontSize: 16  }}>Hombre</Text>
+              </TouchableItem>
+              <TouchableItem
+                style={[{ borderRadius: 10, flex: 0.5 }, profile.sexo === 'female' ? { backgroundColor: Colors.primary } : {}]}>
+                <Text style={{ color: 'white', textAlign: 'center', fontSize: 16 }}>Mujer</Text>
+              </TouchableItem>
+            </View>
+          </View>
+        </View>
+
+        <View style={[Styles.borderBottomInput, { marginTop: 10 }]}>
+          <View style={[ Styles.flexRow ]}>
+            <Text style={[Styles.inputText, { color: 'white' }]}>EDAD</Text>
+            <Text style={[Styles.inputText, { color: '#079ac8' }]}>{profile.years}</Text>
+          </View>
+        </View>
+
+        <View style={{ marginTop: 10 }}>
+          <View style={[ Styles.flexRow ]}>
+            <Text style={[Styles.inputText, { color: 'white' }]}>UBICACIÓN</Text>
+          </View>
+          <View style={[ Styles.flexRow ]}>
+            <Text style={[Styles.inputText, { color: 'white', fontSize: 12, color: '#b8b9bb' }]}>Mi ubicación actual</Text>
+            <Text style={[Styles.inputText, { color: '#079ac8', fontSize: 12 }]}
+              ellipsizeMode="tail"
+              numberOfLines={1}
+            >{profile.address && profile.address.substring(0, 30)}...</Text>
+          </View>
+        </View>
+
+      </View>
+    );
   }
 
   renderImage(profile) {
@@ -91,147 +180,34 @@ class ViewPlayerScreen extends Component {
     );
   }
 
-  renderInfoUser(profile) {
-    if (profile) {
-      const single = Boolean(profile.single);
-      const double = Boolean(profile.double);
-      const sexo = profile.sexo === 'male' ? 'Masculino' : 'Femenino';
-      return (
-        <View>
-          <View style={[Styles.flexRow, { marginTop: 20 }]}>
-            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <View style={Styles.borderInput}>
-                <Text
-                  style={[Styles.inputDisabled, { width: two, height: 25 }]}
-                >
-                  {profile.first_name}
-                </Text>
-              </View>
-              <Text style={Styles.inputText}>NOMBRE</Text>
-            </View>
-            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <View style={Styles.borderInput}>
-                <Text
-                  style={[Styles.inputDisabled, { width: two, height: 25 }]}
-                >
-                  {profile.last_name}
-                </Text>
-              </View>
-              <Text style={Styles.inputText}>APELLIDO</Text>
-            </View>
-          </View>
-          <View style={[Styles.flexRow, { marginTop: 20 }]}>
-            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <View style={Styles.borderInput}>
-                <Text
-                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
-                >
-                  {profile.email}
-                </Text>
-              </View>
-              <Text style={Styles.inputText}>EMAIL</Text>
-            </View>
-          </View>
-
-          <View style={[Styles.flexRow, { marginTop: 20 }]}>
-            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <View style={Styles.borderInput}>
-                <Text
-                  style={[Styles.inputDisabled, { width: two, height: 25 }]}
-                >
-                  {profile.years}
-                </Text>
-              </View>
-              <Text style={Styles.inputText}>EDAD</Text>
-            </View>
-            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <View style={Styles.borderInput}>
-                <Text
-                  style={[Styles.inputDisabled, { width: two, height: 25 }]}
-                >
-                  {sexo}
-                </Text>
-              </View>
-              <Text style={Styles.inputText}>SEXO</Text>
-            </View>
-          </View>
-
-          <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <View style={Styles.borderInput}>
-                <Text
-                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: commonFunc.isAndroid ? 50 : 35 }]}
-                >
-                  {profile.address}
-                </Text>
-              </View>
-              <Text style={Styles.inputText}>DIRECCION</Text>
-            </View>
-          </View>
-
-          <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <View style={Styles.borderInput}>
-                <Text
-                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
-                >
-                  {profile.game_level}
-                </Text>
-              </View>
-              <Text style={Styles.inputText}>NIVEL DE JUEGO</Text>
-            </View>
-          </View>
-
-          <View style={[Styles.flexRow, { justifyContent: 'space-around', marginTop: 20 }]}>
-            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <Switch
-                onTintColor={Colors.primary}
-                value={single}
-                editable={false}
-              />
-              <Text style={Styles.inputText}>SINGLES</Text>
-            </View>
-            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <Switch
-                onTintColor={Colors.primary}
-                value={double}
-                editable={false}
-              />
-              <Text style={Styles.inputText}>DOBLES</Text>
-            </View>
-          </View>
-          <View style={[Styles.flexRow]}>
-            <View style={[Styles.flexColumn, { flex: 1, width: width - 50 }]}>
-              <View style={Styles.borderInput}>
-                <Text
-                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: 25 }]}
-                >
-                  {profile.distance}
-                </Text>
-              </View>
-              <Text style={Styles.inputText}>DISTANCIA PARA JUGAR UN PARTIDO</Text>
-            </View>
-          </View>
-
-          <View style={[Styles.flexRow, { marginTop: 20, marginBottom: 40 }]}>
-            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
-              <Text style={Styles.inputText}>SOBRE MI</Text>
-              <TextInput
-                multiline
-                numberOfLines={4}
-                style={[Styles.input, { height: 100, width: width - 50, borderWidth: 1 }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={profile.about}
-                editable={false}
-              />
-            </View>
-          </View>
-        </View>
-      );
+  renderScanInformation(profile) {
+    if (!profile) {
+      return null;
     }
 
-    return null;
+    return (
+      <View style={{ paddingHorizontal: 20 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+          <Text style={Styles.inputText}>NIVEL DE JUEGO</Text>
+          <Text style={{ color: Colors.primary }}>{profile.game_level}</Text>
+        </View>
+
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+          <Text style={Styles.inputText}>DISTANCIA PARA JUGAR UN PARTIDO</Text>
+          <Text style={{ color: Colors.primary }}>{profile.distance}KM</Text>
+        </View>
+
+        <View style={[Styles.flexColumn, Styles.flexAlignLeft, { marginTop: 20 }]}>
+          <Text style={Styles.inputText}>SOBRE</Text>
+          <View>
+            <Text
+              style={[Styles.input, { height: 100, width: width - 50, borderWidth: 1, textAlignVertical: 'top' }]}
+              value={profile.about}
+            >{profile.about}</Text>
+          </View>
+        </View>
+      </View>
+    );
   }
 
   render() {
@@ -244,15 +220,31 @@ class ViewPlayerScreen extends Component {
           onPress={() => this.props.navigation.navigate(params.backName, { ...params.backParams })}
           title="Información del Jugador"
         />
-        <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
+        <ScrollView   style={[Styles.containerPrimary, { paddingHorizontal: 0 }]}>
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View style={styles.centerContent}>
             <Text style={Styles.title}>Perfil del usuario</Text>
           </View>
-          <View style={Styles.flexColumn}>
+          {this.renderInformationBasic(profile)}
+          <View style={{ backgroundColor: '#eeeeee', paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8}}>
+            <Text style={{ color: '#86888b'}}>INFORMACIÓN DE EXPLORACIÓN</Text>
+          </View>
+          {this.renderScanInformation(profile)}
+          {/* <View style={Styles.flexColumn}>
             {this.renderImage(profile)}
           </View>
-          {this.renderInfoUser(profile)}
+          {this.renderInfoUser(profile)} */}
+          {this.state.inviteMatch &&
+            <TouchableItem
+              delayPressIn={0}
+              style={[Styles.btnSave, { marginBottom: 20, marginTop: 20  }]}
+              onPress={() => this.props.navigation.navigate('Match', { inviteUser: profile.id })}
+            >
+              <View pointerEvents="box-only">
+                <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>CREAR UN PARTIDO</Text>
+              </View>
+            </TouchableItem>
+          }
         </ScrollView>
       </View>
     );
@@ -260,6 +252,12 @@ class ViewPlayerScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+  containerInformationBasic: {
+    backgroundColor: '#393e44',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
   centerContent: {
     flex: 1,
     flexDirection: 'column',
