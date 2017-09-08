@@ -64,9 +64,14 @@ class SearchUsersScreen extends Component {
   }
 
   componentWillMount() {
+    console.log('componentWillMount');
     const { params } = this.props.navigation.state;
+    let name = '';
     if (params && params.name) {
-      this.searchUser(params.name);
+      name = params.name;
+      this.searchUser(name);
+    } else {
+      this.searchFirstUser();
     }
 
     if (params && params.filters) {
@@ -86,6 +91,26 @@ class SearchUsersScreen extends Component {
     }
   }
 
+  searchFirstUser() {
+    const { user } = this.props;
+
+    fetch(`${API}/user/search/page`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${user.profile.token}`,
+      },
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+      this.setState({
+        users: responseJson.users,
+      }, () => {
+        this.setState({
+          usersFilters: this.applyFilters(),
+        });
+      });
+    });
+  }
 
   searchUser(name) {
     if (name !== '') {
@@ -212,20 +237,22 @@ class SearchUsersScreen extends Component {
           title="Buscar Jugadores"
         />
         <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="never">
-          <View style={Styles.centerContent}>
+          <View style={[Styles.centerContent, { marginBottom: 10 }]}>
             <Text style={Styles.title}>Busca Jugadores</Text>
           </View>
-          <View style={{ alignContent: 'center', justifyContent: 'center', alignItems: 'center' }} >
-            <TextInput
-              multiline={!commonFunc.isAndroid}
-              numberOfLines={1}
-              underlineColorAndroid="transparent"
-              placeholderTextColor="lightgrey"
-              placeholder="Escriba el Nombre o Apellido"
-              value={this.state.name}
-              style={[Styles.input, Styles.inputText, { width: commonFunc.width }]}
-              onChangeText={name => this.searchUser(name)}
-            />
+          <View style={Styles.flexColumn}>
+            <View>
+              <TextInput
+                multiline={!commonFunc.isAndroid}
+                numberOfLines={1}
+                style={[Styles.input, { height: 40, width: Metrics.width}]}
+                underlineColorAndroid={'transparent'}
+                placeholderTextColor="lightgrey"
+                placeholder="Escriba el Nombre o Apellido"
+                value={this.state.name}
+                onChangeText={name => this.searchUser(name)}
+              />
+            </View>
           </View>
           <View style={Styles.flexColumn}>
             {this.renderUsers()}

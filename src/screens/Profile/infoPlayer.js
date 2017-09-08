@@ -241,7 +241,7 @@ class ViewPlayerScreen extends Component {
               onPress={() => this.props.navigation.navigate('Match', { inviteUser: profile.id })}
             >
               <View pointerEvents="box-only">
-                <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>CREAR UN PARTIDO</Text>
+                <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>DESAFIAR</Text>
               </View>
             </TouchableItem>
           }
