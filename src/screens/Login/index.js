@@ -61,7 +61,7 @@ class LoginScreen extends Component {
     };
 
     if (props.user.isAuth) {
-      props.navigation.navigate('Profile');
+      props.navigation.navigate('Home');
     }
   }
 
@@ -72,7 +72,7 @@ class LoginScreen extends Component {
 
   _facebookLogin() {
     const self = this;
-    FBLoginManager.loginWithPermissions([ "email", "user_friends"], (error, data) => {
+    FBLoginManager.loginWithPermissions([ "email", "user_friends" ], (error, data) => {
       console.log(data);
       if (!error) {
         let { profile, credentials } = data;
@@ -94,7 +94,7 @@ class LoginScreen extends Component {
           self.setState({
             spinnerVisible: false,
           }, () => {
-            self.goProfile();
+            self.goProfile(responseJson.newuser);
           });
         })
         .catch((error) => {
@@ -144,7 +144,7 @@ class LoginScreen extends Component {
               this.setState({
                 spinnerVisible: false,
               }, () => {
-                this.goProfile();
+                this.goProfile(responseJson.newuser);
               });
             })
             .catch((error) => {
@@ -184,7 +184,7 @@ class LoginScreen extends Component {
         this.setState({
           spinnerVisible: false,
         }, () => {
-          this.goProfile();
+          this.goProfile(responseJson.newuser);
         });
       })
       .catch((error) => {
@@ -204,13 +204,13 @@ class LoginScreen extends Component {
     return Object.assign({}, { ...profile.user, newuser: profile.newuser, token: profile.token.token});
   }
 
-  goProfile() {
+  goProfile(newuser) {
     const resetAction = NavigationActions.reset({
-      routeName: 'Profile',
+      routeName: newuser ? 'Welcome' : 'Home',
       params: {},
 
       // navigate can have a nested navigate action that will be run inside the child router
-      action: NavigationActions.navigate({ routeName: 'Profile' })
+      action: NavigationActions.navigate({ routeName: newuser ? 'Welcome' : 'Home' })
     });
     this.props.navigation.dispatch(resetAction);
   }

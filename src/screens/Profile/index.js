@@ -90,8 +90,6 @@ class ProfileScreen extends Component {
         icon="menu"
         onPress={() => navigation.navigate('DrawerOpen')}
         tintColor={'white'}
-        title={'Vuelos Baratos'}
-        truncatedTitle={'vuelos'}
       />
     ),
     headerStyle: {
@@ -703,7 +701,7 @@ class ProfileScreen extends Component {
       </View>
     );
   }
-  
+
   render() {
     const { navigation } = this.props;
     const { profile, canchas } = this.state;

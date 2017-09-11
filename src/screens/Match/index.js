@@ -13,7 +13,8 @@ import {
   Slider,
   Keyboard,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview'
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Entypo from 'react-native-vector-icons/Entypo';
 import DatePicker from 'react-native-datepicker';
 import MapView from 'react-native-maps';
@@ -38,16 +39,16 @@ const two = ( (width - 40) / 2) - 5;
 
 const pickerSexo = [{ label: 'Mixto', value: 'mixto' }, { label: 'Masculino', value: 'male' }, { label: 'Femenino', value: 'female' }];
 const pickerGameLevel = [
-  { label: '2.5', value: '2.5' },
-  { label: '3.0', value: '3' },
-  { label: '3.5', value: '3.5' },
-  { label: '4.0', value: '4' },
-  { label: '4.5', value: '4.5' },
-  { label: '5.0', value: '5' },
-  { label: '5.5', value: '5.5' },
-  { label: '6.0', value: '6' },
-  { label: '6.5', value: '6.5' },
-  { label: '7.0', value: '7' },
+  { label: '2.5', value: 2.5 },
+  { label: '3.0', value: 3 },
+  { label: '3.5', value: 3.5 },
+  { label: '4.0', value: 4 },
+  { label: '4.5', value: 4.5 },
+  { label: '5.0', value: 5 },
+  { label: '5.5', value: 5.5 },
+  { label: '6.0', value: 6 },
+  { label: '6.5', value: 6.5 },
+  { label: '7.0', value: 7 },
 ];
 const pickerType = [
   { label: 'Singles', value: 'singles' },
@@ -88,10 +89,10 @@ class MatchScreen extends Component {
         address_lat: '',
         address_lng: '',
         club_name: '',
-        game_level_from: '2.5',
-        game_level_to: '2.5',
-        years_from: '18',
-        years_to: '99',
+        game_level_from: 2.5,
+        game_level_to: 7,
+        years_from: 18,
+        years_to: 99,
         type: 'singles',
         sexo: 'mixto',
         about: '',
@@ -188,6 +189,33 @@ class MatchScreen extends Component {
       match.club_name = '';
       this.setState({ match });
     }
+  }
+
+  handleChangeSexo(sexo) {
+    const { match } = this.state;
+    this.setState({ match: Object.assign(match, { sexo }) });
+  }
+  handleChangeType(type) {
+    const { match } = this.state;
+    this.setState({ match: Object.assign(match, { type }) });
+  }
+
+  changeLevel(levels) {
+    this.setState({
+      match: Object.assign(this.state.match, {
+        game_level_from: levels[0],
+        game_level_to: levels[1],
+      }),
+    });
+  }
+
+  changeYears(years) {
+    this.setState({
+      match: Object.assign(this.state.match, {
+        years_from: years[0],
+        years_to: years[1],
+      }),
+    });
   }
 
   onSetCurrentPosition(data, details) {
@@ -340,13 +368,15 @@ class MatchScreen extends Component {
     );
   }
 
+
+
   renderOtherClub() {
     const { match } = this.state;
     if (match.id_cancha === '0') {
       return (
         <View>
-          <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
+          <View style={[ Styles.flexRow, { marginTop: 0 }]}>
+            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
               <TextInput
                 multiline
                 style={[Styles.input, { width: width - 50 }]}
@@ -360,8 +390,8 @@ class MatchScreen extends Component {
               <Text style={Styles.inputText}>NOMBRE DEL CLUB</Text>
             </View>
           </View>
-          <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
+          <View style={[Styles.flexRow, { marginTop: 10 }]}>
+            <View style={[Styles.flexColumn, Styles.flexAlignLeft]}>
               <GooglePlacesAutocomplete
                 placeholder='Indicar Dirección'
                 minLength={1}
@@ -393,7 +423,7 @@ class MatchScreen extends Component {
                                                 'country' ]}
                 predefinedPlaces={[]}
               />
-              <Text style={Styles.inputText}>INGRESE DIRECCION</Text>
+              <Text style={[Styles.inputText, { marginTop: 0}]}>INGRESE DIRECCION</Text>
             </View>
           </View>
         </View>
@@ -406,66 +436,98 @@ class MatchScreen extends Component {
   renderLevel() {
     const { match } = this.state;
 
-    let valueGameLevelFrom = pickerGameLevel.find(pgl => pgl.value === match.game_level_from);
-    valueGameLevelFrom = valueGameLevelFrom ? valueGameLevelFrom.label : '2.5';
-    let valueGameLevelTo = pickerGameLevel.find(pgl => pgl.value === match.game_level_to);
-    valueGameLevelTo = valueGameLevelTo ? valueGameLevelTo.label : '2.5';
-    let valueSexo = pickerSexo.find(ps => ps.value === match.sexo);
-    valueSexo = valueSexo ? valueSexo.label : 'Mixto';
-    let valueType = pickerType.find(ps => ps.value === match.type);
-    valueType = valueType ? valueType.label : 'Singles';
-
     return (
       <View>
-        <View style={{marginTop: 20}}>
-          <Text style={{ color: Colors.primary, fontSize: 20}}>NIVEL DE JUEGO</Text>
+        <View style={[Styles.flexRow, { marginTop: 20 }]}>
+          <Text style={{ fontSize: 14, fontWeight: '600' }}>NIVEL DE JUEGO</Text>
+          <Text style={{ fontSize: 14, color: Colors.primary }}>{match.game_level_from}-{match.game_level_to}</Text>
         </View>
-        <View style={[styles.flexRow, { marginTop: 20 }]}>
-          <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-            <PickerSB
-              containerStyle={[ Styles.pickerContainer, { width: two }]}
-              buttonStyle={{ height: 40, justifyContent: 'center' }}
-              textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
-              selectedValue={valueGameLevelFrom.toString()}
-              list={pickerGameLevel}
-              onSelectValue={game_level_from => this.setState({ match: Object.assign(match, { game_level_from: game_level_from.value }) })}
+        <View style={[ Styles.flexRow, { marginTop: 20, justifyContent: 'center', alignItems: 'center'  }]}>
+          <View style={[ Styles.flexColumn, { justifyContent: 'center', alignItems: 'center' }]}>
+            <MultiSlider
+              values={[match.game_level_from, match.game_level_to]}
+              onValuesChange={this.changeLevel.bind(this)}
+              sliderLength={280}
+              min={2.5}
+              max={7}
+              step={0.5}
+              selectedStyle={{
+                backgroundColor: Colors.primary,
+              }}
+              unselectedStyle={{
+                backgroundColor: 'silver',
+              }}
+              containerStyle={{
+                height: 20,
+              }}
+              trackStyle={{
+                height: 5,
+                backgroundColor: 'red',
+              }}
+              touchDimensions={{
+                height: 40,
+                width: 40,
+                borderRadius: 20,
+                slipDisplacement: 40,
+              }}
             />
-            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2 }]}>DESDE</Text>
-          </View>
-          <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-            <PickerSB
-              containerStyle={[ Styles.pickerContainer, { width: two }]}
-              buttonStyle={{ height: 40, justifyContent: 'center' }}
-              textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
-              selectedValue={valueGameLevelTo.toString()}
-              list={pickerGameLevel}
-              onSelectValue={game_level_to => this.setState({ match: Object.assign(match, { game_level_to: game_level_to.value }) })}
-            />
-            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2 }]}>HASTA</Text>
           </View>
         </View>
-        <View style={[styles.flexRow, { marginTop: 20 }]}>
-          <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-            <PickerSB
-              containerStyle={[ Styles.pickerContainer, { width: two}]}
-              buttonStyle={{ height: 40, justifyContent: 'center' }}
-              textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
-              selectedValue={valueSexo}
-              list={pickerSexo}
-              onSelectValue={sexo => this.setState({ match: Object.assign(match, { sexo: sexo.value }) })}
-            />
-            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2 }]}>SEXO</Text>
+        <View style={[Styles.flexRow, Styles.borderBottomInput, { marginTop: 10, paddingBottom: 10 }]}>
+          <Text style={{ fontSize: 14 }}>2.5</Text>
+          <Text style={{ fontSize: 14}}>7</Text>
+        </View>
+      </View>
+    );
+  }
+
+  renderSexo(match) {
+    return (
+      <View>
+        <View style={{ marginTop: 20 }}>
+          <Text style={{ fontSize: 14, fontWeight: '600' }}>SEXO</Text>
+        </View>
+        <View style={[ Styles.borderBottomInput ]}>
+          <View style={[ Styles.flexRow, { backgroundColor: '#71767a', borderRadius: 20, marginBottom: 10 }]}>
+            <TouchableItem
+              onPress={ () => this.handleChangeSexo('mixto') }
+              style={[{ borderRadius: 10, flex: 0.5 }, match.sexo === 'mixto' ? { backgroundColor: Colors.primary } : {} ]}>
+              <Text style={{ color: 'white', textAlign: 'center', fontSize: 16  }}>Todos</Text>
+            </TouchableItem>
+            <TouchableItem
+              onPress={ () => this.handleChangeSexo('male') }
+              style={[{ borderRadius: 10, flex: 0.5 }, match.sexo === 'male' ? { backgroundColor: Colors.primary } : {} ]}>
+              <Text style={{ color: 'white', textAlign: 'center', fontSize: 16  }}>Hombre</Text>
+            </TouchableItem>
+            <TouchableItem
+              onPress={ () => this.handleChangeSexo('female') }
+              style={[{ borderRadius: 10, flex: 0.5 }, match.sexo === 'female' ? { backgroundColor: Colors.primary } : {}]}>
+              <Text style={{ color: 'white', textAlign: 'center', fontSize: 16 }}>Mujer</Text>
+            </TouchableItem>
           </View>
-          <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-            <PickerSB
-              containerStyle={[ Styles.pickerContainer, { width: two}]}
-              buttonStyle={{ height: 40, justifyContent: 'center' }}
-              textStyle={{ color: 'black', fontSize: 16, marginLeft: 5 }}
-              selectedValue={valueType}
-              list={pickerType}
-              onSelectValue={type => this.setState({ match: Object.assign(match, { type: type.value }) })}
-            />
-            <Text style={[Styles.inputText, { width: (Metrics.buttonWidth - 20) / 2 }]}>TIPO DE PARTIDO</Text>
+        </View>
+      </View>
+    );
+  }
+
+  renderType(match) {
+    return (
+      <View>
+        <View style={{ marginTop: 20 }}>
+          <Text style={{ fontSize: 14, fontWeight: '600' }}>TIPO DE PARTIDO</Text>
+        </View>
+        <View style={[ Styles.borderBottomInput ]}>
+          <View style={[ Styles.flexRow, { backgroundColor: '#71767a', borderRadius: 20, marginBottom: 10 }]}>
+            <TouchableItem
+              onPress={ () => this.handleChangeType('singles') }
+              style={[{ borderRadius: 10, flex: 0.5 }, match.type === 'singles' ? { backgroundColor: Colors.primary } : {} ]}>
+              <Text style={{ color: 'white', textAlign: 'center', fontSize: 16  }}>SINGLES</Text>
+            </TouchableItem>
+            <TouchableItem
+              onPress={ () => this.handleChangeType('dobles') }
+              style={[{ borderRadius: 10, flex: 0.5 }, match.type === 'dobles' ? { backgroundColor: Colors.primary } : {} ]}>
+              <Text style={{ color: 'white', textAlign: 'center', fontSize: 16  }}>DOBLES</Text>
+            </TouchableItem>
           </View>
         </View>
       </View>
@@ -476,48 +538,183 @@ class MatchScreen extends Component {
     const { match } = this.state;
     return (
       <View>
-        <View style={{marginTop: 20}}>
-          <Text style={{ color: Colors.primary, fontSize: 20}}>EDAD</Text>
+        <View style={[Styles.flexRow, { marginTop: 20 }]}>
+          <Text style={{ fontSize: 14, fontWeight: '600' }}>EDAD</Text>
+          <Text style={{ fontSize: 14, color: Colors.primary }}>{match.years_from}-{match.years_to}</Text>
         </View>
-        <View style={{ marginTop: 10 }}>
-          <View style={[ Styles.flexRow ]}>
-            <Text style={[Styles.inputText, { color: 'black' }]}>DESDE</Text>
-            <Text style={[Styles.inputText, { color: '#079ac8' }]}>{match.years_from}</Text>
-          </View>
-        </View>
-        <View style={[styles.flexRow, Styles.borderBottomInput]}>
-          <View style={[styles.flexColumn, { flex: 1, width: width - 50 }]}>
-            <Slider
-              style={{ width: width - 50 , height: 33 }}
-              minimumValue={18}
-              maximumValue={99}
-              maximumTrackTintColor={Colors.primary}
-              minimumTrackTintColor={Colors.primary}
-              thumbTintColor={Colors.primary}
+        <View style={[ Styles.flexRow, { marginTop: 20, justifyContent: 'center', alignItems: 'center'  }]}>
+          <View style={[ Styles.flexColumn, { justifyContent: 'center', alignItems: 'center' }]}>
+            <MultiSlider
+              values={[match.years_from, match.years_to]}
+              onValuesChange={this.changeYears.bind(this)}
+              sliderLength={280}
+              min={18}
+              max={99}
               step={1}
-              value={parseInt(match.years_from)}
-              onValueChange={years_from => this.setState({ match: Object.assign(match, { years_from }) })} />
+              selectedStyle={{
+                backgroundColor: Colors.primary,
+              }}
+              unselectedStyle={{
+                backgroundColor: 'silver',
+              }}
+              containerStyle={{
+                height: 20,
+              }}
+              trackStyle={{
+                height: 5,
+                backgroundColor: 'red',
+              }}
+              touchDimensions={{
+                height: 40,
+                width: 40,
+                borderRadius: 20,
+                slipDisplacement: 40,
+              }}
+            />
           </View>
         </View>
-        <View style={{ marginTop: 10 }}>
-          <View style={[ Styles.flexRow ]}>
-            <Text style={[Styles.inputText, { color: 'black' }]}>HASTA</Text>
-            <Text style={[Styles.inputText, { color: '#079ac8' }]}>{match.years_to}</Text>
+        <View style={[Styles.flexRow, Styles.borderBottomInput, { marginTop: 10, paddingBottom: 10 }]}>
+          <Text style={{ fontSize: 14 }}>18</Text>
+          <Text style={{ fontSize: 14}}>99</Text>
+        </View>
+      </View>
+    );
+  }
+
+  renderDate(match) {
+    return (
+      <View>
+        <View style={{ marginTop: 20 }}>
+          <View
+            style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+          >
+            <Text style={[Styles.inputText, { fontWeight: '600' }]}>FECHA</Text>
+            <DatePicker
+              style={[{ width: two }]}
+              date={match.date}
+              mode="date"
+              placeholder="FECHA"
+              format="DD-MM-YYYY"
+              minDate={this.state.now}
+              confirmBtnText="Confirm"
+              cancelBtnText="Cancel"
+              customStyles={{
+                dateIcon: {
+                  position: 'absolute',
+                  right: 0,
+                  top: 4,
+                  marginLeft: 0,
+                },
+                dateInput: {
+                  borderWidth: 0,
+                },
+              }}
+              onDateChange={date => this.setState({ match: Object.assign(match, { date }) })}
+            />
           </View>
         </View>
-        <View style={[styles.flexRow, Styles.borderBottomInput]}>
-          <View style={[styles.flexColumn, { flex: 1, width: width - 50 }]}>
-            <Slider
-              style={{ width: width - 50 , height: 33 }}
-              minimumValue={18}
-              maximumValue={99}
-              maximumTrackTintColor={Colors.primary}
-              minimumTrackTintColor={Colors.primary}
-              thumbTintColor={Colors.primary}
-              step={1}
-              value={parseInt(match.years_to)}
-              onValueChange={years_to => this.setState({ match: Object.assign(match, { years_to }) })} />
+        <View style={{ marginTop: 20 }}>
+          <View
+            style={[Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' }]}
+          >
+            <Text style={[Styles.inputText, { fontWeight: '600' }]}>HORA</Text>
+            <DatePicker
+              style={{ width: two }}
+              date={this.state.match.hour}
+              mode="time"
+              placeholder="HORA"
+              confirmBtnText="Confirm"
+              cancelBtnText="Cancel"
+              customStyles={{
+                dateIcon: {
+                  position: 'absolute',
+                  right: 0,
+                  top: 4,
+                  marginLeft: 0,
+                },
+                dateInput: {
+                  marginLeft: 36,
+                  borderWidth: 0,
+                },
+              }}
+              onDateChange={hour => this.setState({ match: Object.assign(match, { hour }) })}
+            />
           </View>
+        </View>
+      </View>
+    );
+  }
+
+  renderPoint() {
+    const { match, canchas } = this.state;
+
+    const pickerCanchas = [{ label: 'OTRA', value: '0' }];
+    canchas.forEach((c) => {
+      pickerCanchas.push({ label: c.name, value: c.id });
+    });
+    let valueClub = pickerCanchas.find(pc => pc.value === match.id_cancha);
+    valueClub = valueClub ? valueClub.label : 'OTRA';
+
+    return (
+      <View style={[Styles.borderBottomInput, {paddingBottom: 10} ]}>
+        <Text style={{ fontSize: 14, marginTop: 20, fontWeight: '600' }}>LUGAR</Text>
+        <View style={[styles.flexRow, { marginTop: 5 }]}>
+          <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
+            <PickerSB
+              containerStyle={[Styles.pickerContainer, { width: (width - 50) }]}
+              buttonStyle={{ height: 40, justifyContent: 'center' }}
+              textStyle={{ color: 'black', fontSize: 16 }}
+              selectedValue={valueClub}
+              list={pickerCanchas}
+              onSelectValue={this.changeCancha.bind(this)}
+            />
+
+            <Text style={[Styles.inputText, { width: width - 50 }]}>CANCHAS REGISTRADAS</Text>
+          </View>
+        </View>
+        <View>
+          {this.renderOtherClub()}
+        </View>
+        { this.state.region.latitude !== 0 &&
+          <View style={{ flex: 1, height: 200}}>
+            <MapView
+              zoomEnabled={true}
+              minZoomLevel={16}
+              maxZoomLevel={20}
+              style={styles.map}
+              region={this.state.region}
+              onRegionChange={this.onRegionChange}
+            >
+              {this.state.markers && this.state.markers.map((marker, index) => (
+                <MapView.Marker
+                  key={index}
+                  coordinate={marker.latlng}
+                  title={marker.title}
+                  description={marker.description}
+                />
+              ))}
+            </MapView>
+          </View>
+        }
+      </View>
+    );
+  }
+
+  renderComments(match) {
+    return (
+      <View style={[styles.flexRow, { marginTop: 20 }]}>
+        <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
+          <Text style={[Styles.inputText, { fontWeight: '600'}]}>COMENTARIO</Text>
+          <TextInput
+            multiline
+            style={[Styles.input, { width: width - 50, borderWidth: 1, height: 100 }]}
+            underlineColorAndroid={'transparent'}
+            placeholderTextColor="lightgrey"
+            value={match.about}
+            onChangeText={about => this.setState({ match: Object.assign(match, { about }) })}
+            ref={(r) => { this._about = r; }}
+            returnKeyType={'next'}
+          />
         </View>
       </View>
     );
@@ -526,14 +723,6 @@ class MatchScreen extends Component {
   render() {
     const { navigation } = this.props;
     const { match, canchas } = this.state;
-
-    const pickerCanchas = [{ label: 'OTRA', value: '0' }];
-    canchas.forEach((c) => {
-      pickerCanchas.push({ label: c.name, value: c.id });
-    });
-
-    let valueClub = pickerCanchas.find(pc => pc.value === match.id_cancha);
-    valueClub = valueClub ? valueClub.label : 'OTRA';
 
     return (
       <View style={{ flex: 1 }}>
@@ -547,141 +736,43 @@ class MatchScreen extends Component {
           keyboardShouldPersistTaps={'never'}
            getTextInputRefs={() => {
              return [this._clubName, this._about];
-           }}
-           style={Styles.containerPrimary}>
+           }}>
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View>
             <Text style={Styles.title}>Creá un Partido</Text>
-            <Text style={Styles.subTitle}>Completá los datos y que el juego empiece.</Text>
-          </View>
-
-          <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <DatePicker
-                style={[{ width: two, borderBottomWidth: 0.8, borderColor: '#00a5d7' }]}
-                date={match.date}
-                mode="date"
-                placeholder="FECHA"
-                format="DD-MM-YYYY"
-                minDate={this.state.now}
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                customStyles={{
-                  dateIcon: {
-                    position: 'absolute',
-                    left: 0,
-                    top: 4,
-                    marginLeft: 0,
-                  },
-                  dateInput: {
-                    marginLeft: 36,
-                    borderWidth: 0,
-                  },
-                }}
-                onDateChange={date => this.setState({ match: Object.assign(match, { date }) })}
-              />
-              <Text style={Styles.inputText}>FECHA</Text>
-            </View>
-            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <DatePicker
-                style={{ width: two, borderBottomWidth: 0.8, borderColor: '#00a5d7' }}
-                date={this.state.match.hour}
-                mode="time"
-                placeholder="HORA"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                customStyles={{
-                  dateIcon: {
-                    position: 'absolute',
-                    left: 0,
-                    top: 4,
-                    marginLeft: 0,
-                  },
-                  dateInput: {
-                    marginLeft: 36,
-                    borderWidth: 0,
-                  },
-                }}
-                onDateChange={hour => this.setState({ match: Object.assign(match, { hour }) })}
-              />
-              <Text style={Styles.inputText}>HORA</Text>
+            <View style={[Styles.flexRow, { backgroundColor: '#efedf0', paddingHorizontal: 10, paddingTop: 5, paddingBottom: 2, justifyContent: 'center', alignItems: 'center'}]}>
+              <Text style={[Styles.subTitle, { color: '#414143', fontSize: 12 }]}>COMPLETÁ LOS DATOS Y QUE EL </Text>
+              <Text style={[Styles.subTitle, { color: Colors.primary, fontSize: 12 }]}>JUEGO EMPIECE.</Text>
             </View>
           </View>
 
-          <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <PickerSB
-                containerStyle={[Styles.pickerContainer, { width: (width - 50) }]}
-                buttonStyle={{ height: 40, justifyContent: 'center' }}
-                textStyle={{ color: 'black', fontSize: 16 }}
-                selectedValue={valueClub}
-                list={pickerCanchas}
-                onSelectValue={this.changeCancha.bind(this)}
-              />
+          <View style={Styles.containerPrimary}>
+            {this.renderDate(match)}
+            {this.renderPoint(match)}
+            {this.renderLevel()}
+            {this.renderSexo(match)}
+            {this.renderType(match)}
+            {this.renderYear()}
+            {this.renderComments(match)}
 
-              <Text style={[Styles.inputText, { width: width - 50 }]}>CANCHAS REGISTRADAS</Text>
-            </View>
-          </View>
 
-          <View>
-            {this.renderOtherClub()}
-          </View>
-          { this.state.region.latitude !== 0 &&
-            <View style={{ flex: 1, height: 200}}>
-              <MapView
-                zoomEnabled={true}
-                minZoomLevel={16}
-                maxZoomLevel={20}
-                style={styles.map}
-                region={this.state.region}
-                onRegionChange={this.onRegionChange}
+            <View style={[styles.flexRow, { marginTop: 20, marginBottom: 20 }]}>
+              <TouchableItem
+                accessibilityComponentType="button"
+                accessibilityTraits="button"
+                testID="profile-available"
+                delayPressIn={0}
+                style={Styles.btnSave}
+                onPress={() => this.save()}
+                pressColor={Colors.primary}
               >
-                {this.state.markers && this.state.markers.map((marker, index) => (
-                  <MapView.Marker
-                    key={index}
-                    coordinate={marker.latlng}
-                    title={marker.title}
-                    description={marker.description}
-                  />
-                ))}
-              </MapView>
-            </View>
-          }
-
-          {this.renderLevel()}
-          {this.renderYear()}
-
-          <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
-              <Text style={Styles.inputText}>COMENTARIO</Text>
-              <TextInput
-                multiline
-                style={[Styles.input, { width: width - 50, borderWidth: 1, height: 100 }]}
-                underlineColorAndroid={'transparent'}
-                placeholderTextColor="lightgrey"
-                value={match.about}
-                onChangeText={about => this.setState({ match: Object.assign(match, { about }) })}
-                ref={(r) => { this._about = r; }}
-                returnKeyType={'next'}
-              />
+                <View>
+                  <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center'}]}>GUARDAR</Text>
+                </View>
+              </TouchableItem>
             </View>
           </View>
 
-          <View style={[styles.flexRow, { marginTop: 20, marginBottom: 20 }]}>
-            <TouchableItem
-              accessibilityComponentType="button"
-              accessibilityTraits="button"
-              testID="profile-available"
-              delayPressIn={0}
-              style={Styles.btnSave}
-              onPress={() => this.save()}
-              pressColor={Colors.primary}
-            >
-              <View>
-                <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center'}]}>GUARDAR</Text>
-              </View>
-            </TouchableItem>
-          </View>
         </KeyboardAwareScrollView>
       </View>
     );

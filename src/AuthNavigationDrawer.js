@@ -7,6 +7,8 @@ import DrawerContent from './components/DrawerContent';
 import DrawerItem from './components/DrawerItem';
 
 import LoginScreen from './screens/Login';
+import HomeScreen from './screens/Home/Home';
+import WelcomeScreen from './screens/Home/Welcome';
 import ProfileScreen from './screens/Profile';
 import MatchScreen from './screens/Match';
 import PlayScreen from './screens/Play';
@@ -37,6 +39,22 @@ const AuthNavigationDrawer = lang => DrawerNavigator({
   },
   Login: {
     screen: LoginScreen,
+  },
+  Welcome: {
+    screen: WelcomeScreen,
+  },
+  Home: {
+    screen: HomeScreen,
+    navigationOptions: {
+      drawerLabel: ({ focused }) => (
+        <DrawerItem
+          focused={focused}
+          label="Home"
+          icon={<Image source={require('./assets/ico-crear-partido.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/ico-crear-partido.png')} style={{ width: 24, height: 24}} />}
+        />
+      ),
+    },
   },
   Match: {
     screen: MatchScreen,
