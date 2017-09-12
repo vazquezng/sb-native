@@ -35,12 +35,10 @@ export default class DrawerContent extends Component {
 
   componentDidMount() {
     const { navigation } = this.props;
-    console.log(this.props.navigation);
     BackHandler.removeEventListener('hardwareBackPress', () => {
       console.log('hardwareBackPress');
     });
     BackHandler.addEventListener('hardwareBackPress', () => {
-      console.log(this.props.navigation);
       if (screen.main) {
         Alert.alert(
           'Atención',

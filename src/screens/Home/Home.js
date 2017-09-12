@@ -44,7 +44,7 @@ class HomeScreen extends Component {
     super(props);
 
     this.state = {
-      spinnerVisible: true,
+      spinnerVisible: false,
       matchs: [],
     };
   }

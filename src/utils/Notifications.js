@@ -8,12 +8,14 @@ class Notifications {
     const permissions = {
       alert: true,
       badge: true,
-      sound: true
+      sound: true,
     };
     const self = this;
     OneSignal.requestPermissions(permissions);
-    OneSignal.enableSound(true);
-    OneSignal.enableVibrate(true);
+    if (Platform.OS === 'android') {
+      OneSignal.enableSound(true);
+      OneSignal.enableVibrate(true);
+    }
     OneSignal.inFocusDisplaying(2);
 
     this.onReceived = (notification) => {
@@ -36,6 +38,7 @@ class Notifications {
     }
 
     this.onIds = (device) => {
+      console.log('onIds');
       self.device = device;
     }
 
@@ -43,6 +46,7 @@ class Notifications {
     OneSignal.addEventListener('opened', this.onOpened);
     OneSignal.addEventListener('registered', this.onRegistered);
     OneSignal.addEventListener('ids', this.onIds);
+    OneSignal.configure();
   }
 
   getDevice() {

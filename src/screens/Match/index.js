@@ -735,7 +735,7 @@ class MatchScreen extends Component {
           keyboardDismissMode='interactive'
           keyboardShouldPersistTaps={'never'}
            getTextInputRefs={() => {
-             return [this._clubName, this._about];
+             return [this._about];
            }}>
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View>

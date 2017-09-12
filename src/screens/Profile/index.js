@@ -11,8 +11,6 @@ import {
   NativeModules,
   Alert,
   Modal,
-  BackHandler,
-  PanResponder,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import ImagePicker from 'react-native-image-picker';
@@ -23,14 +21,12 @@ import HeaderButton from '@components/HeaderButton';
 import TouchableItem from '@components/TouchableItem';
 import  { GooglePlacesAutocomplete } from '@components/GooglePlaceAutoComplete';
 import ModalAvailable from '@components/ModalAvailable';
-import PickerSB from '@components/Picker';
 
 import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
 import Metrics from '@theme/Metrics';
 
 import { saveProfile, logout } from '@store/user/actions';
-import { setScreenMain } from '@store/screen/';
 
 import API from '@utils/api';
 import commonFunc from '@utils/commonFunc';
@@ -68,8 +64,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   saveProfile: profile => dispatch(saveProfile(profile)),
-  logout: () => dispatch(logout()),
-  onSetScreenMain: main => dispatch(setScreenMain(main)),
+  logout: () => dispatch(logout())
 });
 
 const options = {
@@ -114,9 +109,7 @@ class ProfileScreen extends Component {
   }
 
   componentWillMount() {
-    const { user, logout, navigation, onSetScreenMain, screen } = this.props;
-
-    onSetScreenMain(true);
+    const { user, logout, navigation, screen } = this.props;
 
     fetch(`${API}/me`, {
       method: 'GET',
@@ -158,7 +151,7 @@ class ProfileScreen extends Component {
     });
 
     const self = this;
-    if (user.profile.address === null || user.profile.address === '' ) {
+    if (!user.profile.complete) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const initialPosition = JSON.stringify(position);
@@ -189,13 +182,19 @@ class ProfileScreen extends Component {
 
   componentDidMount() {
     const devices = Notifications.getDevice();
+    console.log(devices);
     const { profile } = this.state;
     if (devices &&
       (!profile.onesignal_app_pushToken
         || profile.onesignal_app_pushToken !== devices.pushToken)) {
       profile.onesignal_app_pushToken = devices.pushToken;
       profile.onesignal_app_userId = devices.userId;
-      this.saveProfile(false);
+
+      this.setState({
+        profile,
+      }, () => {
+        this.saveProfile(false);
+      });
     }
   }
 

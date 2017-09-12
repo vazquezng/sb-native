@@ -84,11 +84,11 @@ class PlayScreen extends Component {
   }
   renderMatch(match, key) {
     return (
-      <View key={key} style={[Styles.flexRow, { flex: 1, justifyContent: 'center', marginBottom: 1, borderBottomWidth: 0.8, paddingBottom: 10 }]}>
-        <View style={{ width: two }}>
+      <View key={key} style={[Styles.flexRow, { flex: 1, flexWrap: 'nowrap', justifyContent: 'center', marginBottom: 1, borderBottomWidth: 0.8, paddingBottom: 10 }]}>
+        <View style={{ flex: 0.3 }}>
           {this.renderImage(match.user)}
         </View>
-        <View style={{ width: two }}>
+        <View style={{ flex: 0.7 }}>
           {this.renderInfoMatch(match)}
         </View>
       </View>
@@ -116,7 +116,7 @@ class PlayScreen extends Component {
         <Text style={{ color: '#000000', fontSize: 18, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2 }}>{match.user.first_name} {match.user.last_name}</Text>
         <Text style={{ color: Colors.primary, fontFamily: fontRegular, fontSize: 16 }}>{match.date} - {match.hour}</Text>
         <Text style={{ color: '#000000', fontSize: 12, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2, marginTop: 10 }}>{match.club_name}</Text>
-        <Text numberOfLines={1}>{match.address}</Text>
+        <Text numberOfLines={2}>{match.address}</Text>
         <TouchableItem
           onPress={() => this.props.navigation.navigate('PlayMatch', { match: match.id })}
         >

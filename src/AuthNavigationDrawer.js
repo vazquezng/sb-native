@@ -24,19 +24,6 @@ import ViewPlayerScreen from './screens/Profile/infoPlayer';
 import SearchUsersScreen from './screens/Searchs/Users';
 
 const AuthNavigationDrawer = lang => DrawerNavigator({
-  Profile: {
-    screen: ProfileScreen,
-    navigationOptions: {
-      drawerLabel: ({ focused }) => (
-        <DrawerItem
-          focused={focused}
-          label="Mi Perfil"
-          icon={<Image source={require('./assets/profile-icon.png')} style={{ width: 24, height: 24}} />}
-          activeIcon={<Image source={require('./assets/profile-icon.png')} style={{ width: 24, height: 24}} />}
-        />
-      ),
-    },
-  },
   Login: {
     screen: LoginScreen,
   },
@@ -52,6 +39,19 @@ const AuthNavigationDrawer = lang => DrawerNavigator({
           label="Home"
           icon={<Image source={require('./assets/ico-crear-partido.png')} style={{ width: 24, height: 24}} />}
           activeIcon={<Image source={require('./assets/ico-crear-partido.png')} style={{ width: 24, height: 24}} />}
+        />
+      ),
+    },
+  },
+  Profile: {
+    screen: ProfileScreen,
+    navigationOptions: {
+      drawerLabel: ({ focused }) => (
+        <DrawerItem
+          focused={focused}
+          label="Mi Perfil"
+          icon={<Image source={require('./assets/profile-icon.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/profile-icon.png')} style={{ width: 24, height: 24}} />}
         />
       ),
     },
