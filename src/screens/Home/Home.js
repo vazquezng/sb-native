@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import {
   View,
   Image,
-  StyleSheet,
+  ScrollView,
   Text,
+  TouchableHighlight,
+  Platforms,
 } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 
 import Header from '@components/Header';
 import HeaderButton from '@components/HeaderButton';
@@ -70,7 +71,7 @@ class HomeScreen extends Component {
         <Image style={[Styles.flexColumn, { backgroundColor: 'transparent', justifyContent: 'flex-end', alignItems: 'flex-start', paddingBottom: 10, paddingHorizontal: 5 }]} source={require('../../assets/news1.png')}>
           <View style={[Styles.flexRow, { justifyContent: 'space-between', alignItems: 'center' }]}>
             <Text style={{ color: 'white', flex: 0.8 }}>JULIO 22.2017</Text>
-            <TouchableItem
+            <TouchableHighlight
               onPress={() => this.props.navigation.navigate('NewsDetail', { news: 1 })}
               style={{ flex: 0.2 }}
             >
@@ -78,7 +79,7 @@ class HomeScreen extends Component {
                 source={require('../../assets/btn-more.png')}
                 style={{ width: 30, height: 25}}
               />
-            </TouchableItem>
+            </TouchableHighlight>
           </View>
         </Image>
         <View style={{ paddingHorizontal: 20, paddingTop: 5, paddingBottom: 5 }}>
@@ -107,19 +108,30 @@ class HomeScreen extends Component {
   }
 
   renderMatchs() {
-    return this.state.matchs.map((match, key) => {
-      return this.renderMatch(match, key);
-    });
+    return this.state.matchs.map((match, key) => this.renderMatch(match, key));
   }
   renderMatch(match, key) {
     const two = Metrics.width / 2;
     return (
-      <View key={key} style={[Styles.flexRow, { flex: 1, justifyContent: 'center', marginBottom: 1, borderBottomWidth: 0.8, paddingBottom: 10 }]}>
-        <View style={{ width: two }}>
-          {this.renderImage(match.user)}
+      <View key={key}>
+        <View style={[Styles.flexRow, { flex: 1, justifyContent: 'center', marginBottom: 1, paddingBottom: 5, paddingTop: 5 }]}>
+          <View style={{ width: two }}>
+            {this.renderImage(match.user)}
+          </View>
+          <View style={{ width: two }}>
+            {this.renderInfoMatch(match)}
+          </View>
         </View>
-        <View style={{ width: two }}>
-          {this.renderInfoMatch(match)}
+        <View style={[Styles.flexRow, { backgroundColor: '#ededed', paddingRight: 10, paddingTop: 3, paddingBottom: 3, justifyContent: 'flex-end', alignItems: 'flex-end' }]}>
+          <TouchableHighlight
+            onPress={() => this.props.navigation.navigate('PlayMatch', { match: match.id })}
+            style={[Styles.flexRow, { backgroundColor: Colors.primary, paddingRight: 5, borderRadius: 5 }]}
+          >
+            <Image
+              source={require('../../assets/play/eye-icon.png')}
+              style={{ width: 30, height: 25, borderRadius: 5 }}
+            />
+          </TouchableHighlight>
         </View>
       </View>
     );
@@ -141,20 +153,13 @@ class HomeScreen extends Component {
     );
   }
   renderInfoMatch(match) {
+    console.log('renderInfoMatch');
     return (
       <View style={Styles.flexColumn}>
         <Text style={{ color: '#000000', fontSize: 18, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2 }}>{match.user.first_name} {match.user.last_name}</Text>
         <Text style={{ color: Colors.primary, fontFamily: commonFunc.fontRegular, fontSize: 16 }}>{match.date} - {match.hour}</Text>
         <Text style={{ color: '#000000', fontSize: 12, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2, marginTop: 10 }}>{match.club_name}</Text>
-        <Text numberOfLines={1}>{match.address}</Text>
-        <TouchableItem
-          onPress={() => this.props.navigation.navigate('PlayMatch', { match: match.id })}
-        >
-          <Image
-            source={require('../../assets/play/eye-icon.png')}
-            style={{ width: 30, height: 25}}
-          />
-        </TouchableItem>
+        <Text numberOfLines={2}>{match.address}</Text>
       </View>
     );
   }
@@ -168,10 +173,8 @@ class HomeScreen extends Component {
           onPress={() => navigation.navigate('DrawerOpen')}
           title="Home"
         />
-        <KeyboardAwareScrollView
-          keyboardDismissMode={'interactive'}
+        <ScrollView
           keyboardShouldPersistTaps={'never'}
-          getTextInputRefs={() => [this._about]}
           style={[Styles.containerPrimary, { paddingHorizontal: 0 }]}
         >
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
@@ -183,7 +186,7 @@ class HomeScreen extends Component {
             {this.renderNotMatchs()}
             {this.renderMatchs()}
           </View>
-        </KeyboardAwareScrollView>
+        </ScrollView>
       </View>
     );
   }

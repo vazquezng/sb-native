@@ -22,6 +22,7 @@ import SuggestedPlayersScreen from './screens/SuggestedPlayers';
 import ViewPlayerScreen from './screens/Profile/infoPlayer';
 
 import SearchUsersScreen from './screens/Searchs/Users';
+import NewsDetailScreen from './screens/News/Details'
 
 const AuthNavigationDrawer = lang => DrawerNavigator({
   Login: {
@@ -37,8 +38,8 @@ const AuthNavigationDrawer = lang => DrawerNavigator({
         <DrawerItem
           focused={focused}
           label="Home"
-          icon={<Image source={require('./assets/ico-crear-partido.png')} style={{ width: 24, height: 24}} />}
-          activeIcon={<Image source={require('./assets/ico-crear-partido.png')} style={{ width: 24, height: 24}} />}
+          icon={<Image source={require('./assets/home.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/home.png')} style={{ width: 24, height: 24}} />}
         />
       ),
     },
@@ -63,8 +64,8 @@ const AuthNavigationDrawer = lang => DrawerNavigator({
         <DrawerItem
           focused={focused}
           label="Crear Partido"
-          icon={<Image source={require('./assets/ico-crear-partido.png')} style={{ width: 24, height: 24}} />}
-          activeIcon={<Image source={require('./assets/ico-crear-partido.png')} style={{ width: 24, height: 24}} />}
+          icon={<Image source={require('./assets/CrearPartido.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/CrearPartido.png')} style={{ width: 24, height: 24}} />}
         />
       ),
     },
@@ -194,11 +195,14 @@ const AuthNavigationDrawer = lang => DrawerNavigator({
         <DrawerItem
           focused={focused}
           label="Buscar Jugadores"
-          icon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
-          activeIcon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
+          icon={<Image source={require('./assets/BuscarJugadores.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/BuscarJugadores.png')} style={{ width: 24, height: 24}} />}
         />
       ),
     },
+  },
+  NewsDetail: {
+    screen: NewsDetailScreen,
   },
 }, {
   initialRouteName: 'Login',

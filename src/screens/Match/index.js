@@ -446,7 +446,7 @@ class MatchScreen extends Component {
           <View style={[ Styles.flexColumn, { justifyContent: 'center', alignItems: 'center' }]}>
             <MultiSlider
               values={[match.game_level_from, match.game_level_to]}
-              onValuesChange={this.changeLevel.bind(this)}
+              onValuesChangeFinish={this.changeLevel.bind(this)}
               sliderLength={280}
               min={2.5}
               max={7}
@@ -546,7 +546,7 @@ class MatchScreen extends Component {
           <View style={[ Styles.flexColumn, { justifyContent: 'center', alignItems: 'center' }]}>
             <MultiSlider
               values={[match.years_from, match.years_to]}
-              onValuesChange={this.changeYears.bind(this)}
+              onValuesChangeFinish={this.changeYears.bind(this)}
               sliderLength={280}
               min={18}
               max={99}
@@ -565,8 +565,8 @@ class MatchScreen extends Component {
                 backgroundColor: 'red',
               }}
               touchDimensions={{
-                height: 40,
-                width: 40,
+                height: 60,
+                width: 60,
                 borderRadius: 20,
                 slipDisplacement: 40,
               }}
@@ -609,6 +609,7 @@ class MatchScreen extends Component {
                   borderWidth: 0,
                 },
               }}
+              iconSource={require('../../assets/ico-fecha.png')}
               onDateChange={date => this.setState({ match: Object.assign(match, { date }) })}
             />
           </View>
@@ -637,6 +638,7 @@ class MatchScreen extends Component {
                   borderWidth: 0,
                 },
               }}
+              iconSource={require('../../assets/ico-hora.png')}
               onDateChange={hour => this.setState({ match: Object.assign(match, { hour }) })}
             />
           </View>
@@ -657,7 +659,15 @@ class MatchScreen extends Component {
 
     return (
       <View style={[Styles.borderBottomInput, {paddingBottom: 10} ]}>
-        <Text style={{ fontSize: 14, marginTop: 20, fontWeight: '600' }}>LUGAR</Text>
+        <View style={[Styles.flexRow, { justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }]}>
+          <Text style={{ fontSize: 14, fontWeight: '600' }}>LUGAR</Text>
+          <Image
+            source={require('../../assets/ico-lugar.png')}
+            style={{ width: 27, height: 35 }}
+            resizeMode="contain"
+          />
+        </View>
+
         <View style={[styles.flexRow, { marginTop: 5 }]}>
           <View style={[styles.flexColumn, Styles.flexAlignLeft]}>
             <PickerSB

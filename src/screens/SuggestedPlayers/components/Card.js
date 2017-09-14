@@ -18,41 +18,62 @@ class Card extends Component {
     //const { navigation } = this.props;
     const imageURI = player && player.image ? player.image : 'http://web.slambow.com/img/profile/profile-blank.png';
     return (
-      <View style={[Styles.flexColumn, { borderColor: Colors.second, borderWidth: 0.8, borderRadius: 50, paddingHorizontal: 10, paddingTop: 10, paddingBottom: 10 }]}>
+      <View style={[Styles.flexColumn, { paddingHorizontal: 10, paddingTop: 10, paddingBottom: 10 }]}>
         <TouchableItem
           onPress={() => this.props.navigation.navigate('ViewPlayer', { user: player.id, backName: 'SuggestedPlayers', backParams: { match: this.props.navigation.state.params.match } })}
         >
           <View style={{ marginBottom: 10 }}>
             <Image
-              source={{ uri: imageURI }} style={{ width: 160,
-                height: 160,
-                borderRadius: 80,
-                borderTopLeftRadius: 100,
-                borderTopRightRadius: 100,
-                borderBottomLeftRadius: 100,
-                borderBottomRightRadius: 100 }}
+              source={{ uri: imageURI }} style={{ width: 200,
+                height: 200,
+                borderRadius: 100,
+                borderTopLeftRadius: 140,
+                borderTopRightRadius: 140,
+                borderBottomLeftRadius: 140,
+                borderBottomRightRadius: 140 }}
             />
           </View>
         </TouchableItem>
-        <View style={{ backgroundColor: 'rgba(204, 204, 208, 0.3)', paddingHorizontal: 10, paddingTop: 5, paddingBottom: 5, width: 100, marginBottom: 10 }}>
-          <Text style={{ color: Colors.primary, textAlign: 'center' }}>{player.first_name}</Text>
-          <Text style={{ textAlign: 'center' }}>{player.last_name}</Text>
-        </View>
-        <View style={{ backgroundColor: 'rgba(204, 204, 208, 0.3)', paddingHorizontal: 10, paddingTop: 5, paddingBottom: 5, width: 100, marginBottom: 10 }}>
-          <Text style={{ color: Colors.primary, textAlign: 'center' }}>Nivel</Text>
-          <Text style={{ textAlign: 'center' }}>{player.game_level}</Text>
+        <View style={Styles.flexRow}>
+          <View>
+            <View style={{ backgroundColor: 'white', paddingBottom: 5, marginBottom: 10, marginRight: 20, justifyContent: 'flex-start', alignItems: 'flex-start', borderBottomWidth: 1, borderColor: '#c9c9c9' }}>
+              <Text style={{ color: Colors.primary, textAlign: 'center', marginBottom: 12, marginTop: 5 }}>{player.first_name.toUpperCase()} {player.last_name.toUpperCase()}</Text>
+              <Text style={{ textAlign: 'center' }}>Edad: {player.years}</Text>
+            </View>
+          </View>
+          <View>
+            <View style={{ backgroundColor: 'transparent', marginTop: 7, paddingBottom: 5, marginBottom: 10, justifyContent: 'flex-start', alignItems: 'flex-start', borderBottomWidth: 1, borderColor: '#c9c9c9' }}>
+              <Text style={{ color: Colors.primary, textAlign: 'center', marginBottom: 5 }}>RANKING 4.5</Text>
+              <Image
+                source={require('../../../assets/ranking-pelotitas.png')}
+                resizeMode="contain"
+              />
+            </View>
+          </View>
         </View>
         <View style={[Styles.flexRow, { justifyContent: 'space-between', flex: 1 }]}>
           <TouchableItem onPress={() => this.props.clearUser()} style={{ marginRight: 10 }}>
-            <Entypo name="circle-with-cross" size={30} style={{ color: '#dc1b1b' }}/>
+            <Image
+              source={require('../../../assets/btntinder-not.png')}
+              resizeMode="contain"
+              style={{ width: 88, height: 92 }}
+            />
           </TouchableItem>
           <TouchableItem
             onPress={() => this.props.navigation.navigate('ViewPlayer', { user: player.id, backName: 'SuggestedPlayers', backParams: { match: this.props.navigation.state.params.match } })}
           >
-            <Entypo name="info-with-circle" size={24} style={{ color: Colors.primary }} />
+            <Image
+              source={require('../../../assets/btntinder-info.png')}
+              resizeMode="contain"
+              style={{ width: 65, height: 64 }}
+            />
           </TouchableItem>
           <TouchableItem onPress={() => this.props.invite(player.id)} style={{ marginLeft: 10 }}>
-            <Entypo name="circle-with-plus" size={30} style={{ color: '#729e44' }} />
+            <Image
+              source={require('../../../assets/btntinder-yes.png')}
+              resizeMode="contain"
+              style={{ width: 88, height: 92 }}
+            />
           </TouchableItem>
         </View>
       </View>

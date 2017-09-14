@@ -7,8 +7,8 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableHighlight,
 } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
 
 import Header from '@components/Header';
 import HeaderButton from '@components/HeaderButton';
@@ -48,7 +48,7 @@ class SearchUsersScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      spinnerVisible: false,
+      spinnerVisible: true,
       users: [],
       usersFilters: [],
       name: '',
@@ -64,7 +64,6 @@ class SearchUsersScreen extends Component {
   }
 
   componentWillMount() {
-    console.log('componentWillMount');
     const { params } = this.props.navigation.state;
     let name = '';
     if (params && params.name) {
@@ -102,8 +101,10 @@ class SearchUsersScreen extends Component {
     })
     .then(response => response.json())
     .then((responseJson) => {
+      console.log(responseJson);
       this.setState({
         users: responseJson.users,
+        spinnerVisible: false,
       }, () => {
         this.setState({
           usersFilters: this.applyFilters(),
@@ -115,7 +116,7 @@ class SearchUsersScreen extends Component {
   searchUser(name) {
     if (name !== '') {
       const { user } = this.props;
-      this.setState({ name });
+      this.setState({ name, spinnerVisible: true });
 
       fetch(`${API}/user/${name}`, {
         method: 'GET',
@@ -127,6 +128,7 @@ class SearchUsersScreen extends Component {
       .then((responseJson) => {
         this.setState({
           users: responseJson.users,
+          spinnerVisible: false,
         }, () => {
           this.setState({
             usersFilters: this.applyFilters(),
@@ -187,25 +189,36 @@ class SearchUsersScreen extends Component {
 
   renderUser(user, key) {
     return (
-      <View key={key} style={[Styles.flexRow, styles.itemContainer]}>
-        <View>
-          {this.renderImage(user)}
+      <View key={key}>
+        <View style={[Styles.flexRow, styles.itemContainer]}>
+          <View style={{ flex: 3 }}>
+            {this.renderImage(user)}
+          </View>
+          <View style={[Styles.flexColumn, { flex: 7, justifyContent: 'flex-start', alignItems: 'flex-start' }]}>
+            <View>
+              <Text style={{ color: Colors.primary }}>{user.name.toUpperCase()}</Text>
+              <Text style={{ fontSize: 14, color: '#414143' }}>
+                EDAD: {user.years}
+              </Text>
+              <Text style={{ fontSize: 14, color: '#414143' }}>
+                NIVEL DEL JUEGO: {user.game_level}
+              </Text>
+            </View>
+            {/* <View>
+              <Text style={{ fontFamily: commonFunc.fontRegular, fontSize: 14, color: '#000000' }}>
+                {user.date}
+              </Text>
+            </View> */}
+          </View>
         </View>
-        <View style={Styles.flexColumn}>
-          <View>
-            <Text style={{ color: Colors.primary }}>{user.name}</Text>
-          </View>
-          <View>
-            <Text style={{ fontFamily: commonFunc.fontRegular, fontSize: 14, color: '#000000' }}>
-              {user.date}
-            </Text>
-          </View>
+        <View style={[Styles.flexRow, { backgroundColor: '#ededed', paddingRight: 10, paddingTop: 3, paddingBottom: 3, justifyContent: 'flex-end', alignItems: 'flex-end'}]}>
           <TouchableItem
             onPress={() => this.props.navigation.navigate('ViewPlayer', { user: user.id, inviteMatch: true, backName: 'SearchUsers', backParams: { name: this.state.name, filters: this.state.filters } })}
+            style={[Styles.flexRow, { backgroundColor: Colors.primary, paddingRight: 5, borderRadius: 5 }]}
           >
             <Image
               source={require('../../assets/play/eye-icon.png')}
-              style={{ width: 30, height: 25 }}
+              style={{ width: 30, height: 25,  borderRadius: 5 }}
             />
           </TouchableItem>
         </View>
@@ -217,13 +230,13 @@ class SearchUsersScreen extends Component {
     const imageURI = profile && profile.image ? profile.image : 'http://web.slambow.com/img/profile/profile-blank.png';
     return (
       <Image
-        source={{ uri: imageURI }} style={{ width: 120,
-          height: 120,
-          borderRadius: 60,
-          borderTopLeftRadius: 80,
-          borderTopRightRadius: 80,
-          borderBottomLeftRadius: 80,
-          borderBottomRightRadius: 80 }}
+        source={{ uri: imageURI }} style={{ width: 80,
+          height: 80,
+          borderRadius: 40,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          borderBottomLeftRadius: 20,
+          borderBottomRightRadius: 20 }}
       />
     );
   }
@@ -236,23 +249,40 @@ class SearchUsersScreen extends Component {
           onPress={() => this.props.navigation.navigate('DrawerOpen')}
           title="Buscar Jugadores"
         />
-        <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="never">
+        <ScrollView keyboardShouldPersistTaps="never">
+          {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View style={[Styles.centerContent, { marginBottom: 10 }]}>
-            <Text style={Styles.title}>Busca Jugadores</Text>
+            <Text style={Styles.title}>Jugadores</Text>
           </View>
           <View style={Styles.flexColumn}>
-            <View>
+            <View style={[Styles.flexRow, { borderWidth: 1, borderColor: '#efedf0', borderRadius: 5, paddingHorizontal: 5, paddingBottom: 2 }]}>
               <TextInput
                 multiline={!commonFunc.isAndroid}
                 numberOfLines={1}
-                style={[Styles.input, { height: 40, width: Metrics.width}]}
+                style={[{ height: 40, width: 220}]}
                 underlineColorAndroid={'transparent'}
                 placeholderTextColor="lightgrey"
-                placeholder="Escriba el Nombre o Apellido"
+                placeholder="Buscar Jugador"
                 value={this.state.name}
-                onChangeText={name => this.searchUser(name)}
+                onChangeText={name => this.setState({ name })}
               />
+              <TouchableHighlight
+                onPress={() => this.searchUser(this.state.name)}
+              >
+                <Image
+                  source={require('../../assets/lupabtn.png')} style={{ width: 40,
+                    height: 40,
+                    borderRadius: 5,
+                    borderTopLeftRadius: 5,
+                    borderTopRightRadius: 5,
+                    borderBottomLeftRadius: 5,
+                    borderBottomRightRadius: 5 }}
+                />
+              </TouchableHighlight>
             </View>
+          </View>
+          <View style={[Styles.flexRow, { backgroundColor: '#414143', paddingHorizontal: 10, marginVertical: 10, paddingTop: 4, paddingBottom: 5, justifyContent: 'center', alignItems: 'center'}]}>
+            <Text style={[Styles.title, { color: 'white', fontSize: 26, marginBottom: 0 }]}>Encontrá con quien jugar</Text>
           </View>
           <View style={Styles.flexColumn}>
             {this.renderUsers()}
@@ -275,13 +305,10 @@ class SearchUsersScreen extends Component {
 
 const styles = StyleSheet.create({
   itemContainer: {
-    width: Metrics.width,
-    borderColor: Colors.primary,
-    borderWidth: commonFunc.isAndroid ? 0.8 : StyleSheet.hairlineWidth,
-    paddingHorizontal: 10,
+    width: Metrics.screenWidth,
     paddingTop: 5,
     paddingBottom: 5,
-    marginBottom: 20,
+    paddingHorizontal: 10,
   },
 });
 
