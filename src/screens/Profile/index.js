@@ -469,7 +469,7 @@ class ProfileScreen extends Component {
               numberOfLines={1}
               underlineColorAndroid="transparent"
               placeholderTextColor="lightgrey"
-              style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top' }]}
+              style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
               value={profile.first_name}
               onChangeText={first_name => this.setState({ profile: Object.assign(profile, { first_name }) })}
             />
@@ -484,7 +484,7 @@ class ProfileScreen extends Component {
               numberOfLines={1}
               underlineColorAndroid="transparent"
               placeholderTextColor="lightgrey"
-              style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top' }]}
+              style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
               value={profile.last_name}
               onChangeText={last_name => this.setState({ profile: Object.assign(profile, { last_name }) })}
             />
@@ -500,7 +500,7 @@ class ProfileScreen extends Component {
               underlineColorAndroid="transparent"
               placeholderTextColor="lightgrey"
               keyboardType="email-address"
-              style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top' }]}
+              style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
               value={profile.email}
               onChangeText={email => this.setState({ profile: Object.assign(profile, { email }) })}
             />
@@ -512,16 +512,24 @@ class ProfileScreen extends Component {
             <Text style={[Styles.inputText, { color: 'white' }]}>SEXO</Text>
           </View>
           <View style={[ Styles.borderBottomInput ]}>
-            <View style={[ Styles.flexRow, { backgroundColor: 'black', borderRadius: 10, marginBottom: 10 }]}>
+            <View
+              style={[Styles.flexRow, { backgroundColor: 'black',
+                borderRadius: 10,
+                marginBottom: 10,
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+                borderBottomLeftRadius: 10,
+                borderBottomRightRadius: 10 }]}
+            >
               <TouchableItem
                 onPress={ () => this.handleChangeSexo('male') }
-                style={[{ borderRadius: 10, flex: 0.5 }, profile.sexo === 'male' ? { backgroundColor: Colors.primary } : {} ]}>
-                <Text style={{ color: 'white', textAlign: 'center', fontSize: 16  }}>Hombre</Text>
+                style={[{ borderRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10, borderBottomRightRadius: 10, flex: 0.5 }, profile.sexo === 'male' ? { backgroundColor: Colors.primary } : {} ]}>
+                <Text style={{ color: 'white', textAlign: 'center', fontSize: 14  }}>Hombre</Text>
               </TouchableItem>
               <TouchableItem
                 onPress={ () => this.handleChangeSexo('female') }
                 style={[{ borderRadius: 10, flex: 0.5 }, profile.sexo === 'female' ? { backgroundColor: Colors.primary } : {}]}>
-                <Text style={{ color: 'white', textAlign: 'center', fontSize: 16 }}>Mujer</Text>
+                <Text style={{ color: 'white', textAlign: 'center', fontSize: 14 }}>Mujer</Text>
               </TouchableItem>
             </View>
           </View>
@@ -560,9 +568,10 @@ class ProfileScreen extends Component {
             </TouchableItem>
 
           </View>
-          <View style={[ Styles.flexRow ]}>
-            <Text style={[Styles.inputText, { color: 'white', fontSize: 12, color: '#b8b9bb' }]}>Mi ubicación actual</Text>
-            <Text style={[Styles.inputText, { color: '#079ac8', fontSize: 12 }]}
+          <View style={[Styles.flexRow]}>
+            <Text style={[Styles.inputText, { fontSize: 12, color: '#b8b9bb', marginRight: 4 }]}>Mi ubicación actual</Text>
+            <Text
+              style={[Styles.inputText, { color: '#079ac8', fontSize: 12 }]}
               ellipsizeMode="tail"
               numberOfLines={1}
             >{profile.address && profile.address.substring(0, 30)}...</Text>

@@ -315,11 +315,11 @@ class LoginScreen extends Component {
         <View style={{ position: 'absolute', bottom: 0, width, justifyContent: 'center', alignItems: 'center' }}>
           <TouchableItem
             onPress={() => {
-              Linking.openURL('http://web.slambow.com/tycs').catch(err => console.error('An error occurred', err));
+              Linking.openURL('http://web.slambow.com/#!/tycs').catch(err => console.error('An error occurred', err));
             }}
           >
-            <View>
-              <Text style={{ color: '#ffffff', paddingBottom: 10, backgroundColor: 'transparent' }}>Al hacer login aceptás los términos y condiciones</Text>
+            <View style={{ borderBottomWidth: 1, borderColor: 'white', paddingBottom: 2, marginBottom: 5 }}>
+              <Text style={{ color: '#ffffff', backgroundColor: 'transparent' }}>Al hacer login aceptás los términos y condiciones</Text>
             </View>
           </TouchableItem>
         </View>

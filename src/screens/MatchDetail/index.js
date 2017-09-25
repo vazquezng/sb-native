@@ -155,120 +155,129 @@ class MatchDetailScreen extends Component {
       const sexo = this.capitalizeFirstLetter(match.sexo);
       return (
         <View>
-          <View>
-            <View style={Styles.flexRow}>
-              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <View style={Styles.borderInput}>
-                  <Text
-                    style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
-                  >
-                    {match.date}
-                  </Text>
-                </View>
-                <Text style={[Styles.inputText]}>Fecha</Text>
-              </View>
-
-              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 }]}>
-                <View style={Styles.borderInput}>
-                  <Text
-                    style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
-                  >
-                    {match.hour}
-                  </Text>
-                </View>
-                <Text style={[Styles.inputText]}>Hora</Text>
-              </View>
-            </View>
-
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <View style={Styles.borderInput}>
+          <View style={styles.aboutContainer}>
+            <Text style={[Styles.title, { marginBottom: 0, color: '#393e44', fontSize: 22 }]}>{match.about}</Text>
+          </View>
+          <View style={styles.containerInformationBasic}>
+            <View style={{ marginTop: 20 }}>
+              <View
+                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+              >
+                <Text style={[Styles.inputText, { color: 'white' }]}>FECHA</Text>
                 <Text
-                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth, height: commonFunc.isAndroid ? 50 : 35 }]}
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: Metrics.width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
                 >
-                {match.address}
+                  {match.date}
                 </Text>
               </View>
-              <Text style={[Styles.inputText]}>Lugar</Text>
             </View>
-
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <View style={Styles.borderInput}>
+            <View style={{ marginTop: 20 }}>
+              <View
+                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+              >
+                <Text style={[Styles.inputText, { color: 'white' }]}>HORA</Text>
                 <Text
-                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: Metrics.width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
                 >
-                {match.club_name}
+                  {match.hour}
                 </Text>
               </View>
-              <Text style={[Styles.inputText]}>Nombre del Club</Text>
             </View>
-
-            <View style={Styles.flexRow}>
-              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <View style={Styles.borderInput}>
-                  <Text
-                    style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
-                  >
-                    {match.game_level_from}
-                  </Text>
-                </View>
-                <Text style={[Styles.inputText]}>Nivel del juego desde</Text>
-              </View>
-
-              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <View style={Styles.borderInput}>
-                  <Text
-                    style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2}]}
-                  >
-                    {match.game_level_to}
-                  </Text>
-                </View>
-                <Text style={[Styles.inputText]}>Nivel del juego hasta</Text>
-              </View>
-            </View>
-
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <View style={Styles.borderInput}>
+            <View style={{ marginTop: 20 }}>
+              <View
+                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+              >
+                <Text style={[Styles.inputText, { color: 'white' }]}>LUGAR</Text>
                 <Text
-                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: Metrics.width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
+                >
+                  {match.address}
+                </Text>
+              </View>
+            </View>
+            <View style={{ marginTop: 20 }}>
+              <View
+                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+              >
+                <Text style={[Styles.inputText, { color: 'white' }]}>NOMBRE DEL CLUB</Text>
+                <Text
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: Metrics.width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
+                >
+                  {match.club_name}
+                </Text>
+              </View>
+            </View>
+            <View style={{ marginTop: 20 }}>
+              <View
+                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+              >
+                <Text style={[Styles.inputText, { color: 'white' }]}>NIVEL DEL JUEGO DESDE</Text>
+                <Text
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: Metrics.width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
+                >
+                  {match.game_level_from}
+                </Text>
+              </View>
+            </View>
+            <View style={{ marginTop: 20 }}>
+              <View
+                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+              >
+                <Text style={[Styles.inputText, { color: 'white' }]}>NIVEL DEL JUEGO HASTA</Text>
+                <Text
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: Metrics.width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
+                >
+                  {match.game_level_to}
+                </Text>
+              </View>
+            </View>
+            <View style={{ marginTop: 20 }}>
+              <View
+                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+              >
+                <Text style={[Styles.inputText, { color: 'white' }]}>TIPO DE PARTIDO</Text>
+                <Text
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: Metrics.width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
                 >
                   {type}
                 </Text>
               </View>
-              <Text style={[Styles.inputText]}>Tipo de partido</Text>
             </View>
-
-            <View style={Styles.flexRow}>
-              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <View style={Styles.borderInput}>
-                  <Text
-                    style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2 }]}
-                  >
-                    {match.years_from}
-                  </Text>
-                </View>
-                <Text style={[Styles.inputText]}>Edad desde</Text>
-              </View>
-              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <View style={Styles.borderInput}>
-                  <Text
-                    style={[Styles.inputDisabled, { width: (Metrics.buttonWidth - 40) / 2, height: 25  }]}
-                  >
-                    {match.years_to}
-                  </Text>
-                </View>
-                <Text style={[Styles.inputText]}>Edad hasta</Text>
-              </View>
-            </View>
-
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-              <View style={Styles.borderInput}>
+            <View style={{ marginTop: 20 }}>
+              <View
+                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+              >
+                <Text style={[Styles.inputText, { color: 'white' }]}>EDAD DESDE</Text>
                 <Text
-                  style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: Metrics.width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
+                >
+                  {match.years_from}
+                </Text>
+              </View>
+            </View>
+            <View style={{ marginTop: 20 }}>
+              <View
+                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+              >
+                <Text style={[Styles.inputText, { color: 'white' }]}>EDAD HASTA</Text>
+                <Text
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: Metrics.width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
+                >
+                  {match.years_to}
+                </Text>
+              </View>
+            </View>
+            <View style={{ marginTop: 20 }}>
+              <View
+                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+              >
+                <Text style={[Styles.inputText, { color: 'white' }]}>SEXO</Text>
+                <Text
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: Metrics.width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
                 >
                   {sexo}
                 </Text>
               </View>
-              <Text style={[Styles.inputText]}>Sexo</Text>
             </View>
           </View>
         </View>
@@ -481,12 +490,11 @@ class MatchDetailScreen extends Component {
           onPress={() => navigation.navigate('MatchHistory')}
           title="Detalle del Partido"
         />
-        <ScrollView style={Styles.containerPrimary} keyboardShouldPersistTaps="always">
+        <ScrollView keyboardShouldPersistTaps="always">
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View>
             <Text style={Styles.title}>Detalle del Partido</Text>
           </View>
-
           <View>
             {this.infoMatch(match)}
 
@@ -505,6 +513,17 @@ class MatchDetailScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+  aboutContainer: {
+    backgroundColor: '#f5f5f5',
+    padding: 10,
+    paddingBottom: 0,
+  },
+  containerInformationBasic: {
+    backgroundColor: '#393e44',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
   textImage: {
     color: Colors.primary,
     fontSize: 18,

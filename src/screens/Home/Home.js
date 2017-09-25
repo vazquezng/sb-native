@@ -47,10 +47,12 @@ class HomeScreen extends Component {
     this.state = {
       spinnerVisible: false,
       matchs: [],
+      msgMatch: 'Buscando partidos para vos.'
     };
   }
 
   componentWillMount() {
+    this.setState({ msgMatch: 'Buscando partidos para vos.' });
     fetch(`${API}/match`, {
       method: 'GET',
       headers: {
@@ -61,6 +63,7 @@ class HomeScreen extends Component {
       .then((responseJson) => {
         this.setState({
           matchs: responseJson.matchs,
+          msgMatch: 'No se encontraron partidos para vos.',
         });
       });
   }
@@ -69,11 +72,11 @@ class HomeScreen extends Component {
     return (
       <View>
         <Image style={[Styles.flexColumn, { backgroundColor: 'transparent', justifyContent: 'flex-end', alignItems: 'flex-start', paddingBottom: 10, paddingHorizontal: 5 }]} source={require('../../assets/news1.png')}>
-          <View style={[Styles.flexRow, { justifyContent: 'space-between', alignItems: 'center' }]}>
-            <Text style={{ color: 'white', flex: 0.8 }}>JULIO 22.2017</Text>
+          <View style={[Styles.flexRow, { justifyContent: 'space-between', alignItems: 'center'}]}>
+            <Text style={{ color: 'white', width: (Metrics.width*90)/100 }}>JULIO 22.2017</Text>
             <TouchableHighlight
               onPress={() => this.props.navigation.navigate('NewsDetail', { news: 1 })}
-              style={{ flex: 0.2 }}
+              style={{ width: (Metrics.width*10)/100 }}
             >
               <Image
                 source={require('../../assets/btn-more.png')}
@@ -83,9 +86,13 @@ class HomeScreen extends Component {
           </View>
         </Image>
         <View style={{ paddingHorizontal: 20, paddingTop: 5, paddingBottom: 5 }}>
-          <View>
-            <Text style={{ color: Colors.primary, fontSize: 20 }}>ARRANCA EL ATP</Text>
-          </View>
+          <TouchableHighlight
+            onPress={() => this.props.navigation.navigate('NewsDetail', { news: 1 })}
+          >
+            <View>
+              <Text style={{ color: Colors.primary, fontSize: 20 }}>ARRANCA EL ATP</Text>
+            </View>
+          </TouchableHighlight>
           <View>
             <Text style={{ fontSize: 12 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</Text>
           </View>
@@ -99,7 +106,7 @@ class HomeScreen extends Component {
     if (this.state.matchs.length === 0) {
       return (
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Text>No hay partidos en este momento</Text>
+          <Text>{this.state.msgMatch}</Text>
         </View>
       );
     }
@@ -112,17 +119,31 @@ class HomeScreen extends Component {
   }
   renderMatch(match, key) {
     const two = Metrics.width / 2;
+    console.log(match);
+    const date = new Date(match.date);
+    const day = new Date(date).getUTCDate();
+    const hour = match.hour.split(':');
     return (
       <View key={key}>
-        <View style={[Styles.flexRow, { flex: 1, justifyContent: 'center', marginBottom: 1, paddingBottom: 5, paddingTop: 5 }]}>
-          <View style={{ width: two }}>
+        <View style={[Styles.flexRow, { justifyContent: 'center', marginBottom: 1, paddingBottom: 5, paddingTop: 5 }]}>
+          <View style={[Styles.flexColumn,{ flex: 0.2 }]}>
+            <View style={[ Styles.flexColumn, { flex: 1, paddingHorizontal: 10, backgroundColor: Colors.primary, justifyContent: 'center', alignItems: 'center' }]}>
+              <Text style={[ Styles.title, { color: 'white', marginBottom: 0}]}>{day}</Text>
+              <Text style={{ color: 'white'}}>{date.toDateString().split(' ')[1].toUpperCase()}</Text>
+            </View>
+            <Text style={{ color: Colors.primary} }>{hour[0]}:{hour[1]}hs.</Text>
+          </View>
+          <View style={{ flex: 0.3 }}>
             {this.renderImage(match.user)}
           </View>
-          <View style={{ width: two }}>
+          <View style={{ flex: 0.5 }}>
             {this.renderInfoMatch(match)}
           </View>
         </View>
-        <View style={[Styles.flexRow, { backgroundColor: '#ededed', paddingRight: 10, paddingTop: 3, paddingBottom: 3, justifyContent: 'flex-end', alignItems: 'flex-end' }]}>
+        <View style={[Styles.flexRow, { backgroundColor: '#ededed', paddingLeft: 10, paddingRight: 10, paddingTop: 3, paddingBottom: 3, justifyContent: 'space-between', alignItems: 'flex-end' }]}>
+          <View>
+            <Text>{match.club_name}</Text>
+          </View>
           <TouchableHighlight
             onPress={() => this.props.navigation.navigate('PlayMatch', { match: match.id })}
             style={[Styles.flexRow, { backgroundColor: Colors.primary, paddingRight: 5, borderRadius: 5 }]}
@@ -138,7 +159,6 @@ class HomeScreen extends Component {
   }
 
   renderImage(user) {
-    console.log(user);
     const imageURI = user && user.image ? user.image : 'http://web.slambow.com/img/profile/profile-blank.png';
     return (
       <Image
@@ -155,11 +175,9 @@ class HomeScreen extends Component {
   renderInfoMatch(match) {
     console.log('renderInfoMatch');
     return (
-      <View style={Styles.flexColumn}>
-        <Text style={{ color: '#000000', fontSize: 18, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2 }}>{match.user.first_name} {match.user.last_name}</Text>
-        <Text style={{ color: Colors.primary, fontFamily: commonFunc.fontRegular, fontSize: 16 }}>{match.date} - {match.hour}</Text>
-        <Text style={{ color: '#000000', fontSize: 12, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2, marginTop: 10 }}>{match.club_name}</Text>
-        <Text numberOfLines={2}>{match.address}</Text>
+      <View style={[Styles.flexColumn]}>
+        <Text style={{ color: Colors.primary, fontSize: 18, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2 }}>{match.user.first_name} {match.user.last_name}</Text>
+        <Text numberOfLines={2}>{match.user.about}</Text>
       </View>
     );
   }
@@ -187,6 +205,38 @@ class HomeScreen extends Component {
             {this.renderMatchs()}
           </View>
         </ScrollView>
+        <View style={[ Styles.flexRow, { backgroundColor: '#414142', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 5, borderBottomWidth: 4, borderColor: Colors.primary } ]}>
+          <TouchableHighlight
+            onPress={() => this.props.navigation.navigate('SearchUsers')}
+            style={[ Styles.flexColumn, { justifyContent: 'center', alignItems: 'center' }]}
+          >
+            <View style={[ Styles.flexColumn, { justifyContent: 'space-between', alignItems: 'center'}]}>
+                <Image
+                  source={require('../../assets/BuscarJugadores.png')}
+                  style={{ width: 24, height: 24 }}
+                />
+                <Text style={{ color: 'white', fontSize: 10 }}>BUSCAR JUGADORES</Text>
+            </View>
+          </TouchableHighlight>
+          <View style={[ Styles.flexColumn, { justifyContent: 'center', alignItems: 'center', flex: 0.4, borderRightWidth: 1, borderLeftWidth: 1, borderColor: '#2d2d2e' }]}>
+            <Image
+              source={require('../../assets/btnc-home.png')}
+              style={{ width: 80, height: 64 }}
+            />
+          </View>
+          <TouchableHighlight
+            onPress={() => this.props.navigation.navigate('Match')}
+            style={[ Styles.flexColumn, { justifyContent: 'center', alignItems: 'center' }]}
+          >
+            <View style={[ Styles.flexColumn, { justifyContent: 'center', alignItems: 'center' }]}>
+              <Image
+                source={require('../../assets/CrearPartido.png')}
+                style={{ width: 30, height: 25 }}
+              />
+              <Text style={{ color: 'white', fontSize: 10 }}>CREAR PARTIDO</Text>
+            </View>
+          </TouchableHighlight>
+        </View>
       </View>
     );
   }

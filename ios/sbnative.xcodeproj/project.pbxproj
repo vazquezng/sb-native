@@ -31,7 +31,7 @@
 		143ACBC31F4BE08F00695CD7 /* GoogleSignIn.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 143ACBBC1F4BE08F00695CD7 /* GoogleSignIn.framework */; };
 		143ACBC41F4BE08F00695CD7 /* GoogleSymbolUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 143ACBBD1F4BE08F00695CD7 /* GoogleSymbolUtilities.framework */; };
 		143ACBC51F4BE08F00695CD7 /* GoogleUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 143ACBBE1F4BE08F00695CD7 /* GoogleUtilities.framework */; };
-		143ACBC71F4BE15C00695CD7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 143ACBC61F4BE15C00695CD7 /* GoogleService-Info.plist */; };
+		144212161F788DDD00766F54 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 144212151F788DDC00766F54 /* GoogleService-Info.plist */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		1478605F1F3782EA009ED3FF /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 140285511F344E160093B25A /* FBSDKCoreKit.framework */; };
 		147860601F3782EA009ED3FF /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 140285521F344E160093B25A /* FBSDKLoginKit.framework */; };
@@ -356,7 +356,7 @@
 		143ACBBC1F4BE08F00695CD7 /* GoogleSignIn.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSignIn.framework; path = "../node_modules/react-native-google-signin/ios/GoogleSdk/GoogleSignIn.framework"; sourceTree = "<group>"; };
 		143ACBBD1F4BE08F00695CD7 /* GoogleSymbolUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleSymbolUtilities.framework; path = "../node_modules/react-native-google-signin/ios/GoogleSdk/GoogleSymbolUtilities.framework"; sourceTree = "<group>"; };
 		143ACBBE1F4BE08F00695CD7 /* GoogleUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleUtilities.framework; path = "../node_modules/react-native-google-signin/ios/GoogleSdk/GoogleUtilities.framework"; sourceTree = "<group>"; };
-		143ACBC61F4BE15C00695CD7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		144212151F788DDC00766F54 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "sbnative/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		147860631F37B7FB009ED3FF /* TwitterCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwitterCore.framework; path = Pods/TwitterCore/iOS/TwitterCore.framework; sourceTree = "<group>"; };
 		147860651F37B803009ED3FF /* TwitterKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwitterKit.framework; path = Pods/TwitterKit/iOS/TwitterKit.framework; sourceTree = "<group>"; };
@@ -538,7 +538,7 @@
 		13B07FAE1A68108700A75B9A /* sbnative */ = {
 			isa = PBXGroup;
 			children = (
-				143ACBC61F4BE15C00695CD7 /* GoogleService-Info.plist */,
+				144212151F788DDC00766F54 /* GoogleService-Info.plist */,
 				1430EF351F2B21C3006ED914 /* sbnative.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -614,6 +614,24 @@
 				143ACBB31F4BE01200695CD7 /* libRNGoogleSignin.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		144211F11F788B7100766F54 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				00B78E8A98B147739FF22630 /* libRCTFBLogin.a */,
+				D596371156F34D8A8C48042C /* libSplashScreen.a */,
+				CA054E14BC054A7D81063F80 /* libRNVectorIcons.a */,
+				53241D2C89B44547B661FE1C /* libReact.a */,
+				A8644C8A63914C2C8A426D19 /* libyoga.a */,
+				E6D3BDC3DBC740FCA135825D /* libcxxreact.a */,
+				0D016C1774F9414690A2825A /* libjschelpers.a */,
+				8B1A2FACF9FF4F5FB96BB1A5 /* libRNImagePicker.a */,
+				054F3518A4A44659AA824859 /* libRCTOneSignal.a */,
+				5D4AFFA9DB594907A0A216A8 /* libAirMaps.a */,
+				7BC0AE0F651042F1A6CA90CA /* libRNGoogleSignin.a */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		146834001AC3E56700842450 /* Products */ = {
@@ -706,6 +724,7 @@
 				89454E43827E40B98AF7D624 /* Resources */,
 				57CB6D7FFD5DBCE9F5881B51 /* Pods */,
 				0AFBE500A654D091929F30BA /* Frameworks */,
+				144211F11F788B7100766F54 /* Recovered References */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -1146,7 +1165,7 @@
 				1430EEFF1F2B1D82006ED914 /* CookieRegular.ttf in Resources */,
 				329E41CFACAE4A7EBB58DA1D /* Foundation.ttf in Resources */,
 				45F0E128DD2D4F29B0781665 /* Ionicons.ttf in Resources */,
-				143ACBC71F4BE15C00695CD7 /* GoogleService-Info.plist in Resources */,
+				144212161F788DDD00766F54 /* GoogleService-Info.plist in Resources */,
 				CFFF02BDF021411BAE277318 /* MaterialCommunityIcons.ttf in Resources */,
 				1430EEFE1F2B1D82006ED914 /* OpenSansRegular.ttf in Resources */,
 				F1649F5A94814829A559D53A /* MaterialIcons.ttf in Resources */,
