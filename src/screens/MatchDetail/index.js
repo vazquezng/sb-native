@@ -23,6 +23,10 @@ import Metrics from '@theme/Metrics';
 import API from '@utils/api';
 import commonFunc from '@utils/commonFunc';
 
+const stateInvite = {
+  confirmed: 'confirmed',
+};
+
 const mapStateToProps = state => ({
   user: state.user,
 });
@@ -289,104 +293,32 @@ class MatchDetailScreen extends Component {
 
   infoPlayers(match) {
     if (match && match.matchPlayer && match.matchPlayer.length > 0) {
-      return match.matchPlayer.map((p, key) => {
-        return (
-          <View key={key} style={[Styles.flexRow, { justifyContent: 'flex-start', alignItems: 'center' }]}>
-            <View>
-              <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-                <View style={Styles.borderInput}>
-                  <Text
-                    style={[Styles.inputDisabled, { width: Metrics.buttonWidth / 2 }]}
-                  >
-                    {p.user.first_name}
-                  </Text>
-                </View>
-                <Text style={[Styles.inputText]}>Jugador</Text>
-              </View>
-            </View>
-            <View>
-              {this.renderButtonUserOne(match, p)}
-              {this.renderButtonUserTwo(match, p)}
-            </View>
-          </View>
-        );
-      });
-    }
-    return null;
-  }
+      const PlayersConfirmed = match.matchPlayer.filter(mp => mp.state === stateInvite.confirmed);
+      const PlayersOthers = match.matchPlayer.filter(mp => mp.state !== stateInvite.confirmed);
 
-  renderButtonUserOne(match, player) {
-    let blockOne = null;
-    if (this.state.isPlayer && player.user.id !== this.props.user.profile.id) {
-      console.log('renderButtonUserOne');
-      blockOne = this.conditionBlockOne(match, player);
-    }
-
-    return blockOne;
-  }
-  renderButtonUserTwo(match, player) {
-    let blockTwo = null;
-    if (this.state.isPlayer && match.futureMatch) {
-      console.log('renderButtonUserTwo');
-      blockTwo = this.conditionBlockTwo(match, player);
-    }
-
-    return blockTwo;
-  }
-
-
-  conditionBlockOne(match, player) {
-    if (!match.futureMatch && !player.user.hasFeedback) {
-      return (
-        <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start'}]}>
-          <TouchableItem
-            style={{ width: Metrics.buttonWidth / 2 }}
-            accessibilityComponentType="button"
-            accessibilityTraits="button"
-            delayPressIn={0}
-            onPress={() => this.props.navigation.navigate('Feedback', { match: match.id, player: player.user.id })}
-            pressColor={Colors.primary}
-          >
-            <View>
-              <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center'}]}>DANOS TU FEEDBACK</Text>
-            </View>
-          </TouchableItem>
-        </View>
-      );
-    } else if (match.futureMatch && player.state === 'pendingRequest' && player.user.id === this.props.user.profile.id) {
-      return (
-        <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start'}]}>
-          <TouchableItem
-            style={{ width: Metrics.buttonWidth / 2 }}
-            accessibilityComponentType="button"
-            accessibilityTraits="button"
-            delayPressIn={0}
-            onPress={() => this.acceptUser(match.id, player.user.id)}
-            pressColor={Colors.primary}
-          >
-            <View>
-              <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>ACEPTAR</Text>
-            </View>
-          </TouchableItem>
-
-          <TouchableItem
-            style={{ width: Metrics.buttonWidth / 2 }}
-            accessibilityComponentType="button"
-            accessibilityTraits="button"
-            delayPressIn={0}
-            onPress={() => this.refuseUser(match.id, player.user.id)}
-            pressColor={Colors.primary}
-          >
-            <View>
-              <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>RECHAZAR</Text>
-            </View>
-          </TouchableItem>
-        </View>
-      );
-    } else if (match.futureMatch && player.state === 'pendingInvitation') {
       return (
         <View>
-          <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>INVITACIÓN ENVIADA</Text>
+          {this.renderPlayersConfirmed(PlayersConfirmed.reverse())}
+          {this.renderPlayersInvite(PlayersOthers.reverse())}
+        </View>
+      );
+    }
+    return null;
+  }
+
+  renderPlayersConfirmed(players) {
+    if (players.length > 0) {
+      return (
+        <View style={{ paddingHorizontal: 20 }}>
+          <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', flex: 1 }]}>
+            <Text style={{ color: '#393e44', fontSize: 15 }}>MIRÁ LOS JUGADORES</Text>
+            <Text style={{ color: Colors.primary, fontSize: 17 }}>YA ANOTADOS</Text>
+          </View>
+          <View style={[Styles.flexRow, { justifyContent: 'flex-start', marginTop: 10 }]}>
+            {players.map((p, k) => {
+              return this.renderPlayer(p, k, true);
+            })}
+          </View>
         </View>
       );
     }
@@ -394,70 +326,150 @@ class MatchDetailScreen extends Component {
     return null;
   }
 
-  conditionBlockTwo(match, player) {
-    if (player.user.id === this.props.user.profile.id) {
-      if (player.state === 'pendingInvitation' && match.id_user !== this.props.user.profile.id) {
-        return (
-          <View key={`btn-player-${player.user.id}`} style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start' }]}>
+  renderPlayersInvite(players) {
+    if (players.length > 0) {
+      return (
+        <View style={{ marginTop: 20, paddingHorizontal: 20, backgroundColor: '#f5f5f5', paddingVertical: 10 }}>
+          <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', flex: 1 }]}>
+            <Text style={{ color: '#393e44', fontSize: 15 }}>MIRÁ LOS JUGADORES</Text>
+            <Text style={{ color: Colors.primary, fontSize: 17 }}>QUE AUN NO CONTESTARON</Text>
+          </View>
+          <View style={[Styles.flexRow, { justifyContent: 'flex-start', marginTop: 10 }]}>
+            {players.map((p, k) => {
+              return this.renderPlayer(p, k, false);
+            })}
+          </View>
+        </View>
+      );
+    }
+
+    return null;
+  }
+
+  renderPlayer(player, key, feedback) {
+    const { match } = this.state;
+    console.log(match);
+    return (
+      <View key={key} style={[Styles.flexColumn, { width: Metrics.width / 4, borderWidth: 1, borderColor: '#e1e5e6', padding: 8, marginRight: 5 }]}>
+        <View>
+          {commonFunc.renderImageProfile(player.user.image, 80)}
+        </View>
+        <View>
+          <Text style={{ color: '#393e44' }}>{player.user.first_name}</Text>
+          <Text style={{ color: Colors.primary }}>{player.user.last_name}</Text>
+        </View>
+        { (!match.futureMatch && feedback && match.id_user !== this.props.user.profile.id && !player.hasFeedback ) &&
+          (
+            <View style={{ marginTop: 5 }}>
+              <TouchableItem
+                accessibilityComponentType="button"
+                accessibilityTraits="button"
+                delayPressIn={0}
+                onPress={() => this.props.navigation.navigate('Feedback', { match: match.id, player: player.user.id })}
+                pressColor={Colors.primary}
+                style={{ backgroundColor: Colors.primary, borderRadius: 10, paddingHorizontal: 3, paddingTop: 3,  }}
+              >
+                <View>
+                  <Text style={[Styles.inputText, { color: 'white', textAlign: 'center', fontSize: 11 }]}>FEEDBACK</Text>
+                </View>
+              </TouchableItem>
+            </View>
+          )
+        }
+        {
+          //Mi partido, acepta/cancelo la SOLICITUDES
+        }
+        { (match.futureMatch && match.id_user === this.props.user.profile.id && !feedback && player.state === 'pendingRequest' ) &&
+          (
+            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start'}]}>
+              <TouchableItem
+                style={{ width: Metrics.buttonWidth / 2 }}
+                accessibilityComponentType="button"
+                accessibilityTraits="button"
+                delayPressIn={0}
+                onPress={() => this.acceptUser(match.id, player.user.id)}
+                pressColor={Colors.primary}
+                style={{ backgroundColor: Colors.primary, borderRadius: 10, paddingHorizontal: 3, paddingTop: 3,  }}
+              >
+                <View>
+                  <Text style={[Styles.inputText, { color: 'white', textAlign: 'center', fontSize: 11 }]}>ACEPTAR</Text>
+                </View>
+              </TouchableItem>
+
+              <TouchableItem
+                style={{ width: Metrics.buttonWidth / 2 }}
+                accessibilityComponentType="button"
+                accessibilityTraits="button"
+                delayPressIn={0}
+                onPress={() => this.refuseUser(match.id, player.user.id)}
+                pressColor={Colors.primary}
+                style={{ backgroundColor: Colors.primary, borderRadius: 10, paddingHorizontal: 3, paddingTop: 3,  }}
+              >
+                <View>
+                  <Text style={[Styles.inputText, { color: 'white', textAlign: 'center', fontSize: 11 }]}>RECHAZAR</Text>
+                </View>
+              </TouchableItem>
+            </View>
+          )
+        }
+        {
+          //No es mi partido, acepta/cancelo la SOLICITUDES
+        }
+        { (match.futureMatch && player.user.id === this.props.user.profile.id &&  player.state === 'pendingInvitation' ) &&
+          (<View key={`btn-player-${player.user.id}`} style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start' }]}>
             <TouchableItem
               key={`btn1-player-${player.user.id}`}
-              style={{ width: Metrics.buttonWidth / 2 }}
               accessibilityComponentType="button"
               accessibilityTraits="button"
               delayPressIn={0}
               onPress={() => this.acceptMatch(match.id, player.user.id)}
               pressColor={Colors.primary}
+              style={{ backgroundColor: Colors.primary, borderRadius: 5, paddingHorizontal: 3, paddingTop: 3,  marginTop: 5}}
             >
               <View>
-                <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}> ACEPTAR</Text>
+                <Text style={[Styles.inputText, { color: 'white', textAlign: 'center', fontSize: 11 }]}> ACEPTAR</Text>
               </View>
             </TouchableItem>
 
             <TouchableItem
               key={`btn2-player-${player.user.id}`}
-              style={{ width: Metrics.buttonWidth / 2 }}
               accessibilityComponentType="button"
               accessibilityTraits="button"
               delayPressIn={0}
               onPress={() => this.refuseMatch(match.id, player.user.id)}
               pressColor={Colors.primary}
+              style={{ backgroundColor: Colors.primary, borderRadius: 5, paddingHorizontal: 3, paddingTop: 3, marginTop: 5  }}
             >
               <View>
-                <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>RECHAZAR</Text>
+                <Text style={[Styles.inputText, { color: 'white', textAlign: 'center', fontSize: 11 }]}>RECHAZAR</Text>
               </View>
             </TouchableItem>
-          </View>
-        );
-      }
-    } else if (player.state === 'pendingRequest') {
-      return (
-        <View key={`btn-player-${player.user.id}`}>
-          <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>
-            SOLICITUD PENDIENTE
-          </Text>
-        </View>
-      );
-    } else if (player.state === 'confirmed') {
-      return (
-        <View key={`btn-player-${player.user.id}`}>
-          <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>CONFIRMADO</Text>
-        </View>
-      );
-    } else if (player.state === 'rejected') {
-      return (
-        <View key={`btn-player-${player.user.id}`}>
-          <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>SOLICITUD RECHAZADA</Text>
-        </View>
-      );
-    } else if (player.state === 'invitationDeclined') {
-      return (
-        <View key={`btn-player-${player.user.id}`}>
-          <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>INVITACIÓN RECHAZADA</Text>
-        </View>
-      );
-    }
+          </View>)
+        }
+        {
+          //No es mi partido, estado de las solicitudes
+        }
+        {( match.futureMatch && match.id_user === this.props.user.profile.id &&  player.state === 'pendingInvitation' ) &&
+          (
+            <View key={`btn-player-${player.user.id}`}>
+              <Text style={[Styles.inputText, { color: '#393e44', textAlign: 'center', fontSize: 11 }]}>SOLICITUD ENVIADA</Text>
+            </View>
+          )
+        }
 
-    return null;
+
+        { (match.futureMatch && (match.id_user === this.props.user.profile.id || player.user.id === this.props.user.profile.id) &&  player.state === 'rejected' ) &&
+          (<View key={`btn-player-${player.user.id}`}>
+            <Text style={[Styles.inputText, { color: '#393e44', textAlign: 'center', fontSize: 10 }]}>SOLICITUD RECHAZADA</Text>
+          </View>)
+        }
+        { (match.futureMatch && (match.id_user === this.props.user.profile.id || player.user.id === this.props.user.profile.id) &&  player.state === 'invitationDeclined' ) &&
+          (<View key={`btn-player-${player.user.id}`}>
+            <Text style={[Styles.inputText, { color: '#393e44', textAlign: 'center', fontSize: 10 }]}>INVITACIÓN RECHAZADA</Text>
+          </View>)
+        }
+      </View>
+    );
   }
 
   renderSuggestedPlayers(match) {
@@ -490,7 +502,7 @@ class MatchDetailScreen extends Component {
           onPress={() => navigation.navigate('MatchHistory')}
           title="Detalle del Partido"
         />
-        <ScrollView keyboardShouldPersistTaps="always">
+        <ScrollView style={{ paddingBottom: 20 }}>
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View>
             <Text style={Styles.title}>Detalle del Partido</Text>
@@ -498,11 +510,11 @@ class MatchDetailScreen extends Component {
           <View>
             {this.infoMatch(match)}
 
-            <View style={Styles.flexColumn}>
+            <View style={{ paddingTop: 20 }}>
               {this.infoPlayers(match)}
             </View>
 
-            <View style={Styles.flexRow}>
+            <View style={{ marginTop: 10 }}>
               {this.renderSuggestedPlayers(match)}
             </View>
           </View>
@@ -516,7 +528,6 @@ const styles = StyleSheet.create({
   aboutContainer: {
     backgroundColor: '#f5f5f5',
     padding: 10,
-    paddingBottom: 0,
   },
   containerInformationBasic: {
     backgroundColor: '#393e44',

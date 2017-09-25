@@ -24,13 +24,13 @@ class Card extends Component {
         >
           <View style={{ marginBottom: 10 }}>
             <Image
-              source={{ uri: imageURI }} style={{ width: 200,
-                height: 200,
-                borderRadius: 100,
-                borderTopLeftRadius: 140,
-                borderTopRightRadius: 140,
-                borderBottomLeftRadius: 140,
-                borderBottomRightRadius: 140 }}
+              source={{ uri: imageURI }} style={{ width: 160,
+                height: 160,
+                borderRadius: 80,
+                borderTopLeftRadius: 100,
+                borderTopRightRadius: 100,
+                borderBottomLeftRadius: 100,
+                borderBottomRightRadius: 100 }}
             />
           </View>
         </TouchableItem>

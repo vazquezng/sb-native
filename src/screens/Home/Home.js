@@ -119,7 +119,6 @@ class HomeScreen extends Component {
   }
   renderMatch(match, key) {
     const two = Metrics.width / 2;
-    console.log(match);
     const date = new Date(match.date);
     const day = new Date(date).getUTCDate();
     const hour = match.hour.split(':');
@@ -173,7 +172,6 @@ class HomeScreen extends Component {
     );
   }
   renderInfoMatch(match) {
-    console.log('renderInfoMatch');
     return (
       <View style={[Styles.flexColumn]}>
         <Text style={{ color: Colors.primary, fontSize: 18, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2 }}>{match.user.first_name} {match.user.last_name}</Text>

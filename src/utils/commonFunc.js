@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   Platform,
+  Image
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
@@ -15,6 +16,20 @@ const commonFunc = {
   isFunction: (functionToCheck) => {
     const getType = {};
     return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+  },
+  renderImageProfile: (image, dimension) => {
+    const imageURI = image ? image : 'http://web.slambow.com/img/profile/profile-blank.png';
+    return (
+      <Image
+        source={{ uri: imageURI }} style={{ width: dimension,
+          height: dimension,
+          borderRadius: (dimension/2),
+          borderTopLeftRadius: (dimension/2),
+          borderTopRightRadius: (dimension/2),
+          borderBottomLeftRadius: (dimension/2),
+          borderBottomRightRadius: (dimension/2) }}
+      />
+    );
   },
   pickerGameLevel: [
     { label: '2.5', value: '2.5' },
