@@ -10,7 +10,6 @@ import {
   Slider,
   Alert,
 } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview'
 
 import Header from '@components/Header';

@@ -27,6 +27,7 @@
 		"react-native-looped-carousel": "^0.1.7",
 		"react-native-maps": "^0.15.3",
 		"react-native-onesignal": "^3.0.4",
+		"react-native-spinkit": "latest",
 		"react-native-splash-screen": "^2.1.0",
 		"react-native-swipe-cards": "^0.1.0",
 		"react-native-twitter-signin": "^1.0.2",

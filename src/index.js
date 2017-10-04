@@ -11,6 +11,8 @@ import Notifications from '@utils/Notifications';
 
 const launchImage = require('./assets/logo.png');
 
+GLOBAL.XMLHttpRequest = GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest;
+
 export default class App extends Component {
   state = {
     isRehydrated: false,

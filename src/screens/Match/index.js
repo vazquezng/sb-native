@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
-import Entypo from 'react-native-vector-icons/Entypo';
 import DatePicker from 'react-native-datepicker';
 import MapView from 'react-native-maps';
 import  { GooglePlacesAutocomplete } from '@components/GooglePlaceAutoComplete';
@@ -133,6 +132,7 @@ class MatchScreen extends Component {
       );
     }
 
+    console.log(navigation.state.params);
     fetch(`${API}/canchas`, {
       method: 'GET',
     })
@@ -141,9 +141,13 @@ class MatchScreen extends Component {
       console.log(responseJson);
       this.setState({
         canchas: responseJson.canchas.filter(c => c.state === 'confirmed'),
+      }, () => {
+        if (navigation.state.params && navigation.state.params.selectedCancha) {
+          this.changeCancha({ value: navigation.state.params.selectedCancha });
+        }
       });
     });
-    console.log(navigation.state.params);
+
     if (navigation.state.params && navigation.state.params.inviteUser) {
       this.setState({
         inviteUser: navigation.state.params.inviteUser,
@@ -153,7 +157,8 @@ class MatchScreen extends Component {
         inviteUser: null,
       });
     }
-    this.props.navigation.setParams({ inviteUser: null });
+
+    this.props.navigation.setParams({ inviteUser: null, selectedCancha: null });
   }
 
   changeCancha(canchaOption) {
@@ -521,12 +526,12 @@ class MatchScreen extends Component {
             <TouchableItem
               onPress={ () => this.handleChangeType('singles') }
               style={[{ borderRadius: 10, flex: 0.5 }, match.type === 'singles' ? { backgroundColor: Colors.primary } : {} ]}>
-              <Text style={{ color: 'white', textAlign: 'center', fontSize: 16  }}>SINGLES</Text>
+              <Text style={{ color: 'white', textAlign: 'center', fontSize: 16  }}>Singles</Text>
             </TouchableItem>
             <TouchableItem
               onPress={ () => this.handleChangeType('dobles') }
               style={[{ borderRadius: 10, flex: 0.5 }, match.type === 'dobles' ? { backgroundColor: Colors.primary } : {} ]}>
-              <Text style={{ color: 'white', textAlign: 'center', fontSize: 16  }}>DOBLES</Text>
+              <Text style={{ color: 'white', textAlign: 'center', fontSize: 16  }}>Dobles</Text>
             </TouchableItem>
           </View>
         </View>

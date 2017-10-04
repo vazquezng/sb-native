@@ -156,6 +156,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-spinkit')
     compile project(':react-native-image-picker')
     compile project(':react-native-upload-file')
     compile project(':react-native-twitter-signin')

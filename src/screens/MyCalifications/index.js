@@ -5,10 +5,8 @@ import {
   View,
   StyleSheet,
   Text,
-  Platform,
   Image,
 } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
 
 import Header from '@components/Header';
 import HeaderButton from '@components/HeaderButton';
@@ -34,8 +32,8 @@ class MyCalificationsScreen extends Component {
         icon="menu"
         onPress={() => navigation.navigate('DrawerOpen')}
         tintColor={'white'}
-        title={'Vuelos Baratos'}
-        truncatedTitle={'vuelos'}
+        title={'Mi calificaciones'}
+        truncatedTitle={'calificaciones'}
       />
     ),
     headerStyle: {
@@ -58,7 +56,7 @@ class MyCalificationsScreen extends Component {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${user.profile.token}`,
-      }
+      },
     })
     .then(response => response.json())
     .then((responseJson) => {

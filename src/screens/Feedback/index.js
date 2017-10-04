@@ -10,13 +10,13 @@ import {
   Slider,
   Alert,
 } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 
 import Header from '@components/Header';
 import HeaderButton from '@components/HeaderButton';
 import TouchableItem from '@components/TouchableItem';
 import PickerSB from '@components/Picker';
+import FooterButtons from '@components/Footer/Buttons';
 
 import Styles from '@theme/Styles';
 import Colors from '@theme/Colors';
@@ -60,9 +60,9 @@ class FeedbackScreen extends Component {
         has_attended: '1',
         comment: '',
         reason: '',
-        game_level: '2.5',
-        punctuality: '7',
-        respect: '7',
+        game_level: 'CORRECTO',
+        punctuality: 'PUNTUAL',
+        respect: 'BIEN',
       },
     };
   }
@@ -83,6 +83,68 @@ class FeedbackScreen extends Component {
         user: responseJson.user,
       });
     });
+  }
+
+  saveFeedback() {
+    const { feedback, match, user } = this.state;
+
+    if (feedback.comment === '' || (feedback.has_attended === '0' && feedback.reason === '')) {
+      this.completeForm();
+
+      return false;
+    }
+
+    feedback.id_user_to = user.id; // jugado
+    feedback.id_match = match.id;
+    this.setState({ spinnerVisible: true });
+    fetch(`${API}/feedback/save`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.props.user.profile.token}`,
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      body: JSON.stringify(feedback),
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+      this.setState({ spinnerVisible: false },
+      () => {
+        Alert.alert(
+          'Atención',
+          'Se guardo correctamente.',
+          [
+            { text: 'OK', onPress: () => console.log('Complete los campos.') },
+          ],
+          { cancelable: false },
+        );
+      });
+    })
+    .catch(() => {
+      this.setState({ spinnerVisible: false },
+      () => {
+        Alert.alert(
+          'Atención',
+          'Hubo un error, intente más tarde.',
+          [
+            { text: 'OK', onPress: () => console.log('Complete los campos.') },
+          ],
+          { cancelable: false },
+        );
+      });
+    });
+
+    return true;
+  }
+
+  completeForm() {
+    Alert.alert(
+      'Error',
+      'Complete los campos.',
+      [
+        { text: 'OK', onPress: () => console.log('Complete los campos.') },
+      ],
+      { cancelable: false },
+    );
   }
 
   renderUser() {
@@ -109,7 +171,7 @@ class FeedbackScreen extends Component {
   }
   infoMatch() {
     const { match } = this.state;
-    //let valueSexo = pickerSexo.find(ps => ps.value === match.sexo);
+    // let valueSexo = pickerSexo.find(ps => ps.value === match.sexo);
     if (match) {
       return (
         <View>
@@ -118,37 +180,37 @@ class FeedbackScreen extends Component {
           </View>
 
           <View>
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
+            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 }]}>
               <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{match.date}</Text>
               <Text style={[Styles.inputText]}>Fecha</Text>
             </View>
 
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
+            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 }]}>
               <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{match.hour}</Text>
               <Text style={[Styles.inputText]}>Hora</Text>
             </View>
 
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
+            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 }]}>
               <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{match.address}</Text>
               <Text style={[Styles.inputText]}>Lugar</Text>
             </View>
 
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
+            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 }]}>
               <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{match.game_level_from}</Text>
               <Text style={[Styles.inputText]}>Nivel del juego desde</Text>
             </View>
 
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
+            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 }]}>
               <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{match.type}</Text>
               <Text style={[Styles.inputText]}>Tipo de partido</Text>
             </View>
 
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
+            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 }]}>
               <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{match.years_from}</Text>
               <Text style={[Styles.inputText]}>Edad</Text>
             </View>
 
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
+            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 }]}>
               <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{match.sexo}</Text>
               <Text style={[Styles.inputText]}>Sexo</Text>
             </View>
@@ -161,17 +223,26 @@ class FeedbackScreen extends Component {
   }
   renderInfoUser() {
     const { user } = this.state;
+    const me = this.props.user;
     if (user) {
-      const game_level = user.game_level.toString();
       return (
-        <View>
-          <View style={Styles.flexRow}>
-            <Text style={[Styles.inputText, { color: Colors.primary }]}>JUGADOR</Text>
-          </View>
-          <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', marginBottom: 10 } ]}>
-            <Text style={[Styles.inputDisabled, { width: Metrics.buttonWidth }]}>{game_level}</Text>
-            <Text style={[Styles.inputText]}>Nivel declarado del jugador</Text>
-          </View>
+        <View style={[Styles.containerPrimary, { backgroundColor: '#414143', width: Metrics.screenWidth, paddingTop: 20 }]}>
+          <Image
+            source={require('../../assets/cancha.png')}
+            style={{ flex: 1, width: null, height: null, padding: 30 }}
+            resizeMode="cover"
+          >
+            <View style={[Styles.flexRow]}>
+              <View style={Styles.flexColumn}>
+                {commonFunc.renderImageProfile(me.profile.image, 80)}
+                <Text style={{ color: 'white', marginTop: 20 }}>{me.profile.name.toUpperCase()}</Text>
+              </View>
+              <View style={Styles.flexColumn}>
+                {commonFunc.renderImageProfile(user.image, 80)}
+                <Text style={{ color: 'white', marginTop: 20 }}>{user.name.toUpperCase()}</Text>
+              </View>
+            </View>
+          </Image>
         </View>
       );
     }
@@ -183,24 +254,28 @@ class FeedbackScreen extends Component {
     if (feedback.has_attended === '1') {
       return (
         <View>
-          <View style={[ styles.flexColumn, { marginTop: 10 }]}>
-            <Text>{feedback.game_level}</Text>
-            <Slider
-              style={{ width: Metrics.buttonWidth, height: 33 }}
-              minimumValue={2.5}
-              maximumValue={7}
-              maximumTrackTintColor={Colors.primary}
-              minimumTrackTintColor={Colors.primary}
-              thumbTintColor={Colors.primary}
-              step={0.5}
-              value={parseInt(feedback.game_level)}
-              onValueChange={game_level => this.setState({ feedback: Object.assign(feedback, { game_level }) })} />
-            <Text style={Styles.inputText}>NIVEL DE JUEGO</Text>
+          <View style={[styles.flexColumn, { marginTop: 10 }]}>
+            <PickerSB
+              containerStyle={{ width: Metrics.buttonWidth, height: 33 }}
+              buttonStyle={{ height: 40, justifyContent: 'center' }}
+              textStyle={{ color: 'black', fontSize: 16 }}
+              selectedValue={feedback.game_level}
+              list={[{ label: 'CORRECTO', value: 'CORRECTO' }, { label: 'INCORRECTO', value: 'INCORRECTO' }]}
+              onSelectValue={option => this.setState({ profile: Object.assign(feedback, { game_level: option.value }) })}
+            />
+            <Text style={[Styles.inputText, { color: Colors.primary }]}>NIVEL DECLARADO</Text>
           </View>
 
-          <View style={[ styles.flexColumn, { marginTop: 10 }]}>
-            <Text>{feedback.punctuality}</Text>
-            <Slider
+          <View style={[styles.flexColumn, { marginTop: 10 }]}>
+            <PickerSB
+              containerStyle={{ width: Metrics.buttonWidth, height: 33 }}
+              buttonStyle={{ height: 40, justifyContent: 'center' }}
+              textStyle={{ color: 'black', fontSize: 16 }}
+              selectedValue={feedback.punctuality}
+              list={[{ label: 'PUNTAL', value: 'PUNTAL' }, { label: 'IMPUNTUAL', value: 'IMPUNTUAL' }]}
+              onSelectValue={option => this.setState({ profile: Object.assign(feedback, { punctuality: option.value }) })}
+            />
+            {/* <Slider
               style={{ width: Metrics.buttonWidth, height: 33 }}
               minimumValue={1}
               maximumValue={10}
@@ -209,13 +284,21 @@ class FeedbackScreen extends Component {
               thumbTintColor={Colors.primary}
               step={1}
               value={parseInt(feedback.punctuality)}
-              onValueChange={punctuality => this.setState({ feedback: Object.assign(feedback, { punctuality }) })} />
-            <Text style={Styles.inputText}>PUNTUALIDAD</Text>
+              onValueChange={punctuality => this.setState({ feedback: Object.assign(feedback, { punctuality }) })}
+            /> */}
+            <Text style={[Styles.inputText, { color: Colors.primary }]}>PUNTUALIDAD</Text>
           </View>
 
-          <View style={[ styles.flexColumn, { marginTop: 10 }]}>
-            <Text>{feedback.respect}</Text>
-            <Slider
+          <View style={[styles.flexColumn, { marginTop: 10 }]}>
+            <PickerSB
+              containerStyle={{ width: Metrics.buttonWidth, height: 33 }}
+              buttonStyle={{ height: 40, justifyContent: 'center' }}
+              textStyle={{ color: 'black', fontSize: 16 }}
+              selectedValue={feedback.respect}
+              list={[{ label: 'BIEN', value: 'BIEN' }, { label: 'MAL', value: 'MAL' }]}
+              onSelectValue={option => this.setState({ profile: Object.assign(feedback, { respect: option.value }) })}
+            />
+            {/* <Slider
               style={{ width: Metrics.buttonWidth, height: 33 }}
               minimumValue={1}
               maximumValue={10}
@@ -224,8 +307,9 @@ class FeedbackScreen extends Component {
               thumbTintColor={Colors.primary}
               step={1}
               value={parseInt(feedback.respect)}
-              onValueChange={respect => this.setState({ feedback: Object.assign(feedback, { respect }) })} />
-            <Text style={Styles.inputText}>RESPETO</Text>
+              onValueChange={respect => this.setState({ feedback: Object.assign(feedback, { respect }) })}
+            /> */}
+            <Text style={[Styles.inputText, { color: Colors.primary }]}>RESPETO</Text>
           </View>
         </View>
       );
@@ -238,7 +322,7 @@ class FeedbackScreen extends Component {
       return (
         <View>
           <View style={[styles.flexColumn]}>
-            <Text style={Styles.inputText}>¿Cuál fue el motivo?</Text>
+            <Text style={[Styles.inputText, { color: Colors.primary }]}>¿CUÁL FUE EL MOTIVO?</Text>
             <TextInput
               style={[Styles.input, { width: Metrics.buttonWidth, borderWidth: StyleSheet.hairlineWidth, height: 100, textAlignVertical: 'top' }]}
               underlineColorAndroid={'transparent'}
@@ -256,30 +340,30 @@ class FeedbackScreen extends Component {
   }
 
   renderFeedback() {
-    const { feedback } = this.state;
+    const { feedback, user } = this.state;
     const has_attended = parseInt(feedback.has_attended) === 1 ? 'SI' : 'NO';
     return (
-      <View>
+      <View style={[Styles.containerPrimary, { backgroundColor: '#f8f8f8' }]}>
         <View style={Styles.flexColumn}>
-          <Text style={[Styles.inputText, { color: Colors.primary }]}>
-            INGRESA A TU CRITERIO EL NIVEL DEL JUGADOR Y COMPLETA EL RESTO DE LOS CAMPOS
+          <Text style={[Styles.title, { color: 'black' }]}>
+            Sobre {user ? user.first_name : ''}
           </Text>
-          <View style={[styles.flexColumn]}>
+          <View>
             <PickerSB
-              containerStyle={[Styles.pickerContainer, { width: Metrics.buttonWidth  }]}
+              containerStyle={[Styles.pickerContainer, { width: Metrics.buttonWidth }]}
               buttonStyle={{ height: 40, justifyContent: 'center' }}
               textStyle={{ color: 'black', fontSize: 16 }}
               selectedValue={has_attended}
               list={[{ label: 'SI', value: '1' }, { label: 'NO', value: '0' }]}
               onSelectValue={option => this.setState({ profile: Object.assign(feedback, { has_attended: option.value }) })}
             />
-            <Text style={Styles.inputText}>ASISTIÓ AL PARTIDO</Text>
+            <Text style={[Styles.inputText, { color: Colors.primary }]}>ASISTIÓ AL PARTIDO</Text>
           </View>
           {this.renderHasAttended()}
           {this.renderNotHasAttended()}
-          <View style={[styles.flexRow, { marginTop: 20 }]}>
-            <View style={[styles.flexColumn]}>
-              <Text style={Styles.inputText}>Dejanos tu comentario...</Text>
+          <View style={[Styles.flexRow, { marginTop: 20 }]}>
+            <View>
+              <Text style={[Styles.inputText, { color: Colors.primary }]}>DEJANOS TU COMENTARIO</Text>
               <TextInput
                 style={[Styles.input, { width: Metrics.buttonWidth, borderWidth: StyleSheet.hairlineWidth, height: 100, textAlignVertical: 'top' }]}
                 underlineColorAndroid={'transparent'}
@@ -290,72 +374,13 @@ class FeedbackScreen extends Component {
                 ref={(r) => { this._comment = r; }}
                 returnKeyType={'next'}
                 onBlur={() => console.log('blur')}
-                enablesReturnKeyAutomatically={true}
-                onKeyPress={(event) => console.log(event)}
+                enablesReturnKeyAutomatically
+                onKeyPress={event => console.log(event)}
               />
             </View>
           </View>
         </View>
       </View>
-    );
-  }
-
-  saveFeedback() {
-    const { feedback, match, user } = this.state;
-
-    if (feedback.comment === '' || (feedback.has_attended === '0' && feedback.reason === '') ) {
-      this.completeForm();
-
-      return false;
-    }
-
-    feedback.id_user_to = user.id; // jugado
-    feedback.id_match = match.id;
-    console.log(feedback);
-    this.setState({ spinnerVisible: true });
-    fetch(`${API}/feedback/save`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${this.props.user.profile.token}`,
-        "Content-Type": "application/json;charset=UTF-8",
-      },
-      body: JSON.stringify(feedback)
-    })
-    .then(response => response.json())
-    .then((responseJson) => {
-      this.setState({ spinnerVisible: false });
-      Alert.alert(
-        'Atención',
-        'Se guardo correctamente.',
-        [
-          { text: 'OK', onPress: () => console.log('Complete los campos.') },
-        ],
-        { cancelable: false },
-      );
-    })
-    .catch(() => {
-      this.setState({ spinnerVisible: false });
-      Alert.alert(
-        'Atención',
-        'Hubo un error, intente más tarde.',
-        [
-          { text: 'OK', onPress: () => console.log('Complete los campos.') },
-        ],
-        { cancelable: false },
-      );
-    });
-
-    return true;
-  }
-
-  completeForm() {
-    Alert.alert(
-      'Error',
-      'Complete los campos.',
-      [
-        { text: 'OK', onPress: () => console.log('Complete los campos.') },
-      ],
-      { cancelable: false },
     );
   }
 
@@ -369,39 +394,43 @@ class FeedbackScreen extends Component {
           title="Feedback"
         />
         <KeyboardAwareScrollView
-          keyboardDismissMode='interactive'
+          keyboardDismissMode="interactive"
           keyboardShouldPersistTaps={'never'}
-          style={Styles.containerPrimary}
         >
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View style={styles.centerContent}>
-            <Text style={Styles.title}>Feedback</Text>
+            <Text style={[Styles.title, { marginBottom: 0 }]}>Feedback</Text>
+            <Text style={[Styles.subTitle, { width: 260 }]}>
+              Es importante que siempre califiques
+              y nos cuentes sobre tu partido
+            </Text>
           </View>
-          <View style={Styles.flexColumn}>
-            {this.renderUser()}
-            {this.infoMatch()}
+          <View style={[Styles.flexColumn, { paddingBottom: 20 }]}>
+            {/* this.renderUser() */}
+            {/* this.infoMatch() */}
             {this.renderInfoUser()}
             {this.renderFeedback()}
           </View>
           {!this.state.complete &&
-            <View style={[styles.flexRow, { marginTop: 20, marginBottom: 20 }]}>
+            <View style={[styles.flexRow, { paddingBottom: 20, paddingLeft: 20, backgroundColor: '#f8f8f8' }]}>
               <TouchableItem
                 pointerEvents="box-only"
                 accessibilityComponentType="button"
                 accessibilityTraits="button"
                 testID="profile-available"
                 delayPressIn={0}
-                style={Styles.btnSave}
+                style={{ backgroundColor: Colors.primary, padding: 5, width: Metrics.width }}
                 onPress={this.saveFeedback.bind(this)}
                 pressColor={Colors.primary}
               >
                 <View pointerEvents="box-only">
-                  <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center'}]}>GUARDAR</Text>
+                  <Text style={[Styles.inputText, { color: 'white', textAlign: 'center', fontSize: 22 }]}>GUARDAR</Text>
                 </View>
               </TouchableItem>
             </View>
           }
         </KeyboardAwareScrollView>
+        <FooterButtons navigate={navigation.navigate} />
       </View>
     );
   }

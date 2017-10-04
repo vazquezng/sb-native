@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StyleSheet, Platform, BackHandler, Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, Platform, BackHandler, Alert, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import { DrawerItems } from 'react-navigation';
 import compose from 'recompose/compose';
@@ -105,19 +105,21 @@ export default class DrawerContent extends Component {
           {this.renderImage()}
           <Text style={{ color: 'rgb(7, 161, 217)', fontSize: 20 }}>{name}</Text>
         </View>
-        <DrawerItems {...itemsProps} style={{ flex: 7 }} />
-        <TouchableItem
-            onPress={this.handleLogout}
-            pressColor={'white'}
-            delayPressIn={0}
-            style={styles.logoutContainer}
-          >
-            <View pointerEvents="box-only" style={styles.logoutContainerText}>
-              <Text style={styles.logoutText}>
-                Cerrar Sesión
-              </Text>
-            </View>
-          </TouchableItem>
+        <ScrollView style={{ flex: 1 }}>
+          <DrawerItems {...itemsProps} style={{ flex: 7 }} />
+          <TouchableItem
+              onPress={this.handleLogout}
+              pressColor={'white'}
+              delayPressIn={0}
+              style={styles.logoutContainer}
+            >
+              <View pointerEvents="box-only" style={styles.logoutContainerText}>
+                <Text style={styles.logoutText}>
+                  Cerrar Sesión
+                </Text>
+              </View>
+            </TouchableItem>
+        </ScrollView>
       </View>
     );
   }
@@ -125,13 +127,14 @@ export default class DrawerContent extends Component {
 
 const styles = StyleSheet.create({
   containerUser: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
     borderBottomWidth: 1,
     borderColor: '#b2b2b2',
     paddingLeft: 15,
+    height: 70,
+    marginTop: 10,
   },
   logoutContainer: {
     height: Platform.OS === 'ios' ? 44 : 56,

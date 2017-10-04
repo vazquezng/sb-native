@@ -9,7 +9,6 @@ import {
   Platform,
   Dimensions,
 } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
 
 import { setScreenMain } from '@store/screen/';
 
@@ -118,7 +117,7 @@ class PlayScreen extends Component {
         <Text style={{ color: '#000000', fontSize: 12, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2, marginTop: 10 }}>{match.club_name}</Text>
         <Text numberOfLines={2}>{match.address}</Text>
         <TouchableItem
-          onPress={() => this.props.navigation.navigate('PlayMatch', { match: match.id })}
+          onPress={() => this.props.navigation.navigate('MatchDetail', { match: match.id })}
         >
           <Image
             source={require('../../assets/play/eye-icon.png')}

@@ -54,24 +54,29 @@ class MatchDetailScreen extends Component {
     this.state = {
       spinnerVisible: false,
       match: null,
+      modalMaps: false,
     };
   }
 
   componentWillMount() {
     const { user, navigation } = this.props;
+    this.setState({
+      spinnerVisible: true,
+    });
     fetch(`${API}/match/${navigation.state.params.match}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${user.profile.token}`,
       }
     })
-    .then(response => response.json())
-    .then((responseJson) => {
-      this.setState({
-        isPlayer: responseJson.isPlayer,
-        match: responseJson.match,
+      .then(response => response.json())
+      .then((responseJson) => {
+        this.setState({
+          isPlayer: responseJson.isPlayer,
+          match: responseJson.match,
+          spinnerVisible: false,
+        });
       });
-    });
   }
 
   acceptUser(match, player) {
@@ -107,6 +112,61 @@ class MatchDetailScreen extends Component {
         },
         body: JSON.stringify(params),
       })
+        .then(response => response.json())
+        .then((responseJson) => {
+          this.setState({
+            spinnerVisible: false,
+          });
+
+          if (responseJson.success) {
+            Alert.alert(
+              'Success',
+              msjSucces,
+              [
+                { text: 'OK', onPress: () => console.log(msjSucces) },
+              ],
+              { cancelable: false },
+            );
+          } else {
+            Alert.alert(
+              'Atención',
+              responseJson.errorMessage,
+              [
+                { text: 'OK', onPress: () => console.log(mjsError) },
+              ],
+              { cancelable: false },
+            );
+          }
+        })
+        .catch((error) => {
+          this.setState({
+            spinnerVisible: false,
+          });
+          Alert.alert(
+            'Error',
+            mjsError,
+            [
+              { text: 'OK', onPress: () => console.log(mjsError) },
+            ],
+            { cancelable: false },
+          );
+        });
+    });
+  }
+
+  sendQuieroJugar() {
+    const { user, navigation } = this.props;
+    this.setState({
+      spinnerVisible: true,
+    }, () => {
+      fetch(`${API}/match/play`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user.profile.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: navigation.state.params.match }),
+      })
       .then(response => response.json())
       .then((responseJson) => {
         this.setState({
@@ -115,19 +175,19 @@ class MatchDetailScreen extends Component {
 
         if (responseJson.success) {
           Alert.alert(
-            'Success',
-            msjSucces,
+            'Atención',
+            'Se envio la solicitud.',
             [
-              { text: 'OK', onPress: () => console.log(msjSucces) },
+              { text: 'OK', onPress: () => navigation.navigate('Play') },
             ],
             { cancelable: false },
           );
         } else {
           Alert.alert(
-            'Atención',
-            responseJson.errorMessage,
+            'Error',
+            'Hubo un error, intente más tarde.',
             [
-              { text: 'OK', onPress: () => console.log(mjsError) },
+              { text: 'OK', onPress: () => console.log('Error') },
             ],
             { cancelable: false },
           );
@@ -139,9 +199,9 @@ class MatchDetailScreen extends Component {
         });
         Alert.alert(
           'Error',
-          mjsError,
+          'Hubo un error, intente más tarde.',
           [
-            { text: 'OK', onPress: () => console.log(mjsError) },
+            { text: 'OK', onPress: () => console.log(error) },
           ],
           { cancelable: false },
         );
@@ -151,6 +211,14 @@ class MatchDetailScreen extends Component {
 
   capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  openModalAvailable() {
+    this.setState({ modalMaps: true });
+  }
+
+  closeModalAvailable() {
+    this.setState({ modalMaps: false });
   }
 
   infoMatch(match) {
@@ -165,7 +233,7 @@ class MatchDetailScreen extends Component {
           <View style={styles.containerInformationBasic}>
             <View style={{ marginTop: 20 }}>
               <View
-                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+                style={[Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' }]}
               >
                 <Text style={[Styles.inputText, { color: 'white' }]}>FECHA</Text>
                 <Text
@@ -177,7 +245,7 @@ class MatchDetailScreen extends Component {
             </View>
             <View style={{ marginTop: 20 }}>
               <View
-                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+                style={[Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' }]}
               >
                 <Text style={[Styles.inputText, { color: 'white' }]}>HORA</Text>
                 <Text
@@ -189,7 +257,7 @@ class MatchDetailScreen extends Component {
             </View>
             <View style={{ marginTop: 20 }}>
               <View
-                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+                style={[Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' }]}
               >
                 <Text style={[Styles.inputText, { color: 'white' }]}>LUGAR</Text>
                 <Text
@@ -201,7 +269,7 @@ class MatchDetailScreen extends Component {
             </View>
             <View style={{ marginTop: 20 }}>
               <View
-                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+                style={[Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' }]}
               >
                 <Text style={[Styles.inputText, { color: 'white' }]}>NOMBRE DEL CLUB</Text>
                 <Text
@@ -213,7 +281,7 @@ class MatchDetailScreen extends Component {
             </View>
             <View style={{ marginTop: 20 }}>
               <View
-                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+                style={[Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' }]}
               >
                 <Text style={[Styles.inputText, { color: 'white' }]}>NIVEL DEL JUEGO DESDE</Text>
                 <Text
@@ -225,11 +293,11 @@ class MatchDetailScreen extends Component {
             </View>
             <View style={{ marginTop: 20 }}>
               <View
-                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+                style={[Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' }]}
               >
                 <Text style={[Styles.inputText, { color: 'white' }]}>NIVEL DEL JUEGO HASTA</Text>
                 <Text
-                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: Metrics.width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: (Metrics.width - 10) / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
                 >
                   {match.game_level_to}
                 </Text>
@@ -237,11 +305,11 @@ class MatchDetailScreen extends Component {
             </View>
             <View style={{ marginTop: 20 }}>
               <View
-                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+                style={[Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' }]}
               >
                 <Text style={[Styles.inputText, { color: 'white' }]}>TIPO DE PARTIDO</Text>
                 <Text
-                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: Metrics.width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
+                  style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: (Metrics.width - 10) / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
                 >
                   {type}
                 </Text>
@@ -249,7 +317,7 @@ class MatchDetailScreen extends Component {
             </View>
             <View style={{ marginTop: 20 }}>
               <View
-                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+                style={[Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' }]}
               >
                 <Text style={[Styles.inputText, { color: 'white' }]}>EDAD DESDE</Text>
                 <Text
@@ -261,7 +329,7 @@ class MatchDetailScreen extends Component {
             </View>
             <View style={{ marginTop: 20 }}>
               <View
-                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+                style={[Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' }]}
               >
                 <Text style={[Styles.inputText, { color: 'white' }]}>EDAD HASTA</Text>
                 <Text
@@ -273,7 +341,7 @@ class MatchDetailScreen extends Component {
             </View>
             <View style={{ marginTop: 20 }}>
               <View
-                style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+                style={[Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' }]}
               >
                 <Text style={[Styles.inputText, { color: 'white' }]}>SEXO</Text>
                 <Text
@@ -298,8 +366,12 @@ class MatchDetailScreen extends Component {
 
       return (
         <View>
-          {this.renderPlayersConfirmed(PlayersConfirmed.reverse())}
-          {this.renderPlayersInvite(PlayersOthers.reverse())}
+          <View>
+            {this.renderPlayersConfirmed(PlayersConfirmed.reverse())}
+          </View>
+          <View>
+            {this.renderPlayersInvite(PlayersOthers.reverse())}
+          </View>
         </View>
       );
     }
@@ -311,12 +383,16 @@ class MatchDetailScreen extends Component {
       return (
         <View style={{ paddingHorizontal: 20 }}>
           <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start', flex: 1 }]}>
-            <Text style={{ color: '#393e44', fontSize: 15 }}>MIRÁ LOS JUGADORES</Text>
-            <Text style={{ color: Colors.primary, fontSize: 17 }}>YA ANOTADOS</Text>
+            <View>
+              <Text style={{ color: '#393e44', fontSize: 15 }}>MIRÁ LOS JUGADORES</Text>
+            </View>
+            <View>
+              <Text style={{ color: Colors.primary, fontSize: 17 }}>YA ANOTADOS</Text>
+            </View>
           </View>
           <View style={[Styles.flexRow, { justifyContent: 'flex-start', marginTop: 10 }]}>
             {players.map((p, k) => {
-              return this.renderPlayer(p, k, true);
+              return this.renderPlayer(p, k, true)
             })}
           </View>
         </View>
@@ -350,15 +426,27 @@ class MatchDetailScreen extends Component {
     const { match } = this.state;
     console.log(match);
     return (
-      <View key={key} style={[Styles.flexColumn, { width: Metrics.width / 4, borderWidth: 1, borderColor: '#e1e5e6', padding: 8, marginRight: 5 }]}>
+      <View key={key} style={[Styles.flexColumn, { width: Metrics.width / 3, borderWidth: 1, borderColor: '#e1e5e6', padding: 8, marginRight: 5 }]}>
         <View>
-          {commonFunc.renderImageProfile(player.user.image, 80)}
+          <TouchableItem
+            onPress={() => this.props.navigation.navigate('ViewPlayer', { user: player.user.id, backName: 'MatchDetail', backParams: { match: match.id } })}
+          > 
+            <View>
+              {commonFunc.renderImageProfile(player.user.image, 80)}
+            </View>
+          </TouchableItem>
         </View>
         <View>
-          <Text style={{ color: '#393e44' }}>{player.user.first_name}</Text>
-          <Text style={{ color: Colors.primary }}>{player.user.last_name}</Text>
+          <TouchableItem
+            onPress={() => this.props.navigation.navigate('ViewPlayer', { user: player.user.id, backName: 'MatchDetail', backParams: { match: match.id } })}
+          >
+            <View>
+              <Text style={{ color: '#393e44' }}>{player.user.first_name}</Text>
+              <Text style={{ color: Colors.primary }}>{player.user.last_name}</Text>
+            </View>
+          </TouchableItem>
         </View>
-        { (!match.futureMatch && feedback && match.id_user !== this.props.user.profile.id && !player.hasFeedback ) &&
+        {(!match.futureMatch && feedback && match.id_user !== this.props.user.profile.id) &&
           (
             <View style={{ marginTop: 5 }}>
               <TouchableItem
@@ -367,7 +455,7 @@ class MatchDetailScreen extends Component {
                 delayPressIn={0}
                 onPress={() => this.props.navigation.navigate('Feedback', { match: match.id, player: player.user.id })}
                 pressColor={Colors.primary}
-                style={{ backgroundColor: Colors.primary, borderRadius: 10, paddingHorizontal: 3, paddingTop: 3,  }}
+                style={{ backgroundColor: Colors.primary, borderRadius: 10, paddingHorizontal: 3, paddingTop: 3, }}
               >
                 <View>
                   <Text style={[Styles.inputText, { color: 'white', textAlign: 'center', fontSize: 11 }]}>FEEDBACK</Text>
@@ -379,9 +467,9 @@ class MatchDetailScreen extends Component {
         {
           //Mi partido, acepta/cancelo la SOLICITUDES
         }
-        { (match.futureMatch && match.id_user === this.props.user.profile.id && !feedback && player.state === 'pendingRequest' ) &&
+        {(match.futureMatch && match.id_user === this.props.user.profile.id && !feedback && player.state === 'pendingRequest') &&
           (
-            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start'}]}>
+            <View style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start' }]}>
               <TouchableItem
                 style={{ width: Metrics.buttonWidth / 2 }}
                 accessibilityComponentType="button"
@@ -389,7 +477,7 @@ class MatchDetailScreen extends Component {
                 delayPressIn={0}
                 onPress={() => this.acceptUser(match.id, player.user.id)}
                 pressColor={Colors.primary}
-                style={{ backgroundColor: Colors.primary, borderRadius: 10, paddingHorizontal: 3, paddingTop: 3,  }}
+                style={{ backgroundColor: Colors.primary, borderRadius: 10, paddingHorizontal: 3, paddingTop: 3, }}
               >
                 <View>
                   <Text style={[Styles.inputText, { color: 'white', textAlign: 'center', fontSize: 11 }]}>ACEPTAR</Text>
@@ -403,7 +491,7 @@ class MatchDetailScreen extends Component {
                 delayPressIn={0}
                 onPress={() => this.refuseUser(match.id, player.user.id)}
                 pressColor={Colors.primary}
-                style={{ backgroundColor: Colors.primary, borderRadius: 10, paddingHorizontal: 3, paddingTop: 3,  }}
+                style={{ backgroundColor: Colors.primary, borderRadius: 10, paddingHorizontal: 3, paddingTop: 3, }}
               >
                 <View>
                   <Text style={[Styles.inputText, { color: 'white', textAlign: 'center', fontSize: 11 }]}>RECHAZAR</Text>
@@ -415,7 +503,7 @@ class MatchDetailScreen extends Component {
         {
           //No es mi partido, acepta/cancelo la SOLICITUDES
         }
-        { (match.futureMatch && player.user.id === this.props.user.profile.id &&  player.state === 'pendingInvitation' ) &&
+        {(match.futureMatch && player.user.id === this.props.user.profile.id && player.state === 'pendingInvitation') &&
           (<View key={`btn-player-${player.user.id}`} style={[Styles.flexColumn, { justifyContent: 'flex-start', alignItems: 'flex-start' }]}>
             <TouchableItem
               key={`btn1-player-${player.user.id}`}
@@ -424,7 +512,7 @@ class MatchDetailScreen extends Component {
               delayPressIn={0}
               onPress={() => this.acceptMatch(match.id, player.user.id)}
               pressColor={Colors.primary}
-              style={{ backgroundColor: Colors.primary, borderRadius: 5, paddingHorizontal: 3, paddingTop: 3,  marginTop: 5}}
+              style={{ backgroundColor: Colors.primary, borderRadius: 5, paddingHorizontal: 3, paddingTop: 3, marginTop: 5 }}
             >
               <View>
                 <Text style={[Styles.inputText, { color: 'white', textAlign: 'center', fontSize: 11 }]}> ACEPTAR</Text>
@@ -438,7 +526,7 @@ class MatchDetailScreen extends Component {
               delayPressIn={0}
               onPress={() => this.refuseMatch(match.id, player.user.id)}
               pressColor={Colors.primary}
-              style={{ backgroundColor: Colors.primary, borderRadius: 5, paddingHorizontal: 3, paddingTop: 3, marginTop: 5  }}
+              style={{ backgroundColor: Colors.primary, borderRadius: 5, paddingHorizontal: 3, paddingTop: 3, marginTop: 5 }}
             >
               <View>
                 <Text style={[Styles.inputText, { color: 'white', textAlign: 'center', fontSize: 11 }]}>RECHAZAR</Text>
@@ -449,7 +537,7 @@ class MatchDetailScreen extends Component {
         {
           //No es mi partido, estado de las solicitudes
         }
-        {( match.futureMatch && match.id_user === this.props.user.profile.id &&  player.state === 'pendingInvitation' ) &&
+        {(match.futureMatch && match.id_user === this.props.user.profile.id && player.state === 'pendingInvitation') &&
           (
             <View key={`btn-player-${player.user.id}`}>
               <Text style={[Styles.inputText, { color: '#393e44', textAlign: 'center', fontSize: 11 }]}>SOLICITUD ENVIADA</Text>
@@ -458,12 +546,12 @@ class MatchDetailScreen extends Component {
         }
 
 
-        { (match.futureMatch && (match.id_user === this.props.user.profile.id || player.user.id === this.props.user.profile.id) &&  player.state === 'rejected' ) &&
+        {(match.futureMatch && (match.id_user === this.props.user.profile.id || player.user.id === this.props.user.profile.id) && player.state === 'rejected') &&
           (<View key={`btn-player-${player.user.id}`}>
             <Text style={[Styles.inputText, { color: '#393e44', textAlign: 'center', fontSize: 10 }]}>SOLICITUD RECHAZADA</Text>
           </View>)
         }
-        { (match.futureMatch && (match.id_user === this.props.user.profile.id || player.user.id === this.props.user.profile.id) &&  player.state === 'invitationDeclined' ) &&
+        {(match.futureMatch && (match.id_user === this.props.user.profile.id || player.user.id === this.props.user.profile.id) && player.state === 'invitationDeclined') &&
           (<View key={`btn-player-${player.user.id}`}>
             <Text style={[Styles.inputText, { color: '#393e44', textAlign: 'center', fontSize: 10 }]}>INVITACIÓN RECHAZADA</Text>
           </View>)
@@ -492,6 +580,27 @@ class MatchDetailScreen extends Component {
     return null;
   }
 
+  renderQuieroJugar(match) {
+    if(!match) return null;
+    const user = match.matchPlayer.find(p => p.id_user === this.props.user.profile.id);
+    if (!user) {
+      return (
+        <TouchableItem
+          accessibilityComponentType="button"
+          accessibilityTraits="button"
+          delayPressIn={0}
+          style={[Styles.btnSave, { marginBottom: 20 }]}
+          onPress={() => this.sendQuieroJugar()}
+          pressColor={Colors.primary}
+        >
+          <View>
+            <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]} >QUIERO JUGAR</Text>
+          </View>
+        </TouchableItem>
+      );
+    }
+  }
+
   render() {
     const { navigation } = this.props;
     const { match } = this.state;
@@ -508,15 +617,21 @@ class MatchDetailScreen extends Component {
             <Text style={Styles.title}>Detalle del Partido</Text>
           </View>
           <View>
-            {this.infoMatch(match)}
+            <View>
+              {this.infoMatch(match)}
+            </View>
 
             <View style={{ paddingTop: 20 }}>
               {this.infoPlayers(match)}
             </View>
 
-            <View style={{ marginTop: 10 }}>
+            {/*<View style={{ marginTop: 10 }}>
               {this.renderSuggestedPlayers(match)}
             </View>
+
+            <View style={{ marginTop: 10 }}>
+              {this.renderQuieroJugar(match)}
+            </View>*/}
           </View>
         </ScrollView>
       </View>

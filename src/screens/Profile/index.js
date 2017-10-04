@@ -64,7 +64,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   saveProfile: profile => dispatch(saveProfile(profile)),
-  logout: () => dispatch(logout())
+  logout: () => dispatch(logout()),
 });
 
 const options = {
@@ -301,35 +301,35 @@ class ProfileScreen extends Component {
   }
 
   saveAvailable = (availability) => {
+    const self = this;
     this.setState({
       spinnerVisible: true,
       profile: Object.assign(this.state.profile, { availability }),
     }, () => {
-      this.closeModalAvailable();
-    });
-
-    fetch(`${API}/user/saveAvailability`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${this.state.profile.token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({availability}),
-    })
-    .then(response => response.json())
-    .then((responseJson) => {
-      console.log(responseJson);
-      this.setState({
-        spinnerVisible: false,
+      self.closeModalAvailable();
+      fetch(`${API}/user/saveAvailability`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.state.profile.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({availability}),
+      })
+      .then(response => response.json())
+      .then((responseJson) => {
+        self.setState({
+          spinnerVisible: false,
+        }, () => {
+          Alert.alert(
+            'Atención',
+            'Tu disponibilidad se guardo correctamente!',
+            [
+              { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ],
+            { cancelable: false },
+          );
+        });
       });
-      Alert.alert(
-        'Atención',
-        'Tu disponibilidad se guardo correctamente!',
-        [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
-        ],
-        { cancelable: false },
-      );
     });
   }
 

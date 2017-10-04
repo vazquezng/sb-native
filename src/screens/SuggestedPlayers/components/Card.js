@@ -4,7 +4,6 @@ import {
   Image,
   Text,
 } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
 
 import TouchableItem from '@components/TouchableItem';
 

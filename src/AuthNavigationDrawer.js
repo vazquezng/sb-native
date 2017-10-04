@@ -22,7 +22,9 @@ import SuggestedPlayersScreen from './screens/SuggestedPlayers';
 import ViewPlayerScreen from './screens/Profile/infoPlayer';
 
 import SearchUsersScreen from './screens/Searchs/Users';
-import NewsDetailScreen from './screens/News/Details'
+import SearchCanchasScreen from './screens/Searchs/Canchas';
+import NewsDetailScreen from './screens/News/Details';
+import RankingScreen from './screens/Ranking/';
 
 const AuthNavigationDrawer = lang => DrawerNavigator({
   Login: {
@@ -197,6 +199,32 @@ const AuthNavigationDrawer = lang => DrawerNavigator({
           label="Buscar Jugadores"
           icon={<Image source={require('./assets/BuscarJugadores.png')} style={{ width: 24, height: 24}} />}
           activeIcon={<Image source={require('./assets/BuscarJugadores.png')} style={{ width: 24, height: 24}} />}
+        />
+      ),
+    },
+  },
+  SearchCanchas: {
+    screen: SearchCanchasScreen,
+    navigationOptions: {
+      drawerLabel: ({ focused }) => (
+        <DrawerItem
+          focused={focused}
+          label="Buscar Canchas"
+          icon={<Image source={require('./assets/CrearPartido.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/CrearPartido.png')} style={{ width: 24, height: 24}} />}
+        />
+      ),
+    },
+  },
+  Ranking: {
+    screen: RankingScreen,
+    navigationOptions: {
+      drawerLabel: ({ focused }) => (
+        <DrawerItem
+          focused={focused}
+          label="Ranking"
+          icon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24 }} />}
+          activeIcon={<Image source={require('./assets/my-califications-icon.png')} style={{ width: 24, height: 24}} />}
         />
       ),
     },

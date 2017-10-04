@@ -8,7 +8,6 @@ import {
   Text,
   Platform,
 } from 'react-native';
-import Entypo from 'react-native-vector-icons/Entypo';
 
 import Header from '@components/Header';
 import HeaderButton from '@components/HeaderButton';
@@ -56,6 +55,9 @@ class MatchHistoryScreen extends Component {
   }
 
   componentWillMount() {
+    this.setState({
+      spinnerVisible: true,
+    });
     fetch(`${API}/match/history`, {
       method: 'GET',
       headers: {
@@ -66,7 +68,8 @@ class MatchHistoryScreen extends Component {
     .then((responseJson) => {
       console.log(responseJson);
       this.setState({
-        matches: responseJson.matches.reverse()
+        matches: responseJson.matches.reverse(),
+        spinnerVisible: false,
       });
     });
   }
