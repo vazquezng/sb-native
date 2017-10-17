@@ -61,21 +61,21 @@ class SearchCanchasScreen extends Component {
     let name = '';
     if (params && params.name) {
       name = params.name;
-      this.searchUser(name);
+      this.searchCancha(name);
     } else {
-      this.searchFirstUser();
+      this.searchFirstCachas();
     }
   }
 
   openModalMaps(latitude, longitude) {
-    this.setState({ modalMaps: true, latitude, longitude });
+    this.setState({ modalMaps: true, latitude: parseFloat(latitude), longitude: parseFloat(longitude) });
   }
 
   closeModalMaps() {
     this.setState({ modalMaps: false });
   }
 
-  searchFirstUser() {
+  searchFirstCachas() {
     const { user } = this.props;
 
     fetch(`${API}/canchas/search/page`, {
@@ -142,19 +142,19 @@ class SearchCanchasScreen extends Component {
                 </View>
               </TouchableItem>
               <TouchableItem
-                  onPress={() => Alert.alert(
+                onPress={() => Alert.alert(
                     'CONTACTO',
                     `${cancha.phone} / ${cancha.email}`,
-                    [
+                  [
                       { text: 'OK', onPress: () => console.log(cancha) },
-                    ],
+                  ],
                     { cancelable: false },
                   )}
-                >
+              >
                 <View style={[Styles.flexRow, { marginRight: 10 }]}>
                   <MaterialCommunityIcons name="phone-in-talk" size={24} style={{ color: Colors.primary }} />
-                  
-                    <Text style={{ color: '#393e44', fontSize: 12 }}>CONTACTO</Text>
+
+                  <Text style={{ color: '#393e44', fontSize: 12 }}>CONTACTO</Text>
                 </View>
               </TouchableItem>
             </View>

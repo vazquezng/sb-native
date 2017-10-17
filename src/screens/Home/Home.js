@@ -85,12 +85,12 @@ class HomeScreen extends Component {
   renderNews() {
     return (
       <View>
-        <Image style={[Styles.flexColumn, { backgroundColor: 'transparent', justifyContent: 'flex-end', alignItems: 'flex-start', paddingBottom: 10, paddingHorizontal: 5 }]} source={require('../../assets/news1.png')}>
-          <View style={[Styles.flexRow, { justifyContent: 'space-between', alignItems: 'center' }]}>
-            <Text style={{ color: 'white', width: (Metrics.width * 97) / 100 }}>JULIO 22.2017</Text>
+        <Image style={[Styles.flexColumn, { backgroundColor: 'transparent', justifyContent: 'flex-end', alignItems: 'flex-start', paddingBottom: 10, paddingHorizontal: 0 }]} source={require('../../assets/news1.png')}>
+          <View style={[Styles.flexRow, { justifyContent: 'space-between', alignItems: 'flex-end', width: Metrics.width, paddingLeft: 20 }]}>
+            <Text style={{ color: 'white', flex: 0.9 }}>JULIO 22.2017</Text>
             <TouchableHighlight
               onPress={() => this.props.navigation.navigate('NewsDetail', { news: 1 })}
-              style={{ width: (Metrics.width * 3) / 100 }}
+              style={{ flex: 0.1, justifyContent: 'flex-end' }}
             >
               <Image
                 source={require('../../assets/btn-more.png')}
@@ -173,15 +173,19 @@ class HomeScreen extends Component {
   renderImage(user) {
     const imageURI = user && user.image ? user.image : 'http://web.slambow.com/img/profile/profile-blank.png';
     return (
-      <Image
-        source={{ uri: imageURI }} style={{ width: 100,
-          height: 100,
-          borderRadius: 50,
-          borderTopLeftRadius: 80,
-          borderTopRightRadius: 80,
-          borderBottomLeftRadius: 80,
-          borderBottomRightRadius: 80 }}
-      />
+      <TouchableHighlight
+        onPress={() => this.props.navigation.navigate('ViewPlayer', { user: user.id, backName: 'Home' })}
+      >
+        <Image
+          source={{ uri: imageURI }} style={{ width: 100,
+            height: 100,
+            borderRadius: 50,
+            borderTopLeftRadius: 80,
+            borderTopRightRadius: 80,
+            borderBottomLeftRadius: 80,
+            borderBottomRightRadius: 80 }}
+        />
+      </TouchableHighlight>
     );
   }
   renderInfoMatch(match) {

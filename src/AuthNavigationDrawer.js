@@ -210,8 +210,8 @@ const AuthNavigationDrawer = lang => DrawerNavigator({
         <DrawerItem
           focused={focused}
           label="Buscar Canchas"
-          icon={<Image source={require('./assets/CrearPartido.png')} style={{ width: 24, height: 24}} />}
-          activeIcon={<Image source={require('./assets/CrearPartido.png')} style={{ width: 24, height: 24}} />}
+          icon={<Image source={require('./assets/BuscarCancha.png')} style={{ width: 24, height: 24}} />}
+          activeIcon={<Image source={require('./assets/BuscarCancha.png')} style={{ width: 24, height: 24}} />}
         />
       ),
     },
