@@ -3,6 +3,8 @@ import { AsyncStorage, View, Image } from 'react-native';
 import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import SplashScreen from 'react-native-splash-screen';
+import Moment from 'react-moment';
+import 'moment-timezone';
 
 import store from './store';
 import AppWithNavigationState from './AppNavigator';

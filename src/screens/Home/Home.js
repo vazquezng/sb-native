@@ -21,13 +21,16 @@ import API from '@utils/api';
 import commonFunc from '@utils/commonFunc';
 
 import { logout } from '@store/user/actions';
+import { fetchNews } from '@store/news/';
 
 const mapStateToProps = state => ({
   user: state.user,
+  news: state.news.data,
 });
 
 const mapDispatchToProps = dispatch => ({
   logout: () => dispatch(logout()),
+  fetchNews: () => dispatch(fetchNews()),
 });
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -58,7 +61,7 @@ class HomeScreen extends Component {
   }
 
   componentWillMount() {
-    const { user, logout, navigation, screen } = this.props;
+    const { user, logout, navigation, screen, fetchNews } = this.props;
 
     this.setState({ msgMatch: 'Buscando partidos para vos.' });
     fetch(`${API}/match`, {
@@ -80,12 +83,18 @@ class HomeScreen extends Component {
           msgMatch: 'No se encontraron partidos para vos.',
         });
       });
+
+      fetchNews();
   }
 
   renderNews() {
+    const { news } = this.props;
+
     return (
       <View>
-        <Image style={[Styles.flexColumn, { backgroundColor: 'transparent', justifyContent: 'flex-end', alignItems: 'flex-start', paddingBottom: 10, paddingHorizontal: 0 }]} source={require('../../assets/news1.png')}>
+        <Image
+          style={[Styles.flexColumn, { backgroundColor: 'transparent', justifyContent: 'flex-end', alignItems: 'flex-start', paddingBottom: 10, paddingHorizontal: 0, height: 150 }]}
+          source={{uri: news[0].image}} resizeMode="cover">
           <View style={[Styles.flexRow, { justifyContent: 'space-between', alignItems: 'flex-end', width: Metrics.width, paddingLeft: 20 }]}>
             <Text style={{ color: 'white', flex: 0.9 }}>JULIO 22.2017</Text>
             <TouchableHighlight
@@ -101,14 +110,14 @@ class HomeScreen extends Component {
         </Image>
         <View style={{ paddingHorizontal: 20, paddingTop: 5, paddingBottom: 5 }}>
           <TouchableHighlight
-            onPress={() => this.props.navigation.navigate('NewsDetail', { news: 1 })}
+            onPress={() => this.props.navigation.navigate('NewsDetail', { news: news[0] })}
           >
             <View>
-              <Text style={{ color: Colors.primary, fontSize: 20 }}>ARRANCA EL ATP</Text>
+              <Text style={{ color: Colors.primary, fontSize: 20 }}>{news[0].title}</Text>
             </View>
           </TouchableHighlight>
           <View>
-            <Text style={{ fontSize: 12 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</Text>
+            <Text style={{ fontSize: 12 }}>{news[0].short_description}</Text>
           </View>
         </View>
       </View>
