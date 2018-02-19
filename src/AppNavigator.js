@@ -9,14 +9,14 @@ class AppNavigator extends Component {
     loaded: true,
   };
 
-  shouldComponentUpdate(nextProps) {
-    if (this.props.renderAuth !== nextProps.renderAuth) {
-      this.setState({ loaded: false });
-      return true;
-    }
-
-    return false;
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   if (this.props.renderAuth !== nextProps.renderAuth) {
+  //     this.setState({ loaded: false });
+  //     return true;
+  //   }
+  //
+  //   return false;
+  // }
 
   render() {
     const AppNavigatorDrawerContainer = AuthNavigationDrawer('es_ar');
@@ -24,7 +24,6 @@ class AppNavigator extends Component {
       <AppNavigatorDrawerContainer />
     );
   }
-
 }
 const mapStateToProps = state => ({
   user: state.user,

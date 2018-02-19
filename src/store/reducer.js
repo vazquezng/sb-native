@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+// import { combineReducers } from 'redux';
 
 import user from './user/';
 import news from './news/';
@@ -10,6 +10,6 @@ const reducers = {
   screen,
 };
 
-const mainReducer = combineReducers(reducers);
+// const mainReducer = combineReducers(reducers);
 
-export default mainReducer;
+export default reducers;

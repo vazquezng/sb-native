@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
   Slider,
+  ImageBackground,
   Alert,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
@@ -38,9 +39,9 @@ class FeedbackScreen extends Component {
       <HeaderButton
         icon="keyboard-arrow-left"
         onPress={() => navigation.navigate('DrawerOpen')}
-        tintColor={'white'}
-        title={'Vuelos Baratos'}
-        truncatedTitle={'vuelos'}
+        tintColor="white"
+        title="Vuelos Baratos"
+        truncatedTitle="vuelos"
       />
     ),
     headerStyle: {
@@ -75,14 +76,14 @@ class FeedbackScreen extends Component {
         Authorization: `Bearer ${user.profile.token}`,
       },
     })
-    .then(response => response.json())
-    .then((responseJson) => {
-      this.setState({
-        complete: responseJson.complete,
-        match: responseJson.match,
-        user: responseJson.user,
+      .then(response => response.json())
+      .then((responseJson) => {
+        this.setState({
+          complete: responseJson.complete,
+          match: responseJson.match,
+          user: responseJson.user,
+        });
       });
-    });
   }
 
   saveFeedback() {
@@ -105,33 +106,37 @@ class FeedbackScreen extends Component {
       },
       body: JSON.stringify(feedback),
     })
-    .then(response => response.json())
-    .then((responseJson) => {
-      this.setState({ spinnerVisible: false },
-      () => {
-        Alert.alert(
-          'Atención',
-          'Se guardo correctamente.',
-          [
-            { text: 'OK', onPress: () => console.log('Complete los campos.') },
-          ],
-          { cancelable: false },
+      .then(response => response.json())
+      .then((responseJson) => {
+        this.setState(
+          { spinnerVisible: false },
+          () => {
+            Alert.alert(
+              'Atención',
+              'Se guardo correctamente.',
+              [
+                { text: 'OK', onPress: () => console.log('Complete los campos.') },
+              ],
+              { cancelable: false },
+            );
+          },
+        );
+      })
+      .catch(() => {
+        this.setState(
+          { spinnerVisible: false },
+          () => {
+            Alert.alert(
+              'Atención',
+              'Hubo un error, intente más tarde.',
+              [
+                { text: 'OK', onPress: () => console.log('Complete los campos.') },
+              ],
+              { cancelable: false },
+            );
+          },
         );
       });
-    })
-    .catch(() => {
-      this.setState({ spinnerVisible: false },
-      () => {
-        Alert.alert(
-          'Atención',
-          'Hubo un error, intente más tarde.',
-          [
-            { text: 'OK', onPress: () => console.log('Complete los campos.') },
-          ],
-          { cancelable: false },
-        );
-      });
-    });
 
     return true;
   }
@@ -154,13 +159,16 @@ class FeedbackScreen extends Component {
       return (
         <View style={[Styles.flexColumn, { justifyContent: 'center', alignItems: 'center', marginBottom: 10 }]}>
           <Image
-            source={{ uri: imageURI }} style={{ width: 160,
+            source={{ uri: imageURI }}
+            style={{
+ width: 160,
               height: 160,
               borderRadius: 80,
               borderTopLeftRadius: 100,
               borderTopRightRadius: 100,
               borderBottomLeftRadius: 100,
-              borderBottomRightRadius: 100 }}
+              borderBottomRightRadius: 100,
+}}
           />
           <Text>{user.name}</Text>
           <Text style={{ color: '#000000' }}>JUGADOR</Text>
@@ -227,9 +235,11 @@ class FeedbackScreen extends Component {
     if (user) {
       return (
         <View style={[Styles.containerPrimary, { backgroundColor: '#414143', width: Metrics.screenWidth, paddingTop: 20 }]}>
-          <Image
+          <ImageBackground
             source={require('../../assets/cancha.png')}
-            style={{ flex: 1, width: null, height: null, padding: 30 }}
+            style={{
+ flex: 1, width: null, height: null, padding: 30,
+}}
             resizeMode="cover"
           >
             <View style={[Styles.flexRow]}>
@@ -242,7 +252,7 @@ class FeedbackScreen extends Component {
                 <Text style={{ color: 'white', marginTop: 20 }}>{user.name.toUpperCase()}</Text>
               </View>
             </View>
-          </Image>
+          </ImageBackground>
         </View>
       );
     }
@@ -324,8 +334,10 @@ class FeedbackScreen extends Component {
           <View style={[styles.flexColumn]}>
             <Text style={[Styles.inputText, { color: Colors.primary }]}>¿CUÁL FUE EL MOTIVO?</Text>
             <TextInput
-              style={[Styles.input, { width: Metrics.buttonWidth, borderWidth: StyleSheet.hairlineWidth, height: 100, textAlignVertical: 'top' }]}
-              underlineColorAndroid={'transparent'}
+              style={[Styles.input, {
+ width: Metrics.buttonWidth, borderWidth: StyleSheet.hairlineWidth, height: 100, textAlignVertical: 'top',
+}]}
+              underlineColorAndroid="transparent"
               placeholderTextColor="lightgrey"
               multiline
               value={feedback.reason}
@@ -365,14 +377,16 @@ class FeedbackScreen extends Component {
             <View>
               <Text style={[Styles.inputText, { color: Colors.primary }]}>DEJANOS TU COMENTARIO</Text>
               <TextInput
-                style={[Styles.input, { width: Metrics.buttonWidth, borderWidth: StyleSheet.hairlineWidth, height: 100, textAlignVertical: 'top' }]}
-                underlineColorAndroid={'transparent'}
+                style={[Styles.input, {
+ width: Metrics.buttonWidth, borderWidth: StyleSheet.hairlineWidth, height: 100, textAlignVertical: 'top',
+}]}
+                underlineColorAndroid="transparent"
                 placeholderTextColor="lightgrey"
                 multiline
                 value={feedback.comment}
                 onChangeText={comment => this.setState({ feedback: Object.assign(feedback, { comment }) })}
                 ref={(r) => { this._comment = r; }}
-                returnKeyType={'next'}
+                returnKeyType="next"
                 onBlur={() => console.log('blur')}
                 enablesReturnKeyAutomatically
                 onKeyPress={event => console.log(event)}
@@ -395,7 +409,7 @@ class FeedbackScreen extends Component {
         />
         <KeyboardAwareScrollView
           keyboardDismissMode="interactive"
-          keyboardShouldPersistTaps={'never'}
+          keyboardShouldPersistTaps="never"
         >
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View style={styles.centerContent}>

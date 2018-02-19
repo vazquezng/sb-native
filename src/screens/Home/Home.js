@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import {
   View,
   Image,
+  ImageBackground,
   ScrollView,
   Text,
   TouchableHighlight,
@@ -41,7 +42,7 @@ class HomeScreen extends Component {
       <HeaderButton
         icon="menu"
         onPress={() => navigation.navigate('DrawerOpen')}
-        tintColor={'white'}
+        tintColor="white"
       />
     ),
     headerStyle: {
@@ -61,7 +62,9 @@ class HomeScreen extends Component {
   }
 
   componentWillMount() {
-    const { user, logout, navigation, screen, fetchNews } = this.props;
+    const {
+      user, logout, navigation, screen, fetchNews,
+    } = this.props;
 
     this.setState({ msgMatch: 'Buscando partidos para vos.' });
     fetch(`${API}/match`, {
@@ -84,7 +87,7 @@ class HomeScreen extends Component {
         });
       });
 
-      fetchNews();
+    fetchNews();
   }
 
   renderNews() {
@@ -92,10 +95,17 @@ class HomeScreen extends Component {
 
     return (
       <View>
-        <Image
-          style={[Styles.flexColumn, { backgroundColor: 'transparent', justifyContent: 'flex-end', alignItems: 'flex-start', paddingBottom: 10, paddingHorizontal: 0, height: 150 }]}
-          source={{uri: news[0].image}} resizeMode="cover">
-          <View style={[Styles.flexRow, { justifyContent: 'space-between', alignItems: 'flex-end', width: Metrics.width, paddingLeft: 20 }]}>
+        <ImageBackground
+          style={[Styles.flexColumn, {
+ backgroundColor: 'transparent', justifyContent: 'flex-end', alignItems: 'flex-start', paddingBottom: 10, paddingHorizontal: 0, height: 150,
+}]}
+          source={{ uri: news[0].image }}
+          resizeMode="cover"
+        >
+          <View style={[Styles.flexRow, {
+ justifyContent: 'space-between', alignItems: 'flex-end', width: Metrics.width, paddingLeft: 20,
+}]}
+          >
             <Text style={{ color: 'white', flex: 0.9 }}>JULIO 22.2017</Text>
             <TouchableHighlight
               onPress={() => this.props.navigation.navigate('NewsDetail', { news: 1 })}
@@ -107,7 +117,7 @@ class HomeScreen extends Component {
               />
             </TouchableHighlight>
           </View>
-        </Image>
+        </ImageBackground>
         <View style={{ paddingHorizontal: 20, paddingTop: 5, paddingBottom: 5 }}>
           <TouchableHighlight
             onPress={() => this.props.navigation.navigate('NewsDetail', { news: news[0] })}
@@ -146,9 +156,15 @@ class HomeScreen extends Component {
     const hour = match.hour.split(':');
     return (
       <View key={key}>
-        <View style={[Styles.flexRow, { justifyContent: 'center', marginBottom: 1, paddingBottom: 5, paddingTop: 5 }]}>
+        <View style={[Styles.flexRow, {
+ justifyContent: 'center', marginBottom: 1, paddingBottom: 5, paddingTop: 5,
+}]}
+        >
           <View style={[Styles.flexColumn, { flex: 0.2 }]}>
-            <View style={[Styles.flexColumn, { flex: 1, paddingHorizontal: 10, backgroundColor: Colors.primary, justifyContent: 'center', alignItems: 'center' }]}>
+            <View style={[Styles.flexColumn, {
+ flex: 1, paddingHorizontal: 10, backgroundColor: Colors.primary, justifyContent: 'center', alignItems: 'center',
+}]}
+            >
               <Text style={[Styles.title, { color: 'white', marginBottom: 0 }]}>{day}</Text>
               <Text style={{ color: 'white' }}>{date.toDateString().split(' ')[1].toUpperCase()}</Text>
             </View>
@@ -161,7 +177,10 @@ class HomeScreen extends Component {
             {this.renderInfoMatch(match)}
           </View>
         </View>
-        <View style={[Styles.flexRow, { backgroundColor: '#ededed', paddingLeft: 10, paddingRight: 10, paddingTop: 3, paddingBottom: 3, justifyContent: 'space-between', alignItems: 'flex-end' }]}>
+        <View style={[Styles.flexRow, {
+ backgroundColor: '#ededed', paddingLeft: 10, paddingRight: 10, paddingTop: 3, paddingBottom: 3, justifyContent: 'space-between', alignItems: 'flex-end',
+}]}
+        >
           <View>
             <Text>{match.club_name}</Text>
           </View>
@@ -186,13 +205,16 @@ class HomeScreen extends Component {
         onPress={() => this.props.navigation.navigate('ViewPlayer', { user: user.id, backName: 'Home' })}
       >
         <Image
-          source={{ uri: imageURI }} style={{ width: 100,
+          source={{ uri: imageURI }}
+          style={{
+ width: 100,
             height: 100,
             borderRadius: 50,
             borderTopLeftRadius: 80,
             borderTopRightRadius: 80,
             borderBottomLeftRadius: 80,
-            borderBottomRightRadius: 80 }}
+            borderBottomRightRadius: 80,
+}}
         />
       </TouchableHighlight>
     );
@@ -200,7 +222,11 @@ class HomeScreen extends Component {
   renderInfoMatch(match) {
     return (
       <View style={[Styles.flexColumn]}>
-        <Text style={{ color: Colors.primary, fontSize: 18, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2 }}>{match.user.first_name} {match.user.last_name}</Text>
+        <Text style={{
+ color: Colors.primary, fontSize: 18, borderColor: Colors.primary, borderBottomWidth: 1, paddingBottom: 2,
+}}
+        >{match.user.first_name} {match.user.last_name}
+        </Text>
         <Text numberOfLines={2}>{match.user.about}</Text>
       </View>
     );
@@ -216,14 +242,21 @@ class HomeScreen extends Component {
           title="Home"
         />
         <ScrollView
-          keyboardShouldPersistTaps={'never'}
+          keyboardShouldPersistTaps="never"
           style={[Styles.containerPrimary, { paddingHorizontal: 0 }]}
         >
           {commonFunc.renderSpinner(this.state.spinnerVisible)}
           <View>
             {this.renderNews()}
-            <View style={{ backgroundColor: '#414143', paddingHorizontal: 10, paddingTop: 5, paddingBottom: 5 }}>
-              <Text style={[Styles.title, { color: 'white', fontSize: 26, marginTop: 2, marginBottom: 2 }]}>Partidos cerca de tu ubicación</Text>
+            <View style={{
+ backgroundColor: '#414143', paddingHorizontal: 10, paddingTop: 5, paddingBottom: 5,
+}}
+            >
+              <Text style={[Styles.title, {
+ color: 'white', fontSize: 26, marginTop: 2, marginBottom: 2,
+}]}
+              >Partidos cerca de tu ubicación
+              </Text>
             </View>
             {this.renderNotMatchs()}
             {this.renderMatchs()}

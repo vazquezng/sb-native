@@ -14,12 +14,12 @@ import {
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import ImagePicker from 'react-native-image-picker';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 
 import Header from '@components/Header';
 import HeaderButton from '@components/HeaderButton';
 import TouchableItem from '@components/TouchableItem';
-import  { GooglePlacesAutocomplete } from '@components/GooglePlaceAutoComplete';
+import GooglePlacesAutocomplete from '@components/GooglePlaceAutoComplete';
 import ModalAvailable from '@components/ModalAvailable';
 
 import Styles from '@theme/Styles';
@@ -48,13 +48,27 @@ const pickerGameLevel = [
   { label: '6.5', value: '6.5' },
   { label: '7.0', value: '7' },
 ];
-const availability = [{ day: '0', allDay: false, morning: false, evening: false, night: false },  // LUNES
-                      { day: '1', allDay: false, morning: false, evening: false, night: false },  // MARTES
-                      { day: '2', allDay: false, morning: false, evening: false, night: false },  // MIÉRCOLES
-                      { day: '3', allDay: false, morning: false, evening: false, night: false },  // JUEVES
-                      { day: '4', allDay: false, morning: false, evening: false, night: false },  // VIERNES
-                      { day: '5', allDay: false, morning: false, evening: false, night: false },  // SÁBADO
-                      { day: '6', allDay: false, morning: false, evening: false, night: false }]; // DOMINGO
+const availability = [{
+  day: '0', allDay: false, morning: false, evening: false, night: false,
+}, // LUNES
+{
+  day: '1', allDay: false, morning: false, evening: false, night: false,
+}, // MARTES
+{
+  day: '2', allDay: false, morning: false, evening: false, night: false,
+}, // MIÉRCOLES
+{
+  day: '3', allDay: false, morning: false, evening: false, night: false,
+}, // JUEVES
+{
+  day: '4', allDay: false, morning: false, evening: false, night: false,
+}, // VIERNES
+{
+  day: '5', allDay: false, morning: false, evening: false, night: false,
+}, // SÁBADO
+{
+  day: '6', allDay: false, morning: false, evening: false, night: false,
+}]; // DOMINGO
 
 const API_UPLOAD_PHOTOID = `${API}/user/profile/image`;
 const mapStateToProps = state => ({
@@ -84,7 +98,7 @@ class ProfileScreen extends Component {
       <HeaderButton
         icon="menu"
         onPress={() => navigation.navigate('DrawerOpen')}
-        tintColor={'white'}
+        tintColor="white"
       />
     ),
     headerStyle: {
@@ -109,7 +123,9 @@ class ProfileScreen extends Component {
   }
 
   componentWillMount() {
-    const { user, logout, navigation, screen } = this.props;
+    const {
+      user, logout, navigation, screen,
+    } = this.props;
 
     fetch(`${API}/me`, {
       method: 'GET',
@@ -117,38 +133,38 @@ class ProfileScreen extends Component {
         Authorization: `Bearer ${user.profile.token}`,
       },
     })
-    .then(response => response.json())
-    .then((responseJson) => {
-      if (responseJson && responseJson.length) {
-        if (responseJson[0] === 'Token has expired') {
-          logout();
-          navigation.navigate('Login');
+      .then(response => response.json())
+      .then((responseJson) => {
+        if (responseJson && responseJson.length) {
+          if (responseJson[0] === 'Token has expired') {
+            logout();
+            navigation.navigate('Login');
+          }
         }
-      }
-    });
+      });
 
     fetch(`${API}/canchas`, {
-      method:'GET'
+      method: 'GET',
     })
-    .then(response => response.json())
-    .then((responseJson) => {
-      this.setState({
-        canchas: responseJson.canchas.filter(c => c.state === 'confirmed'),
+      .then(response => response.json())
+      .then((responseJson) => {
+        this.setState({
+          canchas: responseJson.canchas.filter(c => c.state === 'confirmed'),
+        });
       });
-    });
 
     fetch(`${API}/user/retrieveUserAvailability`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${user.profile.token}`,
-      }
+      },
     })
-    .then(response => response.json())
-    .then((responseJson) => {
-      this.setState({
-        profile: Object.assign(user.profile, { availability: responseJson.availability.length === 0 ? availability : responseJson.availability }),
+      .then(response => response.json())
+      .then((responseJson) => {
+        this.setState({
+          profile: Object.assign(user.profile, { availability: responseJson.availability.length === 0 ? availability : responseJson.availability }),
+        });
       });
-    });
 
     const self = this;
     if (!user.profile.complete) {
@@ -157,11 +173,11 @@ class ProfileScreen extends Component {
           const initialPosition = JSON.stringify(position);
           this.setState({ initialPosition });
           fetch(`http://maps.googleapis.com/maps/api/geocode/json?latlng=${position.coords.latitude},${position.coords.longitude}&sensor=true`)
-          .then(response => response.json())
-          .then((responseJson) => {
-            self.onSetCurrentPosition(null, responseJson.results[0]);
-            console.log(responseJson);
-          })
+            .then(response => response.json())
+            .then((responseJson) => {
+              self.onSetCurrentPosition(null, responseJson.results[0]);
+              console.log(responseJson);
+            });
           console.log(position);
         },
         (error) => {
@@ -207,7 +223,7 @@ class ProfileScreen extends Component {
   }
 
   getCamera() {
-      // Launch Camera:
+    // Launch Camera:
     ImagePicker.launchCamera(options, (response) => {
       if (!response.didCancel) {
         this.saveImage(response);
@@ -215,7 +231,7 @@ class ProfileScreen extends Component {
     });
   }
   getGalery() {
-      // Launch Camera:
+    // Launch Camera:
     ImagePicker.launchImageLibrary(options, (response) => {
       if (!response.didCancel) {
         this.saveImage(response);
@@ -283,7 +299,7 @@ class ProfileScreen extends Component {
     if (details && details.address_components) {
       console.log(details);
       profile.city = details.types && details.types[0] === 'street_address' ? details.vicinity : profile.city;
-      profile.country = details.types && details.types[0] === 'street_address' ? this._getCountryFromAddress(details): profile.country;
+      profile.country = details.types && details.types[0] === 'street_address' ? this._getCountryFromAddress(details) : profile.country;
       profile.address = details && details.formatted_address ? details.formatted_address : profile.address;
       profile.address_lat = details && details.geometry ? details.geometry.location.lat : profile.address_lat;
       profile.address_lng = details && details.geometry ? details.geometry.location.lng : profile.address_lng;
@@ -313,23 +329,23 @@ class ProfileScreen extends Component {
           Authorization: `Bearer ${this.state.profile.token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({availability}),
+        body: JSON.stringify({ availability }),
       })
-      .then(response => response.json())
-      .then((responseJson) => {
-        self.setState({
-          spinnerVisible: false,
-        }, () => {
-          Alert.alert(
-            'Atención',
-            'Tu disponibilidad se guardo correctamente!',
-            [
-              { text: 'OK', onPress: () => console.log('OK Pressed') },
-            ],
-            { cancelable: false },
-          );
+        .then(response => response.json())
+        .then((responseJson) => {
+          self.setState({
+            spinnerVisible: false,
+          }, () => {
+            Alert.alert(
+              'Atención',
+              'Tu disponibilidad se guardo correctamente!',
+              [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+              ],
+              { cancelable: false },
+            );
+          });
         });
-      });
     });
   }
 
@@ -342,9 +358,9 @@ class ProfileScreen extends Component {
 
   formComplete() {
     const { profile } = this.state;
-    if( this.validString(profile.first_name) && this.validString(profile.last_name)
+    if (this.validString(profile.first_name) && this.validString(profile.last_name)
         && this.validString(profile.email) && this.validString(profile.about) && this.validString(profile.years.toString()) && this.validAddress(profile)) {
-          return true;
+      return true;
     }
     return false;
   }
@@ -382,27 +398,27 @@ class ProfileScreen extends Component {
         },
         body: JSON.stringify(profile),
       })
-      .then(response => response.json())
-      .then((responseJson) => {
-        console.log(responseJson);
-        this.setState({
-          spinnerVisible: false,
-        }, () => {
-          if (alert) {
-            Alert.alert(
-              'Atención',
-              'Tu perfil se guardo correctamente!',
-              [
-                { text: 'OK', onPress: () => this.setState({ spinnerVisible: false }) },
-                { text: 'Crear Partido', onPress: () => { this.setState({ spinnerVisible: false });this.props.navigation.navigate('Match'); }},
-              ],
-              { cancelable: false },
-            );
-          }
-          this.state.profile.complete = 1;
-          this.props.saveProfile(this.state.profile);
+        .then(response => response.json())
+        .then((responseJson) => {
+          console.log(responseJson);
+          this.setState({
+            spinnerVisible: false,
+          }, () => {
+            if (alert) {
+              Alert.alert(
+                'Atención',
+                'Tu perfil se guardo correctamente!',
+                [
+                  { text: 'OK', onPress: () => this.setState({ spinnerVisible: false }) },
+                  { text: 'Crear Partido', onPress: () => { this.setState({ spinnerVisible: false }); this.props.navigation.navigate('Match'); } },
+                ],
+                { cancelable: false },
+              );
+            }
+            this.state.profile.complete = 1;
+            this.props.saveProfile(this.state.profile);
+          });
         });
-      });
     });
   }
 
@@ -422,7 +438,7 @@ class ProfileScreen extends Component {
   }
 
   aplicarAddress() {
-    this.setState({ modalAddress: false })
+    this.setState({ modalAddress: false });
   }
 
   renderInformationBasic() {
@@ -431,37 +447,45 @@ class ProfileScreen extends Component {
       <View style={styles.containerInformationBasic}>
         <View style={Styles.flexRow}>
           <View style={styles.containerPhoto}>
-              <TouchableItem
-                onPress={() => this.getCamera()}>
-                <View style={{ flexDirection: 'row', backgroundColor: '#00a5d7', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5 }}>
-                  <Entypo
-                    name='camera'
-                    size={28}
-                    style={{ color: 'white' }}
-                  />
-                </View>
-              </TouchableItem>
+            <TouchableItem
+              onPress={() => this.getCamera()}
+            >
+              <View style={{
+ flexDirection: 'row', backgroundColor: '#00a5d7', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5,
+}}
+              >
+                <Entypo
+                  name="camera"
+                  size={28}
+                  style={{ color: 'white' }}
+                />
+              </View>
+            </TouchableItem>
           </View>
           <View style={styles.containerPhoto}>
             {this.renderImage(profile)}
           </View>
           <View style={styles.containerPhoto}>
-              <TouchableItem
-                onPress={() => this.getGalery()}>
-                <View style={{ flexDirection: 'row', backgroundColor: '#00a5d7', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5 }}>
-                  <Entypo
-                    name='image'
-                    size={28}
-                    style={{ color: 'white' }}
-                  />
-                </View>
-              </TouchableItem>
+            <TouchableItem
+              onPress={() => this.getGalery()}
+            >
+              <View style={{
+ flexDirection: 'row', backgroundColor: '#00a5d7', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5,
+}}
+              >
+                <Entypo
+                  name="image"
+                  size={28}
+                  style={{ color: 'white' }}
+                />
+              </View>
+            </TouchableItem>
           </View>
         </View>
 
         <View style={{ marginTop: 20 }}>
           <View
-            style={[ Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center'} ]}
+            style={[Styles.flexRow, Styles.borderBottomInput, { alignItems: 'center' }]}
           >
             <Text style={[Styles.inputText, { color: 'white' }]}>NOMBRE</Text>
             <TextInput
@@ -469,7 +493,9 @@ class ProfileScreen extends Component {
               numberOfLines={1}
               underlineColorAndroid="transparent"
               placeholderTextColor="lightgrey"
-              style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
+              style={[{
+ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14,
+}]}
               value={profile.first_name}
               onChangeText={first_name => this.setState({ profile: Object.assign(profile, { first_name }) })}
             />
@@ -477,14 +503,16 @@ class ProfileScreen extends Component {
         </View>
 
         <View style={{ marginTop: 10 }}>
-          <View style={[ Styles.flexRow, Styles.borderBottomInput ]}>
+          <View style={[Styles.flexRow, Styles.borderBottomInput]}>
             <Text style={[Styles.inputText, { color: 'white' }]}>APELLIDO</Text>
             <TextInput
               multiline={!commonFunc.isAndroid}
               numberOfLines={1}
               underlineColorAndroid="transparent"
               placeholderTextColor="lightgrey"
-              style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
+              style={[{
+ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14,
+}]}
               value={profile.last_name}
               onChangeText={last_name => this.setState({ profile: Object.assign(profile, { last_name }) })}
             />
@@ -492,7 +520,7 @@ class ProfileScreen extends Component {
         </View>
 
         <View style={{ marginTop: 10 }}>
-          <View style={[ Styles.flexRow, Styles.borderBottomInput ]}>
+          <View style={[Styles.flexRow, Styles.borderBottomInput]}>
             <Text style={[Styles.inputText, { color: 'white' }]}>EMAIL</Text>
             <TextInput
               multiline={!commonFunc.isAndroid}
@@ -500,7 +528,9 @@ class ProfileScreen extends Component {
               underlineColorAndroid="transparent"
               placeholderTextColor="lightgrey"
               keyboardType="email-address"
-              style={[{ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14 }]}
+              style={[{
+ color: '#079ac8', marginBottom: 0, paddingBottom: 3, width: width / 2, textAlign: 'right', textAlignVertical: 'top', fontSize: 14,
+}]}
               value={profile.email}
               onChangeText={email => this.setState({ profile: Object.assign(profile, { email }) })}
             />
@@ -508,27 +538,33 @@ class ProfileScreen extends Component {
         </View>
 
         <View style={{ marginTop: 10 }}>
-          <View style={[ Styles.flexRow ]}>
+          <View style={[Styles.flexRow]}>
             <Text style={[Styles.inputText, { color: 'white' }]}>SEXO</Text>
           </View>
-          <View style={[ Styles.borderBottomInput ]}>
+          <View style={[Styles.borderBottomInput]}>
             <View
-              style={[Styles.flexRow, { backgroundColor: 'black',
+              style={[Styles.flexRow, {
+ backgroundColor: 'black',
                 borderRadius: 10,
                 marginBottom: 10,
                 borderTopLeftRadius: 10,
                 borderTopRightRadius: 10,
                 borderBottomLeftRadius: 10,
-                borderBottomRightRadius: 10 }]}
+                borderBottomRightRadius: 10,
+}]}
             >
               <TouchableItem
-                onPress={ () => this.handleChangeSexo('male') }
-                style={[{ borderRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10, borderBottomRightRadius: 10, flex: 0.5 }, profile.sexo === 'male' ? { backgroundColor: Colors.primary } : {} ]}>
-                <Text style={{ color: 'white', textAlign: 'center', fontSize: 14  }}>Hombre</Text>
+                onPress={() => this.handleChangeSexo('male')}
+                style={[{
+ borderRadius: 10, borderTopRightRadius: 10, borderBottomLeftRadius: 10, borderBottomRightRadius: 10, flex: 0.5,
+}, profile.sexo === 'male' ? { backgroundColor: Colors.primary } : {}]}
+              >
+                <Text style={{ color: 'white', textAlign: 'center', fontSize: 14 }}>Hombre</Text>
               </TouchableItem>
               <TouchableItem
-                onPress={ () => this.handleChangeSexo('female') }
-                style={[{ borderRadius: 10, flex: 0.5 }, profile.sexo === 'female' ? { backgroundColor: Colors.primary } : {}]}>
+                onPress={() => this.handleChangeSexo('female')}
+                style={[{ borderRadius: 10, flex: 0.5 }, profile.sexo === 'female' ? { backgroundColor: Colors.primary } : {}]}
+              >
                 <Text style={{ color: 'white', textAlign: 'center', fontSize: 14 }}>Mujer</Text>
               </TouchableItem>
             </View>
@@ -536,7 +572,7 @@ class ProfileScreen extends Component {
         </View>
 
         <View style={{ marginTop: 10 }}>
-          <View style={[ Styles.flexRow ]}>
+          <View style={[Styles.flexRow]}>
             <Text style={[Styles.inputText, { color: 'white' }]}>EDAD</Text>
             <Text style={[Styles.inputText, { color: '#079ac8' }]}>{profile.years}</Text>
           </View>
@@ -551,13 +587,14 @@ class ProfileScreen extends Component {
                 thumbTintColor={Colors.primary}
                 step={1}
                 value={parseInt(profile.years)}
-                onValueChange={years => this.setState({ profile: Object.assign(profile, { years }) })} />
+                onValueChange={years => this.setState({ profile: Object.assign(profile, { years }) })}
+              />
             </View>
           </View>
         </View>
 
         <View style={{ marginTop: 10 }}>
-          <View style={[ Styles.flexRow ]}>
+          <View style={[Styles.flexRow]}>
             <Text style={[Styles.inputText, { color: 'white' }]}>UBICACIÓN</Text>
             <TouchableItem
               onPress={() => this.setState({ modalAddress: true })}
@@ -574,7 +611,8 @@ class ProfileScreen extends Component {
               style={[Styles.inputText, { color: '#079ac8', fontSize: 12 }]}
               ellipsizeMode="tail"
               numberOfLines={1}
-            >{profile.address && profile.address.substring(0, 30)}...</Text>
+            >{profile.address && profile.address.substring(0, 30)}...
+            </Text>
           </View>
         </View>
 
@@ -586,13 +624,16 @@ class ProfileScreen extends Component {
     const imageURI = profile && profile.image ? profile.image : 'http://web.slambow.com/img/profile/profile-blank.png';
     return (
       <Image
-        source={{ uri: imageURI }} style={{ width: 160,
+        source={{ uri: imageURI }}
+        style={{
+ width: 160,
           height: 160,
           borderRadius: 80,
           borderTopLeftRadius: 100,
           borderTopRightRadius: 100,
           borderBottomLeftRadius: 100,
-          borderBottomRightRadius: 100 }}
+          borderBottomRightRadius: 100,
+}}
       />
     );
   }
@@ -617,10 +658,11 @@ class ProfileScreen extends Component {
               thumbTintColor={Colors.primary}
               step={0.5}
               value={parseInt(profile.game_level)}
-              onValueChange={(game_level) => this.setState({ profile: Object.assign(profile, { game_level }) })} />
+              onValueChange={game_level => this.setState({ profile: Object.assign(profile, { game_level }) })}
+            />
           </View>
         </View>
-        <View style={[ Styles.borderBottomInput, { flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5} ]}>
+        <View style={[Styles.borderBottomInput, { flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5 }]}>
           <Text>2.5</Text>
           <Text>7.0</Text>
         </View>
@@ -632,7 +674,7 @@ class ProfileScreen extends Component {
             testID="profile-available"
             delayPressIn={0}
             pressColor={Colors.primary}
-            style={[ Styles.borderBottomInput, { width: (width - 50), paddingBottom: 5 } ]}
+            style={[Styles.borderBottomInput, { width: (width - 50), paddingBottom: 5 }]}
             onPress={this.openModalAvailable.bind(this)}
           >
             <View style={Styles.flexRow}>
@@ -666,7 +708,7 @@ class ProfileScreen extends Component {
             />
           </View>
         </View>
-        <View style={[ Styles.borderBottomInput, { flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5} ]}>
+        <View style={[Styles.borderBottomInput, { flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 5 }]}>
           <Text>2Km</Text>
           <Text>50Km</Text>
         </View>
@@ -678,13 +720,15 @@ class ProfileScreen extends Component {
               <TextInput
                 multiline={!commonFunc.isAndroid}
                 numberOfLines={4}
-                style={[Styles.input, { height: 100, width: width - 50, borderWidth: 1, textAlignVertical: 'top' }]}
-                underlineColorAndroid={'transparent'}
+                style={[Styles.input, {
+ height: 100, width: width - 50, borderWidth: 1, textAlignVertical: 'top',
+}]}
+                underlineColorAndroid="transparent"
                 placeholderTextColor="lightgrey"
                 value={profile.about}
                 onChangeText={about => this.setState({ profile: Object.assign(profile, { about }) })}
-                ref={r => { this._about = r; }}
-                returnKeyType={'go'}
+                ref={(r) => { this._about = r; }}
+                returnKeyType="go"
               />
             </View>
           </View>
@@ -702,7 +746,7 @@ class ProfileScreen extends Component {
             pressColor={Colors.primary}
           >
             <View pointerEvents="box-only">
-              <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center'}]}>GUARDAR</Text>
+              <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>GUARDAR</Text>
             </View>
           </TouchableItem>
         </View>
@@ -716,7 +760,7 @@ class ProfileScreen extends Component {
     const single = Boolean(profile.single);
     const double = Boolean(profile.double);
 
-    const pickerCanchas = [{label: 'OTRA', value: '0'}];
+    const pickerCanchas = [{ label: 'OTRA', value: '0' }];
     canchas.forEach((c) => {
       pickerCanchas.push({ label: c.name, value: c.id });
     });
@@ -736,8 +780,8 @@ class ProfileScreen extends Component {
           title="Mi Perfil"
         />
         <KeyboardAwareScrollView
-          keyboardDismissMode={'interactive'}
-          keyboardShouldPersistTaps={'never'}
+          keyboardDismissMode="interactive"
+          keyboardShouldPersistTaps="never"
           getTextInputRefs={() => [this._about]}
           style={[Styles.containerPrimary, { paddingHorizontal: 0 }]}
         >
@@ -748,23 +792,28 @@ class ProfileScreen extends Component {
           </View>
           {this.renderInformationBasic()}
 
-          <View style={{ backgroundColor: '#eeeeee', paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8}}>
-            <Text style={{ color: '#86888b'}}>INFORMACIÓN DE EXPLORACIÓN</Text>
+          <View style={{
+ backgroundColor: '#eeeeee', paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8,
+}}
+          >
+            <Text style={{ color: '#86888b' }}>INFORMACIÓN DE EXPLORACIÓN</Text>
           </View>
 
           {this.renderScanInformation()}
         </KeyboardAwareScrollView>
 
         <Modal
-          animationType={"slide"}
+          animationType="slide"
           transparent={false}
           visible={this.state.modalAddress}
           onRequestClose={() => console.log('close')}
           supportedOrientations={['portrait', 'landscape']}
         >
-          <KeyboardAwareScrollView keyboardDismissMode="interactive"
-                                   keyboardShouldPersistTaps={'always'}
-                                   style={{ marginTop: 22, paddingHorizontal: 20 }}>
+          <KeyboardAwareScrollView
+            keyboardDismissMode="interactive"
+            keyboardShouldPersistTaps="always"
+            style={{ marginTop: 22, paddingHorizontal: 20 }}
+          >
             <View>
               <Text style={Styles.title}>Tu Perfil</Text>
               {/* <Text style={Styles.subTitle}>Completá tú dirección</Text> */}
@@ -788,7 +837,9 @@ class ProfileScreen extends Component {
                   }}
                   styles={{
                     description: { fontSize: 14, color: Colors.second, width },
-                    predefinedPlacesDescription: { fontSize: 14, color: Colors.second, width, borderWidth: 1, height: 32 },
+                    predefinedPlacesDescription: {
+ fontSize: 14, color: Colors.second, width, borderWidth: 1, height: 32,
+},
                   }}
                   nearbyPlacesAPI="GooglePlacesSearch"
                   GoogleReverseGeocodingQuery={{
@@ -802,28 +853,28 @@ class ProfileScreen extends Component {
                     'postal_code',
                     'country']}
                   predefinedPlaces={[]}
-                  caretHidden={true}
+                  caretHidden
                 />
                 <Text style={Styles.inputText}>INGRESE DIRECCIÓN</Text>
               </View>
             </View>
-           <View style={[ Styles.flexRow, { marginTop: 20, marginBottom: 20 }]}>
-             <TouchableItem
-               pointerEvents="box-only"
-               accessibilityComponentType="button"
-               accessibilityTraits="button"
-               testID="profile-available"
-               delayPressIn={0}
-               style={Styles.btnSave}
-               onPress={() => this.aplicarAddress()}
-               pressColor={Colors.primary}
-             >
-               <View pointerEvents="box-only">
-                 <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>APLICAR</Text>
-               </View>
-             </TouchableItem>
-           </View>
-         </KeyboardAwareScrollView>
+            <View style={[Styles.flexRow, { marginTop: 20, marginBottom: 20 }]}>
+              <TouchableItem
+                pointerEvents="box-only"
+                accessibilityComponentType="button"
+                accessibilityTraits="button"
+                testID="profile-available"
+                delayPressIn={0}
+                style={Styles.btnSave}
+                onPress={() => this.aplicarAddress()}
+                pressColor={Colors.primary}
+              >
+                <View pointerEvents="box-only">
+                  <Text style={[Styles.inputText, { color: Colors.primary, textAlign: 'center' }]}>APLICAR</Text>
+                </View>
+              </TouchableItem>
+            </View>
+          </KeyboardAwareScrollView>
         </Modal>
 
         <ModalAvailable
